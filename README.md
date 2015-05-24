@@ -9,7 +9,7 @@ For now, only foo angularjs+bootstrap+(soon)kendoui arquitecture.
 ## process
 - apzGen copies all files in seed folder to the generated app
 - apzGen generates the application files from definition:
-  - app properties: title, thir party libs dependencies
+  - app properties: title, third party libs dependencies
   - models: entities, fields and their configuration
   - controllers: based on seed initializer classes (should be better inheritance)
   - (coming soon) views
