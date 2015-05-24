@@ -1,3 +1,4 @@
+// TODO rename definitionFactory
 define([], function(){
 	var dis = this;
 	dis.init = init;

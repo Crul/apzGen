@@ -41,9 +41,9 @@ define([
 				}
 			}
 			
-			function resolveInPath(names, path) {
+			function resolveInPath(names, relativePath) {
 				for (var n in names) { // not [].forEach() because return
-					var file = requireFile(path, names[n]);
+					var file = requireFile(relativePath, names[n]);
 					if (file) return file;
 				}
 			}

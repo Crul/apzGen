@@ -1,3 +1,4 @@
+// TODO rename apzFileFactory
 define(['src/system/path'], function (path){
 	var dis = {};
 	dis.create = create;
@@ -26,13 +27,13 @@ define(['src/system/path'], function (path){
 	}
 	
 	function createFileDefinition(feature, path, name, fileType, renderer){
-		// TODO remove 'js', 'html' coupling
-		fileType = fileType || (getExtension(name) == 'js' ? 'class' : 'view');
+		// TODO remove 'js', 'html' coupling... appContext
+		fileType = fileType || (path.getFileInfo(name).extension == 'js' ? 'class' : 'view');
 		
 		if (path === undefined)
 			path = name;
 		
-		if (name.indexOf('.') < 0)
+		if (name.indexOf('.') < 0) // TODO remove 'js', 'html' coupling... appContext
 			name += '.' + (fileType == 'class' ? 'js' : 'html');
 			
 		return {
@@ -42,10 +43,6 @@ define(['src/system/path'], function (path){
 			name: name,
 			renderer: renderer || feature.factory
 		};
-	}
-	
-	function getExtension(fileName){
-		return path.getFileInfo(fileName).extension;
 	}
 	
 	return dis;
