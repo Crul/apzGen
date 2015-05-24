@@ -28,14 +28,25 @@ For now, only foo angularjs+bootstrap+(soon)kendoui arquitecture.
 ## application definition structure
 file: definition.js
 ```
-define([], function(){
-	var appDefinition = { 
-		title: 'title',
-		libs: ['bootstrap'] // see supported libs in src/html/libResolver.js
+
+define([], function(){	
+	var model = {
+		tenant: ['name']	
 	};
 	
-	var model = {
-		tenant: ['name']
+	var appDefinition = { 
+		title: 'apzGenerated',
+		libs: ['bootstrap'], // see supported libs in src/engines/html/libResolver.js
+		engine: 'angularJs' // only angularJs supported, more can be added in src/engines
+	};
+	
+	appDefinition.angularjs = {
+		factories: [
+			'seedwork/services/context.js',
+			'seedwork/controllers/baseCtrlInitializer.js',
+			'seedwork/controllers/listCtrlInitializer.js',
+			'seedwork/controllers/iudCtrlInitializer.js'
+		]
 	};
 	
 	appDefinition.features = {
@@ -43,13 +54,6 @@ define([], function(){
 		tenant: { factory: 'iud', model: model.tenant }
 	};
 	
-	appDefinition.angularjs = {
-		factories: [ // angularJs factories
-			'seedwork/controllers/listCtrlInitializer.js',
-			'seedwork/controllers/iudCtrlInitializer.js'
-		]
-	};
-
 	return appDefinition;
 });
 ```
