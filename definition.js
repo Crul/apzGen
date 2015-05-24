@@ -1,7 +1,12 @@
-define([], function(){
+define([], function(){	
+	var model = {
+		tenant: ['name']	
+	};
+	
 	var appDefinition = { 
 		title: 'apzGenerated',
-		libs: ['bootstrap']
+		libs: ['bootstrap'],
+		engine: 'angularJs'
 	};
 	
 	appDefinition.angularjs = {
@@ -11,16 +16,12 @@ define([], function(){
 			'seedwork/controllers/listCtrlInitializer.js',
 			'seedwork/controllers/iudCtrlInitializer.js'
 		]
-		// TODO:, services: [ 'context' ]
-	};
-	
-	var model = {
-		tenant: ['name']	
+		// TODO:, directives: []
 	};
 	
 	appDefinition.features = {
 		menu: true,
-		tenant: { base: 'iud', model: model.tenant }
+		tenant: { factory: 'iud', model: model.tenant }
 	};
 	
 	// TODO define data access

@@ -1,4 +1,2 @@
-define(['src/render/html/angularjs/angularjsRenderer'], 
-	function (renderer){
-		return renderer;
-	});
+define(['src/engines/angularjs/render/view/htmlRenderer'], 
+	function (renderer){ return renderer; });

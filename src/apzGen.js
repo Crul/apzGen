@@ -1,10 +1,10 @@
-define(['definition', 'src/apzGenFactory', 'src/system/fileWriter'], 
-	function (definition, appFactory, fileWriter){
+define(['definition', 'src/apzGenFactory'], 
+	function (definition, appFactory){
 		var dis = {};
 		dis.generate = generate;
 	
 		function generate(_definition) {
-			fileWriter.copyFolder('seed', 'bin');
+			appFactory.copySeed();
 			appFactory.create(_definition || definition);
 		}
 	

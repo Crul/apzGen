@@ -1,63 +1,70 @@
-// TODO convert "features/xxx" to "features/xxxFactory"
-// TODO ... and move "xxx.createFiles"" to "xxxFactory.createFiles" 
-//		var appFactory = featureFactoryResolver.resolve(appDefinition);
-//		var app = appFactory.create(appDefinition, features, featureFiles);
-//		var appFiles = appFactory.createFiles(app);
-//		... same with featureFactory
 define([
+		'src/system/appContext',
 		'src/system/fileWriter',
 		'src/system/definitionInitializer',
-		'src/featureResolver'
+		'src/factoryResolver',
+		'src/rendererResolver'
 	],
-	function (fileWriter, definitionInitializer, featureResolver) {
+	function (appContext, fileWriter, definitionInitializer, factoryResolver, rendererResolver) {
 		var dis = {};
+		dis.copySeed = copySeed;
 		dis.create = create;
 		
 		function create(appDefinition) {
-			appDefinition = initDefinitions(appDefinition);
+			appDefinition = initialize(appDefinition);
+			var features = createFeatures(appDefinition, appDefinition.features);
+			var featureFileDefinitions = createFileDefinitions(features).slice(0);
+			var app = factoryResolver.resolve(appDefinition)
+				.create(appDefinition, features, featureFileDefinitions);
 			
-			var features = createFeatures(appDefinition);
-			var featureFiles = createFeatureFiles(features).slice(0);
-			
-			var app = createFeature(appDefinition, features, featureFiles);
-			var appFiles = app.createFiles(features, featureFiles);
-			
-			featureFiles.concat(appFiles).forEach(writeFile);
+			renderFiles(app.fileDefinitions).forEach(writeFile);
 		}
 		
-		function initDefinitions(appDefinition) {
+		function initialize(appDefinition) {
+			appContext.engine = appDefinition.engine || 'angularjs';
 			appDefinition = definitionInitializer.init(appDefinition, 'app');
-			var definitions = appDefinition.features;
-			for (var name in definitions) // not .map() because iterating obj { }
-				definitions[name] = definitionInitializer.init(definitions[name], name);
+			var featureDefinitions = appDefinition.features;
+			for (var name in featureDefinitions) // not [].map() because iterating obj {}
+				featureDefinitions[name] = definitionInitializer.init(featureDefinitions[name], name);
+
 			return appDefinition;
 		}
 		
-		function createFeatures(appDefinition){
+		function createFeatures(appDefinition, featureDefinitions){
 			var features = [];
-			var definitions = appDefinition.features;
-			for (var name in definitions) { // not .map() because iterating obj { }
-				var definition = definitions[name];
-				var feature = createFeature(definition, appDefinition);
+			for (var name in featureDefinitions) { // not [].map() because iterating obj {}
+				var definition = featureDefinitions[name];
+				var feature = factoryResolver.resolve(definition)
+					.create(definition, appDefinition);
+				
 				features.push(feature);
 			}
 			return features;
 		}
 		
-		function createFeature(definition, p1, p2){
-			return featureResolver.resolve(definition).create(definition, p1, p2);
+		function createFileDefinitions(features){
+			var featuresFileDefinitions = [];
+			features.forEach(function(feature){
+				featuresFileDefinitions = featuresFileDefinitions.concat(feature.fileDefinitions);
+			});
+			return featuresFileDefinitions;
 		}
-		
-		function createFeatureFiles(features){
-			var featuresFiles = [];
-			for (var f in features) // not features.map() because [].concat([])
-				featuresFiles = featuresFiles.concat(features[f].createFiles());
-			return featuresFiles;
+				
+		function renderFiles(fileDefinitions){
+			return fileDefinitions.map(function(fileDefinition){
+				var renderer = rendererResolver.resolve(fileDefinition);
+				fileDefinition.content = renderer.render(fileDefinition.feature); 
+				return fileDefinition;
+			});
 		}
 		
 		function writeFile(file) {
 			var path = (file.path ? file.path + '/' : '');
 			fileWriter.write('bin/' + path, file.name, file.content);
+		}
+		
+		function copySeed(){
+			fileWriter.copyFolder('seed', 'bin');
 		}
 		
 		return dis;

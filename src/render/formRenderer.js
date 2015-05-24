@@ -1,1 +1,2 @@
-// TODO: formRenderer for controls and layoutRenderer for... layout
+define(['src/engines/kendo/kendoRenderer'], 
+	function (renderer){ return renderer; });

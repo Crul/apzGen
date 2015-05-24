@@ -1,4 +1,2 @@
-define(['src/render/html/bootstrap/bootstrapRenderer'], 
-	function (renderer){
-		return renderer;
-	});
+define(['src/engines/bootstrap/bootstrapRenderer'], 
+	function (renderer){ return renderer; });

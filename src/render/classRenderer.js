@@ -1,4 +1,2 @@
-define(['src/render/js/angularjs/ctrlRenderer'], 
-	function (renderer){
-		return renderer;
-	});
+define(['src/engines/angularjs/render/class/ctrlRenderer'], 
+	function (renderer){ return renderer; });

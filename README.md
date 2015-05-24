@@ -11,7 +11,7 @@ For now, only foo angularjs+bootstrap+(soon)kendoui arquitecture.
 - apzGen generates the application files from definition:
   - app properties: title, thir party libs dependencies
   - models: entities, fields and their configuration
-  - controllers: based on seed base classes
+  - controllers: based on seed initializer classes (should be better inheritance)
   - (coming soon) views
   - particular implementation
 
@@ -40,7 +40,7 @@ define([], function(){
 	
 	appDefinition.features = {
 		menu: true,
-		tenant: { base: 'iud', model: model.tenant }
+		tenant: { factory: 'iud', model: model.tenant }
 	};
 	
 	appDefinition.angularjs = {
