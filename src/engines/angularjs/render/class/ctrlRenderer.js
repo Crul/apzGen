@@ -2,7 +2,7 @@ define(['src/engines/js/jsFunctionRenderer'],
 	function (jsFunctionRenderer) {
 		var dis = require('util')._extend({}, jsFunctionRenderer);
 		dis.render = render; 
-		dis.renderIntialization = renderIntialization;
+		dis.renderInitialization = renderInitialization;
 		dis.renderModelInitializacion = renderModelInitializacion;
 		
 		function render(name, body, dependencies){
@@ -10,7 +10,7 @@ define(['src/engines/js/jsFunctionRenderer'],
 			return jsFunctionRenderer.render(name, body, dependencies);
 		}
 		
-		function renderIntialization(name, ctrlInitializer, dependencies){
+		function renderInitialization(name, ctrlInitializer, dependencies){
 			dependencies = [ ctrlInitializer ].concat(dependencies || []);
 			var functionBody = renderCtrlInitialization(ctrlInitializer);
 			return render(name, functionBody, dependencies);

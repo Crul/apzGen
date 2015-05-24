@@ -10,13 +10,13 @@ define([], function(){
 	};
 	
 	appDefinition.angularjs = {
-		factories: [
+		factories: [ // TODO path.readAllFiles('seedwork', [ 'services', 'controllers' ]);
 			'seedwork/services/context.js',
 			'seedwork/controllers/baseCtrlInitializer.js',
 			'seedwork/controllers/listCtrlInitializer.js',
 			'seedwork/controllers/iudCtrlInitializer.js'
 		]
-		// TODO:, directives: []
+		// TODO:, directives: path.readAllFiles('directives');
 	};
 	
 	appDefinition.features = {

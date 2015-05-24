@@ -3,7 +3,7 @@ define(['src/engines/angularjs/render/class/ctrlRenderer'],
 		var dis = {};
 		dis.render = render;
 		function render(definition){
-			return ctrlRenderer.render(definition.name + 'List', 'listCtrlInitializer');
+			return ctrlRenderer.renderInitialization(definition.name + 'List', 'listCtrlInitializer');
 		}
 		return dis;
 		
