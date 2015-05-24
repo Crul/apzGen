@@ -39,7 +39,7 @@ define([],
 		function resolveJsLib(lib){
 			switch(lib.toLowerCase()){
 				case 'jquery':
-					return cdn.jquery;					
+					return cdn.jquery;
 				case 'angularjs':
 					return cdn.angular + 'angular.min.js';
 				case 'angularjs.route':

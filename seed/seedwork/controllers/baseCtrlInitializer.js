@@ -1,4 +1,4 @@
-function baseCrlInitializer(context){
+function baseCtrlInitializer(context){
 	var dis = {};
 	dis.init = init;
 

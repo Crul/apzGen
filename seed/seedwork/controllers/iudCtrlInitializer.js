@@ -1,10 +1,10 @@
-function iudCtrlInitializer(baseCrlInitializer, context){
+function iudCtrlInitializer(baseCtrlInitializer, context){
 	var dis = {};
 	dis.init = init;
 
 	function init($scope, config){
 		config = config || {};
-		baseCrlInitializer.init($scope, config);
+		baseCtrlInitializer.init($scope, config);
 		
 		$scope.canSave = canSave;
 		$scope.save = save;

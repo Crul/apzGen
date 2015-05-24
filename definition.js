@@ -6,6 +6,8 @@ define([], function(){
 	
 	appDefinition.angularjs = {
 		factories: [
+			'seedwork/services/context.js',
+			'seedwork/controllers/baseCtrlInitializer.js',
 			'seedwork/controllers/listCtrlInitializer.js',
 			'seedwork/controllers/iudCtrlInitializer.js'
 		]
