@@ -5,7 +5,7 @@ define(['src/system/logger'], function (logger) {
 	function create(definition, app) {
 		if (!app.features.dataservice){
 			logger.error('iudFactory.create: REQUIRED FEATURE NOT FOUND: dataservice' 
-				+ '\nPlease define a "dataservice" feature'); // TODO logErrorService
+				+ '\nPlease define a "dataservice" feature');
 			return;
 		}			
 		

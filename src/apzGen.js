@@ -4,9 +4,10 @@ define(
 		'src/apzFactory', 
 		'src/apzFileFactory', 
 		'src/apzRenderer',
-		'src/system/fsService'
+		'src/system/fsService',
+		'src/system/logger'
 	], 
-	function (definition, apzFactory, apzFileFactory, apzRenderer, fsService){
+	function (definition, apzFactory, apzFileFactory, apzRenderer, fsService, logger){
 		var dis = {};
 		dis.generate = generate;
 		
@@ -17,7 +18,9 @@ define(
 			// app generation first because we don't want to delete bin folder if it fails
 			fsService.clearFolder('bin');
 			fsService.copyFolder('seed', 'bin');
-			renderedFiles.forEach(fsService.writeFile);
+			fsService.writeFiles(renderedFiles);
+			
+			logger.log('\n\tapz generated!');
 		}
 	
 		return dis;

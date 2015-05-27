@@ -23,7 +23,7 @@ define([
 					var filePath = resolvedInfo.filePath;
 
 					if (isValidType(filePath, fileType)) {
-						logger.debug(elementType + ' factory resolved:\n\t> ' + filePath);
+						logger.debug('resolved: ' + filePath);
 						return file;
 					}
 

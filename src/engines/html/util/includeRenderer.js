@@ -1,6 +1,5 @@
 define(['src/engines/html/htmlRenderer'], 
 	function (htmlRenderer){
-		var path = require('path');
 		var dis = require('util')._extend({}, htmlRenderer);
 		dis.renderCssIncludes = renderCssIncludes;
 		dis.renderJsIncludes = renderJsIncludes;

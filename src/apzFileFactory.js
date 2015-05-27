@@ -1,11 +1,17 @@
-define(['src/system/fsService', 'src/apzContext'],
-	function (fsService, apzContext) {
+define(
+	[
+		'src/system/logger',
+		'src/system/fsService',
+		'src/apzContext'
+	],
+	function (logger, fsService, apzContext) {
 		var path = require('path');
-		
+
 		var dis = {};
 		dis.create = create;
 
 		function create(app) {
+			logger.log('creating apzFiles ...');
 			app.apzFiles = createElementApzFiles(app);
 			var apzFiles = app.apzFiles.slice(0);
 			app.features.forEach(function (feature) {
@@ -28,7 +34,7 @@ define(['src/system/fsService', 'src/apzContext'],
 			fileType = fileType || getFileTypeByExtension(fileName);
 
 			if (filePath === undefined) filePath = fileName;
-			
+
 			if (fileName.indexOf('.') < 0)
 				fileName += '.' + apzContext.fileExtensions[fileType];
 
@@ -41,6 +47,7 @@ define(['src/system/fsService', 'src/apzContext'],
 				renderer: renderer || feature.factory
 			};
 
+			logger.debug('created: ' + apzFile.fullPath);
 			return apzFile;
 		}
 

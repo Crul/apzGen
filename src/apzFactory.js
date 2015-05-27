@@ -12,6 +12,7 @@ define(
 		var defaultEngine = 'angularjs';
 
 		function create(appDefinition) {
+			logger.log('creating apz ...');
 			initApp(appDefinition);
 			var features = createFeatures(appDefinition);
 			var app = createFeature(appDefinition, features);
@@ -40,17 +41,18 @@ define(
 			for (var featureName in featureDefinitions) { // not [].map() because iterating {}
 				featureDefinition = featureDefinitions[featureName];
 				var feature = createFeature(featureDefinition, appDefinition);
-				if (feature)
-					features.push(feature || {});
-				else 
-					logger.error('FEATURE FACTORY NOT FOUND:\ndefinition: ' + JSON.stringify(featureDefinition))
+				features.push(feature);
 			}
 			return features;
 		}
 
 		function createFeature(definition, param) {
 			var factory = factoryResolver.resolve(definition);
-			if (factory) return factory.create(definition, param);
+			if (!factory) return {}; // defensive
+			var feature = factory.create(definition, param) || {};
+			if (feature) logger.debug('created: ' + feature.featureName);
+			else logger.error('FEATURE FACTORY RETURNED UNDEFINED:\ndefinition: ' + JSON.stringify(definition));
+			return feature;
 		}
 
 		return dis;

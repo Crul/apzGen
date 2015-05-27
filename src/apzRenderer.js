@@ -4,6 +4,7 @@ define(['src/system/logger', 'src/rendererResolver'],
 		dis.render = render;
 
 		function render(apzFiles, app) {
+			logger.log('rendering apz ...');
 			return apzFiles.map(function (apzFile) {
 				return renderApzFile(apzFile, app);
 			});

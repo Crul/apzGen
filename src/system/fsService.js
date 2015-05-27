@@ -11,7 +11,7 @@ define(['src/system/logger'], function (logger) {
 	dis.getFileInfo = getFileInfo;
 	dis.getNameNoExtension = getNameNoExtension;
 	dis.getFileExtension = getFileExtension;
-	dis.writeFile = writeFile;
+	dis.writeFiles = writeFiles;
 	dis.copyFolder = copyFolder;
 	dis.clearFolder = clearFolder;
 	dis.concatPath = concatPath;
@@ -50,6 +50,11 @@ define(['src/system/logger'], function (logger) {
 		var fileName = getFirstOrEmpty(fullPath, fileInfoPatterns.fileName) || fullPath;
 		return getFirstOrEmpty(fileName, fileInfoPatterns.extension);
 	}
+	
+	function writeFiles(apzFiles){		
+		logger.log('writting apzFiles ...');
+		apzFiles.forEach(writeFile);
+	}
 
 	function writeFile(apzFile) {
 		var filePath = apzFile.path;
@@ -64,25 +69,28 @@ define(['src/system/logger'], function (logger) {
 		logger.debug('writen: ' + filePath);
 	}
 
-	function copyFolder(src, dest) {
-		copyRecursiveSync(src, dest);
+	function copyFolder(src, target) {
+		logger.log('copying "'+ src + '" to "'+ target + '" ...');
+		copyRecursiveSync(src, target);
 	}
 
-	function copyRecursiveSync(src, dest) {
+	function copyRecursiveSync(src, target) {
 		var exists = fs.existsSync(src);
 		var stats = exists && fs.statSync(src);
 		var isDirectory = exists && stats.isDirectory();
 		if (!isDirectory) {
-			fs.createReadStream(src).pipe(fs.createWriteStream(dest));
+			fs.createReadStream(src).pipe(fs.createWriteStream(target));
 			return;
 		}
-		if (!fs.existsSync(dest)) fs.mkdir(dest);
+		if (!fs.existsSync(target)) fs.mkdir(target);
 		fs.readdirSync(src).forEach(function (childItemName) {
-			copyRecursiveSync(path.join(src, childItemName), path.join(dest, childItemName));
+			copyRecursiveSync(path.join(src, childItemName), path.join(target, childItemName));
 		});
+		logger.debug('copied: ' + src + ', into: ' + target);
 	};
 
 	function clearFolder(folder) {
+		logger.log('clearing bin ...');
 		if (fs.existsSync(folder)) removeFolder(folder);
 		fs.mkdirSync(folder);
 	}
@@ -104,6 +112,7 @@ define(['src/system/logger'], function (logger) {
 			}
 		}
 		fs.rmdirSync(folder);
+		logger.debug('removed: ' + folder);
 	}
 
 	function concatPath() {
