@@ -5,22 +5,13 @@ define(['src/system/fsService'], function (fsService) {
 	function createRoutes(features) {
 		var routes = [];
 		features.forEach(function (feature) {
-			routes = routes.concat(createFeatureRoutes(feature));
+			routes = routes.concat(feature.routes || []);
 		});
-		routes.forEach(function (route) {
-			if (!route.path.match(fsService.pathPatterns.starsWithSlash))
+		return routes.map(function (route) {
+			if (!route.path.match(fsService.pathPatterns.startsWithSlash))
 				route.path = '/' + route.path;
+			return route;
 		});
-		return routes;
-	}
-
-	function createFeatureRoutes(feature) {
-		var featureName = feature.featureName;
-		return feature.routes || [{
-			path: featureName,
-			template: featureName + '/' + featureName, // TODO access routes by properties
-			controller: featureName
-		}];
 	}
 
 	return dis;

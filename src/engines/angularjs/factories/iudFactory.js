@@ -1,8 +1,14 @@
-define([], function () {
+define(['src/system/logger'], function (logger) {
 	var dis = {};
 	dis.create = create;
 
-	function create(definition) {
+	function create(definition, app) {
+		if (!app.features.dataservice){
+			logger.error('iudFactory.create: REQUIRED FEATURE NOT FOUND: dataservice' 
+				+ '\nPlease define a "dataservice" feature'); // TODO logErrorService
+			return;
+		}			
+		
 		var iud = require('util')._extend({}, definition);
 		
 		initialize(iud);
@@ -28,6 +34,7 @@ define([], function () {
 
 	function getRoutes(iud) {
 		var featureName = iud.featureName;
+		// TODO: angularjsRouteFactory
 		return [{ // TODO access routes by properties
 			path: featureName + '/list',
 			template: featureName + '/' + featureName + '-list',

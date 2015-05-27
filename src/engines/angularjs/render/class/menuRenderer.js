@@ -23,18 +23,17 @@ define(['src/render/classRenderer'],
 			var currentFeature; // accesible in exclude()
 			for (var f in features) { // not [].map() because iterating {}
 				currentFeature = features[f];
-				options = options.filter(exclude).concat(createFromFeature(currentFeature));
+				options = options.concat(createFromFeature(currentFeature).filter(exclude));
 			}
 			return options;
 
 			function exclude(option) { // inside createOptions to get currentFeatrue accesible
-				return menu.excludeMenuOptions.indexOf(currentFeature.featureName) >= 0;
+				return menu.excludeMenuOptions.indexOf(currentFeature.featureName) < 0;
 			}
 		}
 
 		function createFromFeature(feature) {
-			if (feature.menuOptions) return feature.menuOptions;
-			return [{ path: feature.featureName, optionName: feature.featureName }];
+			return feature.menuOptions || [];
 		}
 
 		return dis;

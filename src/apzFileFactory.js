@@ -15,7 +15,7 @@ define(['src/system/fsService', 'src/apzContext'],
 		}
 
 		function createElementApzFiles(element) {
-			return element.apzFiles.map(function (apzFile) {
+			return (element.apzFiles || []).map(function (apzFile) {
 				return createApzFile(apzFile.feature || element,
 					apzFile.path,
 					apzFile.fileName,

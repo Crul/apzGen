@@ -2,8 +2,8 @@ define(['src/system/logger'], function (logger) {
 	var fs = require('fs');
 	var path = require('path');
 	var pathPatterns = {
-		//endsWithSlash: /.*\/$/,
-		statrsWithSlash: /^\//
+		lastSlash: /\/$/,
+		startsWithSlash: /^\\/
 	};
 	
 	var dis = {};
@@ -33,7 +33,7 @@ define(['src/system/logger'], function (logger) {
 		var fileName = getFirstOrEmpty(fullPath, fileInfoPatterns.fileName) || fullPath;
 		var extension = getFirstOrEmpty(fileName, fileInfoPatterns.extension);
 		var nameNoExtension = getFirstOrEmpty(fileName, fileInfoPatterns.nameNoExtension);
-		return { // TODO apzFile ?
+		return {
 			path: path,
 			fileName: fileName,
 			extension: extension,
@@ -57,11 +57,11 @@ define(['src/system/logger'], function (logger) {
 		var content = apzFile.content;
 
 		filePath = (filePath || '');
-		if (filePath.match(pathPatterns.statrsWithSlash))filePath = filePath.substring(1);
 		filePath = path.join(outputFolder, filePath);
 		if (!fs.existsSync(filePath)) fs.mkdirSync(filePath);
-		fs.writeFileSync(filePath + fileName, content);
-		logger.log('writen: ' + filePath + fileName);
+		filePath = path.join(filePath, fileName);
+		fs.writeFileSync(filePath, content);
+		logger.debug('writen: ' + filePath);
 	}
 
 	function copyFolder(src, dest) {
@@ -109,7 +109,15 @@ define(['src/system/logger'], function (logger) {
 	function concatPath() {
 		var pathArray = [];
 		for (var i = 0; i < arguments.length; i++) pathArray.push(arguments[i]);
-		return pathArray.filter(function (path) { return !!path; }).join('/');
+		return pathArray.filter(isNotNull).map(removeEndingSlash).join('/');
+	}
+	
+	function isNotNull(path){
+		return !!path;
+	}
+	
+	function removeEndingSlash(path){
+		return path.replace(pathPatterns.lastSlash, '');
 	}
 
 	function getAllDeeps(path) {

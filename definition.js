@@ -6,7 +6,7 @@ define([], function(){
 	var appDefinition = { 
 		title: 'apzGenerated',
 		libs: ['bootstrap'],
-		engines: [ 'angularJs' ]
+		engines: [ 'angularJs', 'localStorage' ]
 	};
 	
 	appDefinition.angularjs = {
@@ -20,11 +20,10 @@ define([], function(){
 	};
 	
 	appDefinition.features = {
+		dataservice: 'localStorage',
 		menu: true,
 		tenant: { factory: 'iud', model: model.tenant }
 	};
-	
-	// TODO define data access
 	
 	// TODO define execution strategies [ direct, command ]
 	

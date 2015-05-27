@@ -1,22 +1,29 @@
-define(['src/system/logger'], function(logger){
+define(['src/system/logger'], function (logger) {
 	var dis = {};
-	dis.init = init;
-	
-	function init(definition, defaultName){
+	dis.create = create;
+
+	function create(definition, featureName) {
 		definition = definition || {};
-		
-		if (typeof(definition) === 'string')
-			definition =  { featureName: definition };
-		
-		if (typeof(definition) === 'boolean')
-			definition =  { featureName: defaultName };
-		
-		definition.featureName = definition.featureName || defaultName;
-		if (typeof(definition.featureName) !== 'string') 
-			logger.log('definitionFactory.init invalid featureName: ' + definition.featureName);
-			
-		return definition; 
+		definition = createFromBasicTypes(definition, featureName);
+
+		definition.definitionFeatureName = featureName;
+		definition.featureName = definition.featureName || featureName;
+		if (typeof (definition.featureName) !== 'string')
+			logger.error('definitionFactory.init invalid featureName: ' + definition.featureName);
+
+		definition.apzFiles = [];
+		return definition;
 	}
-	
+
+	function createFromBasicTypes(definition, featureName) { // multiple returns
+		var typeOfDefinition = typeof (definition);
+		if (typeOfDefinition === 'string')
+			return { featureName: definition };
+		else if (typeOfDefinition === 'boolean')
+			return { featureName: featureName };
+
+		return definition;
+	}
+
 	return dis;
 });

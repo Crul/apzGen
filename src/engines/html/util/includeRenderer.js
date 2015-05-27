@@ -37,7 +37,10 @@ define(['src/engines/html/htmlRenderer'],
 			if (config.fileRegex && !file.fileName.match(config.fileRegex))
 				return '';
 				
-			var filePath = path.join(file.path || '', file.fileName);
+			var filePath = file.fileName;
+			if (file.fileName.indexOf('http') !== 0 && file.path)
+				filePath = file.path + file.fileName;
+			
 			var includeTemplate = config.includeTemplate;
 			return includeTemplate.replace(/{filePath}/, filePath);
 		}

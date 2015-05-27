@@ -12,7 +12,7 @@ define(['src/system/logger', 'src/rendererResolver'],
 		function renderApzFile(apzFile, app) {
 			var renderer = rendererResolver.resolve(apzFile);
 			apzFile.content = renderer.render(apzFile.feature, app);
-			logger.log('rendered: ' + apzFile.fullPath);
+			logger.debug('rendered: ' + apzFile.fullPath);
 			return apzFile;
 		}
 
