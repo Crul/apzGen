@@ -2,8 +2,8 @@ define(['src/engines/angularjs/render/class/ctrlRenderer'],
 	function (ctrlRenderer){
 		var dis = {};
 		dis.render = render;
-		function render(definition){
-			return ctrlRenderer.renderInitialization(definition.name, 'iudCtrlInitializer');
+		function render(feature){
+			return ctrlRenderer.renderInitialization(feature.featureName, 'iudCtrlInitializer');
 		}
 		return dis;
 		

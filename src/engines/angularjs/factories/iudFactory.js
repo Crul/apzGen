@@ -1,58 +1,59 @@
-define(['src/fileDefinitionFactory'], 
-	function (fileDefinitionFactory){
-		var dis = {};
-		dis.create = create;
-		dis.createRoutes = createRoutes; // TODO ¿ move from factory to feature ?
-		dis.createControllers = createControllers; // TODO ¿ move from factory to feature ?
-		dis.createMenuOptions = createMenuOptions; // TODO ¿ move from factory to feature ?
+define([], function () {
+	var dis = {};
+	dis.create = create;
+
+	function create(definition) {
+		var iud = require('util')._extend({}, definition);
 		
-		function create(definition){
-			var iud = require('util')._extend({}, definition);			
-			initialize(iud);
-			
-			var fileDefintionTemplate = { path: iud.name };
-			var fileDefinitions = [
-				{ fileType: 'class', name: iud.name },
-				{ fileType: 'view', name: iud.name },
-				{ fileType: 'class', renderer: 'list', name: iud.name + 'List' },
-				{ fileType: 'view', renderer: 'list', name: iud.name + '-list' }
-			];
-			iud.fileDefinitions = fileDefinitionFactory.create(iud, fileDefinitions, fileDefintionTemplate);
-			return iud;
-		}
-			
-		function createRoutes(definition){
-			var name = definition.name;
-			return [{
-					path: '/' + name + '/list',
-					template: name + '/' + name + '-list',
-					controller: name + 'List'
-				},{
-					path: '/' + name + '/edit/:id',
-					template: name + '/' + name,
-					controller: name
-				}];
-		}
-		
-		function createControllers(feature){
-			var name = feature.name;
-			return [ name, name + 'List' ];
-		}
-		
-		function createMenuOptions(feature){
-			return [
-				{ path: feature.name + '/list', name: feature.name + ' list' },
-				{ path: feature.name + '/edit/new', name: 'new ' + feature.name  }
-			];
-		}
-		
-		function initialize(definition){
-			definition.model = definition.model || []; 
-			if (Array.isArray(definition.model))
-				definition.model = {
-					fields: definition.model
-				};
-		}
-		
-		return dis;
-	});
+		initialize(iud);
+		iud.routes = getRoutes(iud);
+		iud.controllers = getControllers(iud);
+		iud.menuOptions = getMenuOptions(iud);
+
+		var path = iud.featureName;
+		iud.apzFiles = [
+			{ path: path, fileType: 'class', fileName: iud.featureName },
+			{ path: path, fileType: 'view', fileName: iud.featureName },
+			{ path: path, fileType: 'class', renderer: 'list', fileName: iud.featureName + 'List' },
+			{ path: path, fileType: 'view', renderer: 'list', fileName: iud.featureName + '-list' }
+		];
+		return iud;
+	}
+	
+	function initialize(iud) {
+		iud.model = iud.model || [];
+		if (Array.isArray(iud.model))
+			iud.model = { fields: iud.model };
+	}
+
+	function getRoutes(iud) {
+		var featureName = iud.featureName;
+		return [{ // TODO access routes by properties
+			path: featureName + '/list',
+			template: featureName + '/' + featureName + '-list',
+			controller: featureName + 'List'
+		}, {
+				path: featureName + '/edit/:id',
+				template: featureName + '/' + featureName,
+				controller: featureName
+			}];
+	}
+
+	function getControllers(iud) {
+		var featureName = iud.featureName;
+		return [
+			featureName + '/' + featureName + '.js',
+			featureName + '/' + featureName + 'List' + '.js'
+		];
+	}
+
+	function getMenuOptions(iud) {
+		var featureName = iud.featureName;
+		return [
+			{ path: featureName + '/list', optionName: featureName + ' list' },
+			{ path: featureName + '/edit/new', optionName: 'new ' + featureName }
+		];
+	}
+
+	return dis;
+});

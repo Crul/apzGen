@@ -1,9 +1,9 @@
 define([
 		'src/system/logger', 
-		'src/system/appContext', 
-		'src/system/path'
+		'src/system/fsService',
+		'src/apzContext' 
 	], 
-	function (logger, appContext, path){
+	function (logger, fsService, apzContext){
 		var dis = {};
 		dis.createResolver = createResolver;
 		
@@ -14,43 +14,46 @@ define([
 			
 			function resolve(definition, baseElement, fileType) {
 				var paths = getPaths(fileType);
-				var names = [ baseElement, definition, definition.name, fileType ]
-					.filter(function(name){ return (typeof(name) === 'string'); });
+				var fileNames = [ baseElement, definition, definition.featureName || definition.fileName, fileType ]
+					.filter(function(fileName){ return (typeof(fileName) === 'string'); });
 				
-				var file = resolveFile(paths, names);
+				var file = resolveFile(paths, fileNames);
 				if (file) return file;
 				
 				logger.log('\n' 
 					+ 'error! resolverFactory: factory not found: ' + '\n' 
-					+ '\t' + 'names checked = "' + names.join('", "') + '"' + '\n' 
+					+ '\t' + 'file names checked = "' + fileNames.join('", "') + '"' + '\n' 
 					+ '\t' + 'paths checked = "' + paths.join('", "') + '"' + '\n');
 			}
 			
 			function getPaths(fileType) {
-				var engine = appContext.engine;
-				var fullEnginePath = path.concatPath(enginesPath, engine, elementType, fileType);
-				var fullDefaultPath = path.concatPath(elementType, fileType);
-				return path.getAllDeeps(fullEnginePath)
-					.concat(path.getAllDeeps(fullDefaultPath));
+				var engines = apzContext.engines;
+				var enginePaths = [];
+				engines.forEach(function(engine){
+					var fullEnginePath = fsService.concatPath(enginesPath, engine, elementType, fileType);
+					enginePaths = enginePaths.concat(fsService.getAllDeeps(fullEnginePath));
+				});
+				var fullDefaultPath = fsService.concatPath(elementType, fileType);
+				return enginePaths.concat(fsService.getAllDeeps(fullDefaultPath));
 			}
 			
-			function resolveFile(paths, names){
+			function resolveFile(paths, fileNames){
 				for (var p in paths){ // not [].forEach() because return
-					var file = resolveInPath(names, paths[p]); 
+					var file = resolveInPath(fileNames, paths[p]); 
 					if (file) return file; 
 				}
 			}
 			
-			function resolveInPath(names, relativePath) {
-				for (var n in names) { // not [].forEach() because return
-					var file = requireFile(relativePath, names[n]);
+			function resolveInPath(fileNames, relativePath) {
+				for (var n in fileNames) { // not [].forEach() because return
+					var file = requireFile(relativePath, fileNames[n]);
 					if (file) return file;
 				}
 			}
 			
-			function requireFile(relativePath, name){
-				if (!(name && typeof(name) === 'string')) return;
-				var fullPath = path.concatPath(rootPath, relativePath) + name + filePattern;
+			function requireFile(relativePath, fileName){
+				if (!(fileName && typeof(fileName) === 'string')) return;
+				var fullPath = fsService.concatPath(rootPath, relativePath) + fileName + filePattern;
 				if (fs.existsSync(fullPath)) {
 					logger.log('resolved: ' + fullPath);
 					return require(fullPath);

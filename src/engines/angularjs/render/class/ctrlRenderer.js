@@ -5,15 +5,15 @@ define(['src/engines/js/jsFunctionRenderer'],
 		dis.renderInitialization = renderInitialization;
 		dis.renderModelInitializacion = renderModelInitializacion;
 		
-		function render(name, body, dependencies){
+		function render(controllerName, body, dependencies){
 			dependencies = [ '$scope' ].concat(dependencies || []);
-			return jsFunctionRenderer.render(name, body, dependencies);
+			return jsFunctionRenderer.render(controllerName, body, dependencies);
 		}
 		
-		function renderInitialization(name, ctrlInitializer, dependencies){
+		function renderInitialization(controllerName, ctrlInitializer, dependencies){
 			dependencies = [ ctrlInitializer ].concat(dependencies || []);
 			var functionBody = renderCtrlInitialization(ctrlInitializer);
-			return render(name, functionBody, dependencies);
+			return render(controllerName, functionBody, dependencies);
 		}
 		
 		function renderCtrlInitialization(ctrlInitializer){

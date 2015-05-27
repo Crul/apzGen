@@ -4,13 +4,13 @@ define(['src/engines/js/jsFileRenderer'],
 		dis.render = render;; 
 			
 		var template = '' + 
-			'function /*{name}*/(/*{parameters}*/){\n' +
+			'function /*{functionName}*/(/*{parameters}*/){\n' +
 				'//{body}\n' +
 			'}';
 		
-		function render(name, body, parameters){
+		function render(functionName, body, parameters){
 			var data = { 
-				name: name,
+				functionName: functionName,
 				body: body,
 				parameters: (parameters || []).join(', ')
 			};

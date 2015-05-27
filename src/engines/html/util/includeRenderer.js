@@ -1,14 +1,17 @@
 define(['src/engines/html/htmlRenderer'], 
 	function (htmlRenderer){
+		var path = require('path');
 		var dis = require('util')._extend({}, htmlRenderer);
 		dis.renderCssIncludes = renderCssIncludes;
 		dis.renderJsIncludes = renderJsIncludes;
 	
 		var cssConfig = {
+			fileExtension: 'css',
 			fileRegex: /\.css$/,
 			includeTemplate: dis.renderTag('link', '', 'rel="stylesheet" type="text/css" href="{filePath}"')
 		};
 		var jsConfig = {
+			fileExtension: 'js',
 			fileRegex: /\.js$/,
 			includeTemplate: dis.renderTag('script', ' ', 'src="{filePath}"')
 		};
@@ -28,12 +31,14 @@ define(['src/engines/html/htmlRenderer'],
 		}
 		
 		function renderInclude(config, file){
-			if (config.fileRegex && !file.name.match(config.fileRegex))
+			if (typeof(file) === 'string')
+				file = { fileName: file };
+				
+			if (config.fileRegex && !file.fileName.match(config.fileRegex))
 				return '';
-			
+				
+			var filePath = path.join(file.path || '', file.fileName);
 			var includeTemplate = config.includeTemplate;
-			var path = (file.path ? file.path + '/' : '');
-			var filePath = path + file.name;
 			return includeTemplate.replace(/{filePath}/, filePath);
 		}
 		

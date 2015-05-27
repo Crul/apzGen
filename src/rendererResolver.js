@@ -4,10 +4,10 @@ define(['src/system/resolverFactory'],
 		dis.resolve = resolve;
 		
 		var rendererResolver = resolverFactory.createResolver('render', 'Renderer.js');
-		function resolve(fileDefinition){
-			var feature = fileDefinition.feature;
-			var renderer = fileDefinition.renderer;
-			var fileType = fileDefinition.fileType;
+		function resolve(apzFile){
+			var feature = apzFile.feature;
+			var renderer = apzFile.renderer;
+			var fileType = apzFile.fileType;
 			return rendererResolver.resolve(feature, renderer, fileType);
 		}
 		

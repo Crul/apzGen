@@ -1,6 +1,7 @@
 define(['src/system/codeRenderer'],
 	function (codeRenderer){
 		var dis = require('util')._extend({}, codeRenderer);
+		dis.fileExtension = 'js';
 		dis.render = render;
 				
 		var variablePatternSeed = '\\/\\/\\{namePattern\\}|\\/\\*\\{namePattern\\}\\*\\/';

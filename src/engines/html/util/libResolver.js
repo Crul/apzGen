@@ -21,7 +21,7 @@ define([], function (){
 		var libFiles = [];
 		for (var l in libs) {
 			var libFile = resolveLibFn(libs[l]);
-			if (libFile) libFiles.push({ name: libFile });
+			if (libFile) libFiles.push({ fileName: libFile });
 		}
 		return libFiles;
 	}

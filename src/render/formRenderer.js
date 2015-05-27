@@ -1,2 +1,2 @@
 define(['src/engines/kendo/kendoRenderer'], 
-	function (renderer){ return renderer; });
+	function (renderer) { return renderer; });

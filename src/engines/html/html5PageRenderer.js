@@ -21,23 +21,18 @@ define([
 		}
 		
 		function renderHead(data){
-			var head = data.head || '';
-			var cssFiles = libResolver
-				.resolveCssFiles(data.libs)
-				.concat(data.files);
-			
-			head += includeRenderer.renderCssIncludes(cssFiles);
-			return head;
+			return renderPageElement(data, 'head', 
+				libResolver.resolveCssFiles, includeRenderer.renderCssIncludes);
 		}
 		
 		function renderBody(data){
-			var body = data.body || '';
-			var jsFiles = libResolver
-				.resolveJsFiles(data.libs)
-				.concat(data.files);
-				
-			body += includeRenderer.renderJsIncludes(jsFiles);
-			return body;
+			return renderPageElement(data, 'body', 
+				libResolver.resolveJsFiles, includeRenderer.renderJsIncludes);
+		}
+		
+		function renderPageElement(data, element, resolveFilesFn, renderIncludesFn){
+			var jsFiles = resolveFilesFn(data.libs).concat(data.files);
+			return (data[element] || '') + renderIncludesFn(jsFiles);
 		}
 			
 		return dis;

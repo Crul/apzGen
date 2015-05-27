@@ -4,11 +4,11 @@ define(['src/render/viewRenderer'],
 		dis.render = render;
 		
 		function render(feature){
-			var name = feature.name;
+			var featureName = feature.featureName;
 			var view = viewRenderer.renderLink('back', '#/'); // TODO back > renderBackLink() { history.back }
-			view += viewRenderer.renderLink('new ' + name, '#/' + name + '/edit/new');
-			view += viewRenderer.renderTitle(name);
-			view += viewRenderer.renderTable(name, feature.model);
+			view += viewRenderer.renderLink('new ' + featureName, '#/' + featureName + '/edit/new'); // TODO access routes by properties
+			view += viewRenderer.renderTitle(featureName);
+			view += viewRenderer.renderTable(featureName, feature.model);
 			return view;
 		}
 		

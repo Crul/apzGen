@@ -1,5 +1,5 @@
 define([], function(){
-	var dis = this;
+	var dis = {};
 	dis.log = log;
 	
 	function log(messageOrConfig){

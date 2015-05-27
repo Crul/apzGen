@@ -1,12 +1,12 @@
 define([], function(){	
 	var model = {
-		tenant: ['name']	
+		tenant: ['name','description','contact']	
 	};
 	
 	var appDefinition = { 
 		title: 'apzGenerated',
 		libs: ['bootstrap'],
-		engine: 'angularJs'
+		engines: [ 'angularJs' ]
 	};
 	
 	appDefinition.angularjs = {
