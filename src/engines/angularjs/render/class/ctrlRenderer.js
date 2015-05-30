@@ -1,4 +1,4 @@
-define(['src/render/js/jsFunctionRenderer'],
+define(['src/render/class/js/jsFunctionRenderer'],
 	function (jsFunctionRenderer) {
 		var dis = require('util')._extend({}, jsFunctionRenderer);
 		dis.render = render;

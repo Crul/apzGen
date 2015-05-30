@@ -1,8 +1,8 @@
 define(
 	[
 		'src/default/render/layoutRenderer',
-		'src/render/html/util/includeRenderer',
-		'src/render/html/util/libResolver'
+		'src/render/view/html/util/includeRenderer',
+		'src/render/view/html/util/libResolver'
 	],
 	function (layoutRenderer, includeRenderer, libResolver) {
 		var dis = require('util')._extend({}, layoutRenderer);

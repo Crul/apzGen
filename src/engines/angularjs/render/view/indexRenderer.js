@@ -1,4 +1,4 @@
-define(['src/render/html/html5PageRenderer'],
+define(['src/render/view/html/html5PageRenderer'],
 	function (html5PageRenderer) {
 		var dis = require('util')._extend({}, html5PageRenderer);
 		dis.render = render;

@@ -1,4 +1,4 @@
-define(['src/system/fsService', 'src/render/js/jsFileRenderer'],
+define(['src/system/fsService', 'src/render/class/js/jsFileRenderer'],
 	function (fsService, jsFileRenderer) {
 		var dis = require('util')._extend({}, jsFileRenderer);
 		dis.render = render;

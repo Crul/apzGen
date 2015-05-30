@@ -1,4 +1,4 @@
-define(['src/render/js/jsFileRenderer'],
+define(['src/render/class/js/jsFileRenderer'],
 	function (jsFileRenderer) {
 		var dis = require('util')._extend({}, jsFileRenderer);
 		dis.render = render;;

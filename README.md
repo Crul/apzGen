@@ -25,7 +25,7 @@ define([], function(){
 	
 	var appDefinition = { 
 		title: 'generatedApz',
-		libs: ['bootstrap'], // see supported libs in src/render/html/libResolver.js
+		libs: ['bootstrap'], // see supported libs in src/render/view/html/libResolver.js
 		engine: 'angularJs' // only angularJs supported, more can be added in src/engines
 	};
 	
@@ -111,13 +111,13 @@ for renderization you can use the following components:
 	- menuRenderer (in src/default/render/class and src/default/render/view): to render menu elements
 	- in src/engines/angularjs:
 		// TODO  
-	- in src/render/html:
+	- in src/render/class/js:
 		// TODO  
-	- in src/render/js:
+	- in src/render/view/html:
 		// TODO  
-	- in src/render/kendo:
+	- in src/render/view/kendo:
 		// TODO by default
-	- in src/render/bootstrap:
+	- in src/render/view/bootstrap:
 		// TODO by default
 
 you can also edit those files to change the default behaivor in renderization

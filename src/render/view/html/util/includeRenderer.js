@@ -1,4 +1,4 @@
-define(['src/render/html/htmlRenderer'],
+define(['src/render/view/html/htmlRenderer'],
 	function (htmlRenderer) {
 		var dis = require('util')._extend({}, htmlRenderer);
 		dis.renderCssIncludes = renderCssIncludes;
