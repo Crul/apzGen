@@ -7,8 +7,10 @@ define(
 	function (factoryFactory, controllersFactory, routeFactory) {
 		var dis = {};
 		dis.create = create;
+		dis.setFactories = setFactories;
 
-		var requiredLibs = ['jquery', 'angularjs', 'angularjs.route'];
+		var requiredFactories = ['seedwork/services/context.js'];
+		var requiredLibs = ['jquery', 'angularjs', 'angularjs.route', 'lib/angular-local-storage.min.js'];
 		var homeApzFiles = [
 			{ fileType: 'class', path: '', fileName: 'app' },
 			{ fileType: 'view', path: '', fileName: 'app', renderer: 'index' }
@@ -19,28 +21,38 @@ define(
 			app.featureName = app.appName || app.featureName || 'apzApp';
 			app.path = '';
 			app.angularjs = app.angularjs || {};
-			app.angularjs.dependencies = ['ngRoute'];
-			
+			app.angularjs.dependencies = ['ngRoute', 'LocalStorageModule'];
+
 			setThirdPartyLibs(app, requiredLibs);
-			
-			app.angularjs.factories = (app.angularjs.factories || [])
+
+			app.angularjs.factories = requiredFactories
+				.concat(app.angularjs.factories || [])
 				.concat(factoryFactory.createFactories(features));
-				
+
 			app.angularjs.routes = (app.angularjs.routes || [])
 				.concat(routeFactory.createRoutes(features));
-				
+
 			app.angularjs.controllers = (app.angularjs.controllers || [])
 				.concat(controllersFactory.createControllers(features));
 
 			app.apzFiles = (app.apzFiles || []).concat(homeApzFiles);
 			return app;
 		}
-		
+
 		function setThirdPartyLibs(app, requiredLibs) {
-			var libs = requiredLibs.filter(function (requiredLib) {
-				return app.libs.indexOf(requiredLib) < 0;
-			});
+			var libs = [];
+			requiredLibs.forEach(addLib);
 			app.libs = libs.concat(app.libs || []);
+			
+			function addLib(requiredLib) {
+				if (libs.indexOf(requiredLib) < 0)
+					libs.push(requiredLib);
+			}
+		}
+		
+		function setFactories(app, factories) {
+			app.angularjs = app.angularjs || {};
+			app.angularjs.factories = (app.angularjs.factories || []).concat(factories);
 		}
 
 		return dis;

@@ -4,10 +4,12 @@ define([], function () {
 
 	function createControllers(features) {
 		var controllers = [];
-		features.forEach(function (feature) { // not [].map because [].concat()
-			controllers = controllers.concat(feature.controllers || []);
-		});
+		features.forEach(concatControllers);
 		return controllers;
+		
+		function concatControllers(feature) { // not [].map because [].concat()
+			controllers = controllers.concat(feature.controllers || []);
+		}
 	}
 
 	return dis;

@@ -24,8 +24,8 @@ define([], function(){
 	};
 	
 	var appDefinition = { 
-		title: 'apzGenerated',
-		libs: ['bootstrap'], // see supported libs in src/engines/html/libResolver.js
+		title: 'generatedApz',
+		libs: ['bootstrap'], // see supported libs in src/render/html/libResolver.js
 		engine: 'angularJs' // only angularJs supported, more can be added in src/engines
 	};
 	
@@ -102,22 +102,22 @@ so, if you want to add a feature (e.g.: myNewFeature in myNewEngine) you have to
 		- returns the content of the file
 
 for renderization you can use the following components:
-	- in src/render/:
+	- in src/default/render/:
 		- appRenderer: to render default application
 		- classRenderer: to render default class application
 		- viewRenderer: ro render default view appliction. viewRenderer uses layoutRenderer to render elements
 		- layoutRenderer: to render default view elements (see file for api). layoutRenderer uses formRenderer to render form elements
 		- formRenderer: to render form elements (see file for api)
-	- menuRenderer (in src/render/class and src/render/view): to render menu elements
-	- in src/engines/html:
-		// TODO  
-	- in src/engines/js:
-		// TODO  
+	- menuRenderer (in src/default/render/class and src/default/render/view): to render menu elements
 	- in src/engines/angularjs:
 		// TODO  
-	- in src/engines/kendo:
+	- in src/render/html:
+		// TODO  
+	- in src/render/js:
+		// TODO  
+	- in src/render/kendo:
 		// TODO by default
-	- in src/engines/bootstrap:
+	- in src/render/bootstrap:
 		// TODO by default
 
 you can also edit those files to change the default behaivor in renderization

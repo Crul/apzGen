@@ -4,14 +4,18 @@ define(['src/system/fsService'], function (fsService) {
 
 	function createRoutes(features) {
 		var routes = [];
-		features.forEach(function (feature) {
+		features.forEach(concatRoutes);
+		return routes.map(addStartSlash);
+		
+		function concatRoutes(feature) {
 			routes = routes.concat(feature.routes || []);
-		});
-		return routes.map(function (route) {
+		}
+		
+		function addStartSlash(route) {
 			if (!route.path.match(fsService.pathPatterns.startsWithSlash))
 				route.path = '/' + route.path;
 			return route;
-		});
+		}
 	}
 
 	return dis;

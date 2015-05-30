@@ -1,4 +1,4 @@
-define(['src/engines/html/html5PageRenderer'],
+define(['src/render/html/html5PageRenderer'],
 	function (html5PageRenderer) {
 		var dis = require('util')._extend({}, html5PageRenderer);
 		dis.render = render;
@@ -7,8 +7,8 @@ define(['src/engines/html/html5PageRenderer'],
 			var appName = app.featureName;
 			var title = app.title || appName || 'angularjsApp';
 
-			var body = html5PageRenderer.renderTag('h1', title)
-				+ html5PageRenderer.renderTag('div', ' ', 'ng-view');
+			var body = dis.renderTag('h1', title)
+				+ dis.renderTag('div', ' ', 'ng-view');
 
 			var files = (app.angularjs.factories || [])
 				.concat(app.angularjs.controllers || [])

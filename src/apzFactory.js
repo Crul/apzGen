@@ -11,40 +11,48 @@ define(
 
 		var defaultEngine = 'angularjs';
 
-		function create(appDefinition) {
+		function create(apzDefinition) {
 			logger.log('creating apz ...');
-			initApp(appDefinition);
-			var features = createFeatures(appDefinition);
-			var app = createFeature(appDefinition, features);
-			app.features = features;
-			return app;
+			initApz(apzDefinition);
+			var features = createApzFeatures(apzDefinition);
+			var apz = createFeature(apzDefinition, features);
+			apz.features = features;
+			return apz;
 		}
 
-		function initApp(appDefinition) {
-			apzContext.engines = appDefinition.engines || [];
+		function initApz(apzDefinition) {
+			apzContext.engines = apzDefinition.engines || [];
 			if (apzContext.engines.length == 0)
-				appDefinition.engines.push(defaultEngine);
+				apzDefinition.engines.push(defaultEngine);
 
-			appDefinition = definitionFactory.create(appDefinition, 'app');
+			apzDefinition = definitionFactory.create(apzDefinition, 'app');
 		}
 
-		function createFeatures(appDefinition) {
-			var features = [];
-			var featureDefinition;
-			var featureDefinitions = appDefinition.features;
+		function createApzFeatures(apzDefinition) {
+			initFeatureDefinitions(apzDefinition);
+			return createFeatures(apzDefinition);
+		}
+		
+		function initFeatureDefinitions(apzDefinition){
+			var featureDefinitions = apzDefinition.features;
 			for (var featureName in featureDefinitions) { // not [].map() because iterating {}
-				featureDefinition = featureDefinitions[featureName];
+				var featureDefinition = featureDefinitions[featureName];
 				var clonedFeatureDefinition = require('util')._extend({}, featureDefinition);
 				featureDefinitions[featureName] = (definitionFactory.create(featureDefinition, featureName) || {});
 				featureDefinitions[featureName].definition = clonedFeatureDefinition;
 			}
+		}
+		
+		function createFeatures(apzDefinition){
+			var features = [];
+			var featureDefinitions = apzDefinition.features;
 			for (var featureName in featureDefinitions) { // not [].map() because iterating {}
-				featureDefinition = featureDefinitions[featureName];
-				var feature = createFeature(featureDefinition, appDefinition);
+				var featureDefinition = featureDefinitions[featureName];
+				var feature = createFeature(featureDefinition, apzDefinition);
 				features.push(feature);
 			}
 			return features;
-		}
+		} 
 
 		function createFeature(definition, param) {
 			var factory = factoryResolver.resolve(definition);

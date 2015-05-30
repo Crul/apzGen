@@ -1,4 +1,4 @@
-define([], function (){
+define([], function () {
 	var dis = {};
 	dis.resolveCssFiles = resolveCssFiles;
 	dis.resolveJsFiles = resolveJsFiles;
@@ -8,16 +8,16 @@ define([], function (){
 		bootstrap: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/',
 		jquery: 'http://code.jquery.com/jquery-2.1.4.min.js'
 	};
-			
-	function resolveCssFiles(libs){
+
+	function resolveCssFiles(libs) {
 		return resolveLibFiles(libs, resolveCssLib);
 	}
-	
-	function resolveJsFiles(libs){
+
+	function resolveJsFiles(libs) {
 		return resolveLibFiles(libs, resolveJsLib);
 	}
-	
-	function resolveLibFiles(libs, resolveLibFn){
+
+	function resolveLibFiles(libs, resolveLibFn) {
 		var libFiles = [];
 		for (var l in libs) {
 			var libFile = resolveLibFn(libs[l]);
@@ -25,18 +25,20 @@ define([], function (){
 		}
 		return libFiles;
 	}
-	
-	function resolveCssLib(lib){
-		switch(lib.toLowerCase()){
+
+	function resolveCssLib(lib) {
+		switch (lib.toLowerCase()) {
 			case 'bootstrap':
 				return cdn.bootstrap + 'css/bootstrap.min.css';
 			case 'kendo':
 				return ''; // TODO kendo css cdn ¿kendo-bootstrap?
+			default:
+				return lib;
 		}
 	}
-	
-	function resolveJsLib(lib){
-		switch(lib.toLowerCase()){
+
+	function resolveJsLib(lib) {
+		switch (lib.toLowerCase()) {
 			case 'jquery':
 				return cdn.jquery;
 			case 'angularjs':
@@ -46,9 +48,11 @@ define([], function (){
 			case 'bootstrap':
 				return cdn.bootstrap + 'js/bootstrap.min.js';
 			case 'kendo':
-				return ''; // TODO kendo js cdn
+				return ''; // TODO kendo js 
+			default:
+				return lib;
 		}
 	}
-	
+
 	return dis;
 });

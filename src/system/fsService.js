@@ -20,9 +20,9 @@ define(['src/system/logger'], function (logger) {
 	var outputFolder = 'bin/';
 	var fileInfoPatterns = {
 		path: /([a-zA-Z]*\/)*/i,
-		fileName: /[a-zA-Z]*\.[a-zA-Z]*/i,
+		fileName: /[a-zA-Z|-]*\.[a-zA-Z]*/i,
 		extension: /\.[a-zA-Z]*/i,
-		nameNoExtension: /[a-zA-Z]*/i
+		nameNoExtension: /[a-zA-Z|-]*/i
 	};
 	
 	function getFileInfo(fullPath) {
@@ -83,10 +83,12 @@ define(['src/system/logger'], function (logger) {
 			return;
 		}
 		if (!fs.existsSync(target)) fs.mkdir(target);
-		fs.readdirSync(src).forEach(function (childItemName) {
-			copyRecursiveSync(path.join(src, childItemName), path.join(target, childItemName));
-		});
+		fs.readdirSync(src).forEach(_copyRecursiveSync);
 		logger.debug('copied: ' + src + ', into: ' + target);
+		
+		function _copyRecursiveSync(childItemName) { // _ because naming collision
+			copyRecursiveSync(path.join(src, childItemName), path.join(target, childItemName));
+		}
 	};
 
 	function clearFolder(folder) {
@@ -131,10 +133,12 @@ define(['src/system/logger'], function (logger) {
 
 	function getAllDeeps(path) {
 		var currentDeep = '';
-		return path.split('/').map(function (token) {
+		return path.split('/').map(getCurrentPath);
+		
+		function getCurrentPath(token) {
 			currentDeep += token + '/';
 			return currentDeep;
-		});
+		}
 	}
 
 	function getFirstOrEmpty(str, pattern) {

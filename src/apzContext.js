@@ -1,7 +1,7 @@
 define(
 	[
-		'src/render/classRenderer',
-		'src/render/viewRenderer',
+		'src/default/render/classRenderer',
+		'src/default/render/viewRenderer',
 	], 
 	function (classRenderer, viewRenderer) {
 		var dis = {};

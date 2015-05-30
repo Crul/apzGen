@@ -1,31 +1,22 @@
-define([], function(){	
+define([], function () {
 	var model = {
-		tenant: ['name','description','contact']	
+		tenant: ['name', 'description', 'contact'],
+		user: ['name', 'login', 'password']
 	};
-	
-	var appDefinition = { 
-		title: 'apzGenerated',
+
+	var apzDefinition = {
+		title: 'generatedApz',
 		libs: ['bootstrap'],
-		engines: [ 'angularJs', 'localStorage' ]
+		engines: ['angularJs']
 	};
-	
-	appDefinition.angularjs = {
-		factories: [ // TODO path.readAllFiles('seedwork', [ 'services', 'controllers' ]);
-			'seedwork/services/context.js',
-			'seedwork/controllers/baseCtrlInitializer.js',
-			'seedwork/controllers/listCtrlInitializer.js',
-			'seedwork/controllers/iudCtrlInitializer.js'
-		]
-		// TODO:, directives: path.readAllFiles('directives');
-	};
-	
-	appDefinition.features = {
-		dataservice: 'localStorage',
+
+	apzDefinition.features = {
 		menu: true,
-		tenant: { factory: 'iud', model: model.tenant }
+		tenant: { factory: 'iud', model: model.tenant },
+		user: { factory: 'iud', model: model.user }
 	};
 	
 	// TODO define execution strategies [ direct, command ]
 	
-	return appDefinition;
+	return apzDefinition;
 });

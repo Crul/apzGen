@@ -3,16 +3,18 @@ define(['src/system/logger', 'src/rendererResolver'],
 		var dis = {};
 		dis.render = render;
 
-		function render(apzFiles, app) {
+		function render(apzFiles, apz) {
 			logger.log('rendering apz ...');
-			return apzFiles.map(function (apzFile) {
-				return renderApzFile(apzFile, app);
-			});
+			return apzFiles.map(_renderApzFile);
+			
+			function _renderApzFile(apzFile) { // _ because naming collision
+				return renderApzFile(apzFile, apz);
+			}
 		}
 
-		function renderApzFile(apzFile, app) {
+		function renderApzFile(apzFile, apz) {
 			var renderer = rendererResolver.resolve(apzFile);
-			apzFile.content = renderer.render(apzFile.feature, app);
+			apzFile.content = renderer.render(apzFile.feature, apz);
 			logger.debug('rendered: ' + apzFile.fullPath);
 			return apzFile;
 		}

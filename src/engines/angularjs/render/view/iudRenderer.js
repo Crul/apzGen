@@ -1,17 +1,19 @@
-define(['src/render/viewRenderer'], 
-	function (viewRenderer){
+define(['src/default/render/viewRenderer'],
+	function (viewRenderer) {
 		var dis = {};
 		dis.render = render;
-		
-		function render(feature){
+
+		var formAttributes = '';
+		var panelFormAttributes = 'style="margin-top: 24px;"';
+		function render(feature) {
 			feature.model = feature.model || {};
-			var view = (feature.model.fields || []).map(viewRenderer.renderControl).join('');				
-			view += viewRenderer.renderButton('save', 'save()');
-			view = viewRenderer.renderForm(view);			
-			view = viewRenderer.renderLink('back', '#/' + feature.featureName + '/list') + view; // TODO access routes by properties
-			return view;
+			var backButton = viewRenderer.renderLinkButton('back', '#/' + feature.featureName + '/list'); // TODO access routes by properties
+			var saveButton = viewRenderer.renderButton('save', 'save()');
+			var formContent = (feature.model.fields || []).map(viewRenderer.renderControl).join('');
+			var form = viewRenderer.renderForm(formContent, formAttributes, panelFormAttributes);
+
+			return backButton + form + saveButton;
 		}
-		
+
 		return dis;
 	});
-		

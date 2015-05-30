@@ -10,24 +10,28 @@ define(
 		var dis = {};
 		dis.create = create;
 
-		function create(app) {
+		function create(apz) {
 			logger.log('creating apzFiles ...');
-			app.apzFiles = createElementApzFiles(app);
-			var apzFiles = app.apzFiles.slice(0);
-			app.features.forEach(function (feature) {
-				apzFiles = apzFiles.concat(createElementApzFiles(feature));
-			});
+			apz.apzFiles = createElementApzFiles(apz);
+			var apzFiles = apz.apzFiles.slice(0);
+			apz.features.forEach(concatFeatures);
 			return apzFiles;
+
+			function concatFeatures(feature) {
+				apzFiles = apzFiles.concat(createElementApzFiles(feature));
+			}
 		}
 
 		function createElementApzFiles(element) {
-			return (element.apzFiles || []).map(function (apzFile) {
+			return (element.apzFiles || []).map(createElementApzFile);
+
+			function createElementApzFile(apzFile) {
 				return createApzFile(apzFile.feature || element,
 					apzFile.path,
 					apzFile.fileName,
 					apzFile.fileType,
 					apzFile.renderer);
-			});
+			}
 		}
 
 		function createApzFile(feature, filePath, fileName, fileType, renderer) {

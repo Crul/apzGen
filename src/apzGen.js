@@ -12,15 +12,15 @@ define(
 		dis.generate = generate;
 		
 		function generate(_definition) {
-			var app = apzFactory.create(_definition || definition);
-			var apzFiles = apzFileFactory.create(app);
-			var renderedFiles = apzRenderer.render(apzFiles, app);
-			// app generation first because we don't want to delete bin folder if it fails
+			var apz = apzFactory.create(_definition || definition);
+			var apzFiles = apzFileFactory.create(apz);
+			var renderedFiles = apzRenderer.render(apzFiles, apz);
+			// apz generation first because we don't want to delete bin folder if it fails
 			fsService.clearFolder('bin');
 			fsService.copyFolder('seed', 'bin');
 			fsService.writeFiles(renderedFiles);
 			
-			logger.log('\n\tapz generated!');
+			logger.log('\n\t apz generated!');
 		}
 	
 		return dis;

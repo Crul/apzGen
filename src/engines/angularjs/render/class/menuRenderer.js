@@ -1,4 +1,4 @@
-define(['src/render/classRenderer'],
+define(['src/default/render/classRenderer'],
 	function (classRenderer) {
 		var dis = {};
 		dis.render = render;

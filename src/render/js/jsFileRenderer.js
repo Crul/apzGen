@@ -1,13 +1,13 @@
 define(['src/system/codeRenderer'],
-	function (codeRenderer){
+	function (codeRenderer) {
 		var dis = require('util')._extend({}, codeRenderer);
 		dis.fileExtension = 'js';
 		dis.render = render;
-				
+
 		var variablePatternSeed = '\\/\\/\\{namePattern\\}|\\/\\*\\{namePattern\\}\\*\\/';
-		function render(template, data){
+		function render(template, data) {
 			return codeRenderer.render(template, data, variablePatternSeed);
 		}
-			
+
 		return dis;
 	});

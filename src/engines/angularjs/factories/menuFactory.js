@@ -10,7 +10,7 @@ define([], function () {
 			path: featureName, 
 			controller: featureName,
 			template: featureName + '/' + featureName
-		}];;
+		}];
 		menu.excludeMenuOptions = menu.routes.slice(0);
 		menu.controllers = controllers;
 		menu.model = menu.model || {};
