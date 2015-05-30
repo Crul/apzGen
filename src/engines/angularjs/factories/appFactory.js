@@ -18,7 +18,7 @@ define(
 			'kendo',
 			'lib/angular-local-storage.min.js',
 		];
-		
+
 		var homeApzFiles = [
 			{ fileType: 'class', path: '', fileName: 'app' },
 			{ fileType: 'view', path: '', fileName: 'app', renderer: 'index' }
@@ -26,31 +26,25 @@ define(
 
 		function create(definition, features) {
 			var app = require('util')._extend({}, definition);
-			app.featureName = app.appName || app.featureName || 'apzApp';
 			app.path = '';
+			app.featureName = app.appName || app.featureName || 'apzApp';
+			
+			app.apzFiles = getApzFiles(app);
+			app.libs = getThirdPartyLibs(app, requiredLibs);
+			
 			app.angularjs = app.angularjs || {};
 			app.angularjs.dependencies = angularjsDependencies;
+			app.angularjs.factories = createFactories(app, features);
+			app.angularjs.routes = createRoutes(app, features);
+			app.angularjs.controllers = createControllers(app, features);
 
-			setThirdPartyLibs(app, requiredLibs);
-
-			app.angularjs.factories = requiredFactories
-				.concat(app.angularjs.factories || [])
-				.concat(factoryFactory.createFactories(features));
-
-			app.angularjs.routes = (app.angularjs.routes || [])
-				.concat(routeFactory.createRoutes(features));
-
-			app.angularjs.controllers = (app.angularjs.controllers || [])
-				.concat(controllersFactory.createControllers(features));
-
-			app.apzFiles = (app.apzFiles || []).concat(homeApzFiles);
 			return app;
 		}
 
-		function setThirdPartyLibs(app, requiredLibs) {
+		function getThirdPartyLibs(app, requiredLibs) {
 			var libs = [];
 			requiredLibs.concat(app.libs || []).forEach(addLib);
-			app.libs = libs;
+			return libs;
 
 			function addLib(requiredLib) {
 				if (libs.indexOf(requiredLib) < 0)
@@ -61,6 +55,26 @@ define(
 		function setFactories(app, factories) {
 			app.angularjs = app.angularjs || {};
 			app.angularjs.factories = (app.angularjs.factories || []).concat(factories);
+		}
+
+		function createFactories(app, features) {
+			return requiredFactories
+				.concat(app.angularjs.factories || [])
+				.concat(factoryFactory.createFactories(features));
+		}
+
+		function createRoutes(app, features) {
+			return (app.angularjs.routes || [])
+				.concat(routeFactory.createRoutes(features));
+		}
+
+		function createControllers(app, features) {
+			return (app.angularjs.controllers || [])
+				.concat(controllersFactory.createControllers(features));
+		}
+		
+		function getApzFiles(app){
+			return (app.apzFiles || []).concat(homeApzFiles);
 		}
 
 		return dis;

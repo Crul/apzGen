@@ -88,16 +88,17 @@ define(
 			}
 
 			function getLogInfo(paths, fileNames, baseElement, definition, fileType) {
-				return ''
-					+ 'elementType = "' + elementType + '"' + '\n'
-					+ 'filePattern = "' + filePattern + '"' + '\n'
-					+ 'definition.definitionFeatureName = "' + definition.definitionFeatureName + '"' + '\n'
-					+ 'definition.featureName = "' + definition.featureName + '"' + '\n'
-					+ 'definition.fileName = "' + definition.fileName + '"' + '\n'
-					+ 'baseElement = "' + baseElement + '"' + '\n'
-					+ 'fileType = "' + fileType + '"' + '\n'
-					+ 'file names checked = "' + fileNames.join('", "') + '"' + '\n'
-					+ 'paths checked = "' + paths.join('", "') + '"' + '\n'
+				var logInfo = '';
+				logInfo += 'elementType = "' + elementType + '"' + '\n';
+				logInfo += 'filePattern = "' + filePattern + '"' + '\n';
+				logInfo += 'definition.definitionFeatureName = "' + definition.definitionFeatureName + '"' + '\n';
+				logInfo += 'definition.featureName = "' + definition.featureName + '"' + '\n';
+				logInfo += 'definition.fileName = "' + definition.fileName + '"' + '\n';
+				logInfo += 'baseElement = "' + baseElement + '"' + '\n';
+				logInfo += 'fileType = "' + fileType + '"' + '\n';
+				logInfo += 'file names checked = "' + fileNames.join('", "') + '"' + '\n';
+				logInfo += 'paths checked = "' + paths.join('", "') + '"' + '\n';
+				return logInfo;
 			}
 
 			return { resolve: resolve };

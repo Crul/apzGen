@@ -89,7 +89,7 @@ define(['src/system/logger'], function (logger) {
 		function _copyRecursiveSync(childItemName) { // _ because naming collision
 			copyRecursiveSync(path.join(src, childItemName), path.join(target, childItemName));
 		}
-	};
+	}
 
 	function clearFolder(folder) {
 		logger.log('clearing bin ...');

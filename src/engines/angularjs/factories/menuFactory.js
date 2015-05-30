@@ -5,20 +5,30 @@ define([], function () {
 
 	function create(definition, appDefinition) {
 		var menu = require('util')._extend({}, definition);
-		var featureName = menu.featureName;
-		menu.routes = [{ // TODO: angularjsRouteFactory 
+		
+		var featureName = menu.featureName;		
+		menu.routes = getRoutes(featureName);
+		menu.apzFiles = getApzFiles(featureName);
+		menu.excludeMenuOptions = menu.routes.slice(0);
+		menu.controllers = controllers;
+		menu.model = menu.model || {};
+		
+		return menu;
+	}
+	
+	function getRoutes(featureName){
+		return [{ // TODO: angularjsRouteFactory 
 			path: featureName, 
 			controller: featureName,
 			template: featureName + '/' + featureName
 		}];
-		menu.excludeMenuOptions = menu.routes.slice(0);
-		menu.controllers = controllers;
-		menu.model = menu.model || {};
-		menu.apzFiles = [
-			{ fileType: 'class', fileName: menu.featureName },
-			{ fileType: 'view', fileName: menu.featureName },
+	}
+	
+	function getApzFiles(featureName){
+		return [
+			{ fileType: 'class', fileName: featureName },
+			{ fileType: 'view', fileName: featureName },
 		];
-		return menu;
 	}
 
 	return dis;

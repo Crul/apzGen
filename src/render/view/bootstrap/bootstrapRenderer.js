@@ -27,7 +27,7 @@ define(['src/default/render/formRenderer'],
 			panelAttributes = dis.concat(panelAttributes, 'class="panel panel-default"');
 			formAttributes = dis.concat(formAttributes, 'class="form-horizontal"');
 			var form = formRenderer.renderForm(html, formAttributes);
-			var panelBody = dis.renderTag('div', form, 'class="panel-body"');;
+			var panelBody = dis.renderTag('div', form, 'class="panel-body"');
 			var panel = dis.renderTag('div', panelBody, panelAttributes);
 			return panel;
 		}

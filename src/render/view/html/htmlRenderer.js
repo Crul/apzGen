@@ -87,8 +87,7 @@ define(['src/system/logger', 'src/system/codeRenderer'],
 			var fieldName = controlConfig.fieldName || controlConfig;
 			var labelAttributes = controlConfig.labelAttributes;
 			var inputAttributes = controlConfig.inputAttributes;
-			return renderLabel(fieldName, labelAttributes)
-				+ renderInput(fieldName, inputAttributes);
+			return renderLabel(fieldName, labelAttributes) + renderInput(fieldName, inputAttributes);
 		}
 
 		function renderForm(formHtml, formAttributes) {

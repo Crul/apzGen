@@ -22,7 +22,7 @@ define(
 
 		function initApz(apzDefinition) {
 			apzContext.engines = apzDefinition.engines || [];
-			if (apzContext.engines.length == 0)
+			if (apzContext.engines.length === 0)
 				apzDefinition.engines.push(defaultEngine);
 
 			apzDefinition = definitionFactory.create(apzDefinition, 'app');

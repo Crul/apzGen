@@ -6,25 +6,28 @@ define(['src/render/view/html/html5PageRenderer'],
 		function render(app) {
 			var appName = app.featureName;
 			var title = app.title || appName || 'angularjsApp';
-
-			var body = dis.renderTag('h1', title)
-				+ dis.renderTag('div', ' ', 'ng-view');
-
-			var files = (app.angularjs.factories || [])
-				.concat(app.angularjs.controllers || [])
-				.concat(app.apzFiles || []);
+			var htmlAttributes = "ng-app='" + appName + "'";
+			var body = dis.renderTag('h1', title);
+			body += dis.renderTag('div', ' ', 'ng-view');
+			var libs = app.libs;
+			var files = getFiles(app);
 
 			var data = {
 				title: title,
-				htmlAttributes: "ng-app='" + appName + "'",
+				htmlAttributes: htmlAttributes,
 				body: body,
-				libs: app.libs,
+				libs: libs,
 				files: files
 			};
 
 			return html5PageRenderer.render(data);
 		}
-		
+
+		function getFiles(app) {
+			return (app.angularjs.factories || [])
+				.concat(app.angularjs.controllers || [])
+				.concat(app.apzFiles || []);
+		}
 
 		return dis;
 	});
