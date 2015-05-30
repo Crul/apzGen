@@ -1,15 +1,19 @@
 define([], function () {
 	var model = {
 		tenant: ['name', 'description', 'contact'],
-		user: ['name', 'login', 'password']
+		user: [
+			'name', 
+			'login', 
+			'password', 
+			{ fieldName: 'age', fieldType: 'numeric' }]
 	};
 
 	var apzDefinition = {
 		title: 'generatedApz',
-		libs: ['bootstrap'],
+		libs: ['jquery', 'bootstrap'],
 		engines: ['angularJs']
 	};
-
+	
 	apzDefinition.features = {
 		menu: true,
 		tenant: { factory: 'iud', model: model.tenant },

@@ -18,12 +18,17 @@ define(['src/default/render/viewRenderer'],
 		}
 
 		function getTableConfig(feature) {
-			var tableConfig = { columns: feature.model.fields || [] };
+			var columns = feature.model.fields.map(getFieldName);
+			var tableConfig = { columns: columns || [] };
 			var modelCells = (tableConfig.columns || []).map(renderModelCell).join('');
 			var cells = listTableActionCells.concat(modelCells);
 			tableConfig.columns = listTableActionColumns.concat(tableConfig.columns);
 			tableConfig.body = viewRenderer.renderTableRow(cells, listTableBodyAttributes);
 			return tableConfig;
+		}
+		
+		function getFieldName(field){
+			return field.fieldName;
 		}
 
 		function renderActionCell(action) {

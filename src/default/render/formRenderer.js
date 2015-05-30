@@ -1,2 +1,2 @@
-define(['src/render/view/kendo/kendoRenderer'], 
+define(['src/engines/angularjs/render/view/kendouiRenderer'], 
 	function (renderer) { return renderer; });

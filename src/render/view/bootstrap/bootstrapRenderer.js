@@ -10,7 +10,7 @@ define(['src/default/render/formRenderer'],
 		dis.renderLinkButton = renderLinkButton;
 		dis.renderUnorderedList = renderUnorderedList;
 
-		var bodyCssClass = 'container-fluid';
+		var bodyCssClass = 'container';
 		var tableCssClass = 'table table-striped table-bordered table-hover';
 
 		function renderBody(body, bodyAttributes) {
@@ -22,6 +22,7 @@ define(['src/default/render/formRenderer'],
 			tableConfig.tableAttributes = dis.concat(tableConfig.tableAttributes, ' class="' + tableCssClass + '"');
 			return formRenderer.renderTable(tableConfig);
 		}
+
 		function renderForm(html, formAttributes, panelAttributes) {
 			panelAttributes = dis.concat(panelAttributes, 'class="panel panel-default"');
 			formAttributes = dis.concat(formAttributes, 'class="form-horizontal"');
@@ -31,13 +32,14 @@ define(['src/default/render/formRenderer'],
 			return panel;
 		}
 
-		function renderControl(field) {
+		function renderControl(controlConfig) {
+			var fieldName = controlConfig.fieldName;
 			var labelAttributes = 'class="col-xs-3 control-label"';
 			var inputAttributes = 'class="form-control"';
 			var divInputAttributes = 'class="col-xs-9"';
 			var groupDivAttributes = 'class="form-group"';
-			var label = dis.renderLabel(field, labelAttributes);
-			var input = dis.renderInput(field, inputAttributes);
+			var label = dis.renderLabel(fieldName, labelAttributes);
+			var input = dis.renderInput(fieldName, inputAttributes, controlConfig);
 			var divInput = dis.renderTag('div', input, divInputAttributes);
 			return dis.renderTag('div', label + divInput, groupDivAttributes);
 		}

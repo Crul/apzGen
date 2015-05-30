@@ -1,5 +1,5 @@
-define(['src/system/codeRenderer'],
-	function (codeRenderer) {
+define(['src/system/logger', 'src/system/codeRenderer'],
+	function (logger, codeRenderer) {
 		var dis = require('util')._extend({}, codeRenderer);
 		dis.fileExtension = 'html';
 		dis.render = render;
@@ -49,7 +49,7 @@ define(['src/system/codeRenderer'],
 			var htmlBody = renderTag('tbody', body);
 			var tableContent = htmlHeader + htmlBody;
 			return renderTag('table', tableContent, tableAttributes);
-			
+
 			function _renderTableCell(c) { // wrapped to avoid re-send second param (arrayIndex because of [].map()) 
 				return renderTableCell(c);
 			}
@@ -73,19 +73,22 @@ define(['src/system/codeRenderer'],
 			return renderTag('button', text, attributes);
 		}
 
-		function renderLabel(field, labelAttributes) {
-			labelAttributes = concat(labelAttributes, 'for="' + field + '"');
-			return renderTag('label', field, labelAttributes);
+		function renderLabel(fieldName, labelAttributes) {
+			labelAttributes = concat(labelAttributes, 'for="' + fieldName + '"');
+			return renderTag('label', fieldName, labelAttributes);
 		}
 
-		function renderInput(field, inputAttributes) {
-			inputAttributes = concat(inputAttributes, 'id="' + field + '"');
+		function renderInput(fieldName, inputAttributes) {
+			inputAttributes = concat(inputAttributes, 'id="' + fieldName + '"');
 			return renderTag('input', '', inputAttributes);
 		}
 
-		function renderControl(field, labelAttributes, inputAttributes) {
-			return renderLabel(field, labelAttributes)
-				+ renderInput(field, inputAttributes);
+		function renderControl(controlConfig) {
+			var fieldName = controlConfig.fieldName || controlConfig;
+			var labelAttributes = controlConfig.labelAttributes;
+			var inputAttributes = controlConfig.inputAttributes;
+			return renderLabel(fieldName, labelAttributes)
+				+ renderInput(fieldName, inputAttributes);
 		}
 
 		function renderForm(formHtml, formAttributes) {
@@ -96,7 +99,7 @@ define(['src/system/codeRenderer'],
 			var liHtml = liOptions.map(renderUnorderedListItem).join('');
 			return renderTag('ul', liHtml, ulAttributes);
 		}
-		
+
 		function renderUnorderedListItem(option) {
 			return renderTag('li', option.html, option.liAttributes);
 		}
@@ -104,6 +107,9 @@ define(['src/system/codeRenderer'],
 		function renderTag(tag, html, attributes) {
 			var openTag = concat(tag, attributes);
 			if (!html) return '\n<' + openTag + ' />';
+
+			if (typeof (html) !== 'string')
+				logger.error('htmlRenderer.renderTag: HTML IS NOT STRING: ' + JSON.stringify(html));
 
 			var content = (html || '').trim();
 			if (content) content = dis.ident('\n' + content) + '\n';

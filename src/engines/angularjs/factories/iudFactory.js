@@ -19,32 +19,36 @@ define(
 
 			appFactory.setFactories(app, requiredAngularjsFactories);
 
-			initialize(iud);
+			iud.model = initModel(iud.model);
 			iud.routes = getRoutes(iud);
 			iud.controllers = getControllers(iud);
 			iud.menuOptions = getMenuOptions(iud);
+			iud.apzFiles = getApzFiles(iud.featureName);
 
-			var path = iud.featureName;
-			iud.apzFiles = [
-				{ path: path, fileType: 'class', fileName: iud.featureName },
-				{ path: path, fileType: 'view', fileName: iud.featureName },
-				{ path: path, fileType: 'class', renderer: 'list', fileName: iud.featureName + 'List' },
-				{ path: path, fileType: 'view', renderer: 'list', fileName: iud.featureName + '-list' }
-			];
 			return iud;
 		}
 
-		function initialize(iud) {
-			iud.model = iud.model || [];
-			if (Array.isArray(iud.model))
-				iud.model = { fields: iud.model };
+		function initModel(model) {
+			model = model || [];
+			if (Array.isArray(model))
+				model = { fields: model };
+			model.fields = model.fields.map(initModelField);
+			return model;
 		}
 
+		function initModelField(field) {
+			if (typeof (field) === 'string')
+				field = { fieldName: field };
+			field.fieldType = field.fieldType || 'text';
+			return field;
+		}
+
+		// TODO unify routes/controllers/menuOptions/apzFiles definition
 		function getRoutes(iud) {
 			var featureName = iud.featureName;
 			// TODO: angularjsRouteFactory
 			return [
-				{ // TODO access routes by properties
+				{
 					path: featureName + '/list',
 					template: featureName + '/' + featureName + '-list',
 					controller: featureName + 'List'
@@ -68,6 +72,16 @@ define(
 			var featureName = iud.featureName;
 			return [
 				{ path: featureName + '/list', optionName: featureName + ' list' }
+			];
+		}
+
+		function getApzFiles(featureName) {
+			var path = featureName;
+			return [
+				{ path: path, fileType: 'class', fileName: featureName },
+				{ path: path, fileType: 'view', fileName: featureName },
+				{ path: path, fileType: 'class', renderer: 'list', fileName: featureName + 'List' },
+				{ path: path, fileType: 'view', renderer: 'list', fileName: featureName + '-list' }
 			];
 		}
 

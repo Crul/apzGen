@@ -27,7 +27,7 @@ define(['src/default/render/classRenderer'],
 			}
 			return options;
 
-			function exclude(option) { // inside createOptions to get currentFeatrue accesible
+			function exclude(option) {
 				return menu.excludeMenuOptions.indexOf(currentFeature.featureName) < 0;
 			}
 		}

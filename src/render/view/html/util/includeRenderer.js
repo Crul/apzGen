@@ -7,7 +7,7 @@ define(['src/render/view/html/htmlRenderer'],
 		var cssConfig = {
 			fileExtension: 'css',
 			fileRegex: /\.css$/,
-			includeTemplate: dis.renderTag('link', '', 'rel="stylesheet" type="text/css" href="{filePath}"')
+			includeTemplate: dis.renderTag('link', '', 'href="{filePath}" rel="stylesheet" ')
 		};
 		var jsConfig = {
 			fileExtension: 'js',

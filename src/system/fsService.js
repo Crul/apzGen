@@ -5,7 +5,7 @@ define(['src/system/logger'], function (logger) {
 		lastSlash: /\/$/,
 		startsWithSlash: /^\\/
 	};
-	
+
 	var dis = {};
 	dis.pathPatterns = pathPatterns;
 	dis.getFileInfo = getFileInfo;
@@ -24,7 +24,7 @@ define(['src/system/logger'], function (logger) {
 		extension: /\.[a-zA-Z]*/i,
 		nameNoExtension: /[a-zA-Z|-]*/i
 	};
-	
+
 	function getFileInfo(fullPath) {
 		var path = getFirstOrEmpty(fullPath, fileInfoPatterns.path);
 		var pathLength = path.length;
@@ -40,18 +40,18 @@ define(['src/system/logger'], function (logger) {
 			nameNoExtension: nameNoExtension
 		};
 	}
-	
-	function getNameNoExtension(fullPath){
+
+	function getNameNoExtension(fullPath) {
 		var fileName = getFirstOrEmpty(fullPath, fileInfoPatterns.fileName) || fullPath;
 		return getFirstOrEmpty(fileName, fileInfoPatterns.nameNoExtension);
 	}
-	
-	function getFileExtension(fullPath){
+
+	function getFileExtension(fullPath) {
 		var fileName = getFirstOrEmpty(fullPath, fileInfoPatterns.fileName) || fullPath;
 		return getFirstOrEmpty(fileName, fileInfoPatterns.extension);
 	}
-	
-	function writeFiles(apzFiles){		
+
+	function writeFiles(apzFiles) {
 		logger.log('writting apzFiles ...');
 		apzFiles.forEach(writeFile);
 	}
@@ -70,7 +70,7 @@ define(['src/system/logger'], function (logger) {
 	}
 
 	function copyFolder(src, target) {
-		logger.log('copying "'+ src + '" to "'+ target + '" ...');
+		logger.log('copying "' + src + '" to "' + target + '" ...');
 		copyRecursiveSync(src, target);
 	}
 
@@ -85,7 +85,7 @@ define(['src/system/logger'], function (logger) {
 		if (!fs.existsSync(target)) fs.mkdir(target);
 		fs.readdirSync(src).forEach(_copyRecursiveSync);
 		logger.debug('copied: ' + src + ', into: ' + target);
-		
+
 		function _copyRecursiveSync(childItemName) { // _ because naming collision
 			copyRecursiveSync(path.join(src, childItemName), path.join(target, childItemName));
 		}
@@ -98,13 +98,16 @@ define(['src/system/logger'], function (logger) {
 	}
 
 	function removeFolder(folder) {
-		// thanks! https://gist.github.com/tkihira/2367067
-		var list = fs.readdirSync(folder);
-		for (var i = 0; i < list.length; i++) {
-			var nextPath = path.join(folder, list[i]);
+		// thanks! https://gist.github.com/tkihira/2367067		
+		fs.readdirSync(folder).forEach(removeFolderContent);
+		fs.rmdirSync(folder);
+		logger.debug('removed: ' + folder);
+		
+		function removeFolderContent(element){
+			var nextPath = path.join(folder, element);
 			var stat = fs.statSync(nextPath);
-			// skip these files
 			if (nextPath == "." || nextPath == "..") {
+				// skip these files
 			} else if (stat.isDirectory()) {
 				// rmdir recursively
 				removeFolder(nextPath);
@@ -113,28 +116,27 @@ define(['src/system/logger'], function (logger) {
 				fs.unlinkSync(nextPath);
 			}
 		}
-		fs.rmdirSync(folder);
-		logger.debug('removed: ' + folder);
 	}
-
+	
 	function concatPath() {
 		var pathArray = [];
-		for (var i = 0; i < arguments.length; i++) pathArray.push(arguments[i]);
+		for (var i = 0; i < arguments.length; i++) // not [].forEach() because arguments is not an array (it only has length property)
+			pathArray.push(arguments[i]);
 		return pathArray.filter(isNotNull).map(removeEndingSlash).join('/');
 	}
-	
-	function isNotNull(path){
+
+	function isNotNull(path) {
 		return !!path;
 	}
-	
-	function removeEndingSlash(path){
+
+	function removeEndingSlash(path) {
 		return path.replace(pathPatterns.lastSlash, '');
 	}
 
 	function getAllDeeps(path) {
 		var currentDeep = '';
 		return path.split('/').map(getCurrentPath);
-		
+
 		function getCurrentPath(token) {
 			currentDeep += token + '/';
 			return currentDeep;

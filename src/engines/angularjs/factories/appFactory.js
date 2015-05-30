@@ -9,8 +9,16 @@ define(
 		dis.create = create;
 		dis.setFactories = setFactories;
 
+		var angularjsDependencies = ['ngRoute', 'LocalStorageModule', 'kendo.directives'];
 		var requiredFactories = ['seedwork/services/context.js'];
-		var requiredLibs = ['jquery', 'angularjs', 'angularjs.route', 'lib/angular-local-storage.min.js'];
+		var requiredLibs = [
+			'jquery',
+			'angularjs',
+			'angularjs.route',
+			'kendo',
+			'lib/angular-local-storage.min.js',
+		];
+		
 		var homeApzFiles = [
 			{ fileType: 'class', path: '', fileName: 'app' },
 			{ fileType: 'view', path: '', fileName: 'app', renderer: 'index' }
@@ -21,7 +29,7 @@ define(
 			app.featureName = app.appName || app.featureName || 'apzApp';
 			app.path = '';
 			app.angularjs = app.angularjs || {};
-			app.angularjs.dependencies = ['ngRoute', 'LocalStorageModule'];
+			app.angularjs.dependencies = angularjsDependencies;
 
 			setThirdPartyLibs(app, requiredLibs);
 
@@ -41,15 +49,15 @@ define(
 
 		function setThirdPartyLibs(app, requiredLibs) {
 			var libs = [];
-			requiredLibs.forEach(addLib);
-			app.libs = libs.concat(app.libs || []);
-			
+			requiredLibs.concat(app.libs || []).forEach(addLib);
+			app.libs = libs;
+
 			function addLib(requiredLib) {
 				if (libs.indexOf(requiredLib) < 0)
 					libs.push(requiredLib);
 			}
 		}
-		
+
 		function setFactories(app, factories) {
 			app.angularjs = app.angularjs || {};
 			app.angularjs.factories = (app.angularjs.factories || []).concat(factories);
