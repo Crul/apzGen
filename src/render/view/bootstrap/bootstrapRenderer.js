@@ -34,11 +34,12 @@ define(['src/default/render/formRenderer'],
 
 		function renderControl(controlConfig) {
 			var fieldName = controlConfig.fieldName;
+			var fieldLabel = controlConfig.label || fieldName;
 			var labelAttributes = 'class="col-xs-3 control-label"';
 			var inputAttributes = 'class="form-control"';
 			var divInputAttributes = 'class="col-xs-9"';
 			var groupDivAttributes = 'class="form-group"';
-			var label = dis.renderLabel(fieldName, labelAttributes);
+			var label = dis.renderLabel(fieldLabel, labelAttributes);
 			var input = dis.renderInput(fieldName, inputAttributes, controlConfig);
 			var divInput = dis.renderTag('div', input, divInputAttributes);
 			return dis.renderTag('div', label + divInput, groupDivAttributes);

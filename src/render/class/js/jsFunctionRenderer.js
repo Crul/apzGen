@@ -14,7 +14,7 @@ define(['src/render/class/js/jsFileRenderer'],
 				body: body,
 				parameters: (parameters || []).join(', ')
 			};
-			return jsFileRenderer.render(template.toString(), data);
+			return jsFileRenderer.render(template, data);
 		}
 
 		return dis;

@@ -3,7 +3,7 @@ define([], function () {
 		tenant: ['name', 'description', 'contact'],
 		user: [
 			'name', 
-			'login', 
+			{ fieldName: 'login', label: 'username'},  
 			'password', 
 			{ fieldName: 'age', fieldType: 'numeric' }]
 	};
