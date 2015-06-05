@@ -59,7 +59,7 @@ define(['src/apzDefinitionHelper'],
 	});
 ```
 
-### detailed process
+## detailed process
 - apzGen is everything about features
 - features are organized in engines
 - featureFactories create features
@@ -138,8 +138,9 @@ if you want to add a feature (e.g.: myNewFeature in myNewEngine) you have to:
 	
 	- you can also edit those files to change the default behaivor in renderization
 
-there is some advanced stuff about interaction between features, like:
-- setting a menuOptions[] property in any feature to add options to the angularjs menu 
-- setting a factories[] property in any feature to add angularjs factories 
-- setting a controllers[] property in any feature to add angularjs controllers
-- setting a routes[] property in any feature to add angularjs routes
+### angularjs features
+there is some advanced stuff about interaction between angular features, like:
+- setting a feaure.angularjs.menuOptions[] property in any feature to add options to the menu 
+- setting a feaure.angularjs.factories[] property in any feature to add factories 
+- setting a feaure.angularjs.controllers[] property in any feature to add controllers
+- setting a feaure.angularjs.routes[] property in any feature to add routes
