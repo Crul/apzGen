@@ -100,14 +100,14 @@ if you want to add a feature (e.g.: myNewFeature in myNewEngine) you have to:
 2. create the Factory 
 	- write a factory that creates the feature
 	- save it in src/engines/myNewEngine/factories
-	- it has to implement a create function that:
-		- receives as a parameter the object from appDefinition.features.myNewFeature
+	- it has to implement a function create() that:
+		- receives as parameter the object you passed to apzDefinitionHelper.create().addFeatures({ ... })
 		- returns the feature with:
-			- all the data you want to use in the renderization
-			- an apzFiles property with the apzFiles you want to generate, the properties of apzFiles are:
+			- all the data you want to use in the renderer
+			- an apzFiles[] property with the apzFiles you want to generate, the apzFile properties are:
 				- path: (optional) where the file will be created
 				- fileName: file name, without extension
-				- fileType: 'class', 'view' or 'seed', if 'class' or 'view', file extension should be inferred from it
+				- fileType: ('class', 'view', 'seed') if 'class' or 'view', file extension will be inferred from base renderers
 				- renderer: (optional) if your render follows naming convention it can be empty
 
 3. write as many renderers as file types you want to render
