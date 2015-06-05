@@ -22,7 +22,7 @@ define(['src/apzDefinitionHelper'],
 			.setTitle('generated apz')
 			.addLibs(['jquery', 'bootstrap'])
 			.addEngines('angularjs')
-			.addSeeds(libSeed)
+			.addSeeds('lib', libSeed)
 			.addFeatures('menu')
 			.addFeatures(iudFeatures);
 

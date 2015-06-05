@@ -1,41 +1,32 @@
-define(
-	[
-		'src/system/logger',
-		'src/system/fsService',
-		'src/apzContext'
-	],
+define(['src/system/logger', 'src/system/fsService', 'src/apzContext'],
 	function (logger, fsService, apzContext) {
 		var dis = {};
 		dis.createResolver = createResolver;
 
 		var fs = require('fs');
+		var rootPath = 'src';
+		var enginesPath = 'engines';
 		function createResolver(elementType, filePattern) {
-			var rootPath = 'src';
-			var enginesPath = 'engines';
 
-			function resolve(definition, baseElement, fileType) {
-				var logErrorMessage;
+			function resolve(definition, baseElement, fileType) { // multiple returns
 				var paths = getPaths(fileType);
 				var fileNames = getFileNames(baseElement, definition, fileType);
 				var resolvedInfo = resolveFile(paths, fileNames);
 
-				if (!!resolvedInfo) {
-					var filePath = resolvedInfo.filePath;
-					if (filePath) {
-						logger.debug('resolved: ' + filePath);
-						return resolvedInfo.file;
-					}
-					logErrorMessage = '\n' + 'INVALID factory! resolverFactory factory: ' + '\n' + '> "' + filePath + '"' + '\n';
-				} else
-					logErrorMessage = '\n' + 'resolverFactory: FACTORY NOT FOUND: ' + '\n';
+				if (!resolvedInfo) {
+					var logErrorMessage = '\n' + 'resolverFactory: FACTORY NOT FOUND:';
+					logError(logErrorMessage, paths, fileNames, baseElement, definition, fileType);
+					return;
+				}
 
-				logger.error(logErrorMessage + getLogInfo(paths, fileNames, baseElement, definition, fileType));
+				var filePath = resolvedInfo.filePath;
+				logger.debug('resolved: ' + filePath);
+				return resolvedInfo.file;
 			}
 
 			function getPaths(fileType) {
-				var engines = apzContext.engines;
 				var enginePaths = [''];
-				engines.forEach(concatEnginePaths);
+				apzContext.engines.forEach(concatEnginePaths);
 				var fullDefaultPath = fsService.concatPath(elementType, fileType);
 				enginePaths = enginePaths.concat(fsService.getAllDeeps(fullDefaultPath));
 				return enginePaths;
@@ -52,7 +43,6 @@ define(
 					definition,
 					definition.featureName,
 					definition.featureType,
-					definition.fileName,
 					fileType
 				];
 				return prioritizedFilenames.filter(isValidFilename);
@@ -65,19 +55,20 @@ define(
 			function resolveFile(paths, fileNames) {
 				for (var p in paths) { // not [].forEach() because return
 					var file = resolveFileInPath(fileNames, paths[p]);
-					if (file) return file;
+					if (file)
+						return file;
 				}
 			}
 
 			function resolveFileInPath(fileNames, relativePath) {
 				for (var n in fileNames) { // not [].forEach() because return
 					var file = requireFile(relativePath, fileNames[n]);
-					if (file) return file;
+					if (file)
+						return file;
 				}
 			}
 
 			function requireFile(relativePath, fileName) {
-				if (!(fileName && typeof (fileName) === 'string')) return;
 				var fullPath = fsService.concatPath(rootPath, relativePath, fileName + filePattern);
 				if (fs.existsSync(fullPath)) {
 					return {
@@ -87,8 +78,8 @@ define(
 				}
 			}
 
-			function getLogInfo(paths, fileNames, baseElement, definition, fileType) {
-				var logInfo = '';
+			function logError(errorMessage, paths, fileNames, baseElement, definition, fileType) {
+				var logInfo = errorMessage + '\n';
 				logInfo += 'elementType = "' + elementType + '"' + '\n';
 				logInfo += 'filePattern = "' + filePattern + '"' + '\n';
 				logInfo += 'definition.featureType = "' + definition.featureType + '"' + '\n';
@@ -98,7 +89,7 @@ define(
 				logInfo += 'fileType = "' + fileType + '"' + '\n';
 				logInfo += 'file names checked = "' + fileNames.join('", "') + '"' + '\n';
 				logInfo += 'paths checked = "' + paths.join('", "') + '"' + '\n';
-				return logInfo;
+				logger.error(logInfo);
 			}
 
 			return { resolve: resolve };

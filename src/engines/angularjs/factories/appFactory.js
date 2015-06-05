@@ -1,11 +1,10 @@
 define(
 	[
 		'src/system/logger',
-		'src/engines/angularjs/factories/app/factoryFactory',
-		'src/engines/angularjs/factories/app/controllerFactory',
-		'src/engines/angularjs/factories/app/routeFactory'
+		'src/system/fsService',
+		'src/engines/angularjs/factories/angularjsElementFactory'
 	],
-	function (logger, factoryFactory, controllersFactory, routeFactory) {
+	function (logger, fsService, angularjsElementFactory) {
 		var dis = {};
 		dis.create = create;
 
@@ -22,9 +21,8 @@ define(
 			{ fileType: 'view', fileName: 'index', renderer: 'index' }
 		];
 
-		function create(definition, features) {
+		function create(definition) {
 			var app = require('util')._extend({}, definition);
-			app.path = '';
 			app.featureName = app.appName || app.featureName || 'apzApp';
 
 			app.apzFiles = getApzFiles(app);
@@ -32,9 +30,9 @@ define(
 
 			app.angularjs = app.angularjs || {};
 			app.angularjs.dependencies = angularjsDependencies;
-			app.angularjs.factories = createFactories(app, features);
-			app.angularjs.routes = createRoutes(app, features);
-			app.angularjs.controllers = createControllers(app, features);
+			app.angularjs.factories = createElements('factories', app);
+			app.angularjs.controllers = createElements('controllers', app);
+			app.angularjs.routes = createElements('routes', app).map(fsService.addStartSlash);
 
 			return app;
 		}
@@ -50,19 +48,9 @@ define(
 			}
 		}
 
-		function createFactories(app, features) {
-			return (app.angularjs.factories || [])
-				.concat(factoryFactory.createFactories(features));
-		}
-
-		function createRoutes(app, features) {
-			return (app.angularjs.routes || [])
-				.concat(routeFactory.createRoutes(features));
-		}
-
-		function createControllers(app, features) {
-			return (app.angularjs.controllers || [])
-				.concat(controllersFactory.createControllers(features));
+		function createElements(elementObject, app) {
+			return (app.angularjs[elementObject] || [])
+				.concat(angularjsElementFactory.createElements(elementObject, app.features));
 		}
 
 		function getApzFiles(app) {

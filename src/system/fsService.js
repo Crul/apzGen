@@ -2,12 +2,11 @@ define(['src/system/logger'], function (logger) {
 	var fs = require('fs');
 	var path = require('path');
 	var pathPatterns = {
-		lastSlash: /\/$/,
-		startsWithSlash: /^\\/
+		startsWithSlash: /^\\/,
+		endsWithSlash: /\/$/
 	};
 
 	var dis = {};
-	dis.pathPatterns = pathPatterns;
 	dis.getFileInfo = getFileInfo;
 	dis.getNameNoExtension = getNameNoExtension;
 	dis.getFileExtension = getFileExtension;
@@ -17,6 +16,7 @@ define(['src/system/logger'], function (logger) {
 	dis.clearFolder = clearFolder;
 	dis.concatPath = concatPath;
 	dis.getAllDeeps = getAllDeeps;
+	dis.addStartSlash = addStartSlash;
 
 	var fileInfoPatterns = {
 		path: /([a-zA-Z]*\/)*/i,
@@ -117,7 +117,7 @@ define(['src/system/logger'], function (logger) {
 
 	function concatPath() {
 		var pathArray = [];
-		for (var i = 0; i < arguments.length; i++) // not [].forEach() because arguments is not an array (it only has length property)
+		for (var i = 0; i < arguments.length; i++) // not [].forEach() because arguments is not an array
 			pathArray.push(arguments[i]);
 		return pathArray.filter(isNotNull).map(removeEndingSlash).join('/');
 	}
@@ -127,7 +127,7 @@ define(['src/system/logger'], function (logger) {
 	}
 
 	function removeEndingSlash(path) {
-		return path.replace(pathPatterns.lastSlash, '');
+		return path.replace(pathPatterns.endsWithSlash, '');
 	}
 
 	function getAllDeeps(path) {
@@ -143,6 +143,12 @@ define(['src/system/logger'], function (logger) {
 	function getFirstOrEmpty(str, pattern) {
 		var tokens = str.match(pattern);
 		return (tokens && tokens.length > 0) ? tokens[0] : '';
+	}
+
+	function addStartSlash(route) {
+		if (!route.path.match(pathPatterns.startsWithSlash))
+			route.path = '/' + route.path;
+		return route;
 	}
 
 	return dis;

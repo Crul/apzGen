@@ -20,7 +20,8 @@ define(['src/default/render/viewRenderer'],
 			return (fields || []).map(renderFormControl).join('');
 		}
 
-		function renderFormControl(field) {// wrapped to avoid re-send second param (arrayIndex because of [].map())
+		function renderFormControl(field) {
+			// wrapped to avoid re-send second param (arrayIndex because of [].map())
 			return viewRenderer.renderControl(field);
 		}
 

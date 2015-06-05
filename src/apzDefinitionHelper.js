@@ -40,40 +40,47 @@ define(['src/system/logger'],
 			return this; // fluent api
 		}
 
-		function addSeeds(seedDefinitions) {
-			seedDefinitions = processStringDefinition(seedDefinitions);
-			if (seedDefinitions.featureName) {
-				seedDefinitions = { foo: seedDefinitions };
-			}
-			if (seedDefinitions.features) {
-				for (var featureName in seedDefinitions.features)
-					seedDefinitions.features[featureName] = processStringDefinition(seedDefinitions.features[featureName]);
-			}
-			seedDefinitions = processFeaturesWithDefaultProperties('path', seedDefinitions);
-			return this.addFeatures({ featureType: 'seed', features: seedDefinitions });
+		function addSeeds(seedName, seedDefinition) {
+			seedDefinition = processStringDefinition(seedDefinition);
+			seedDefinition.featureType = 'seed';
+			var featureDefinition = wrapInObject(seedDefinition, seedName);
+			return this.addFeatures(featureDefinition);
 		}
 
+		function wrapInObject(value, propertyName) { // multiple returns
+			var obj = {};
+			obj[propertyName || value] = value;
+			return obj;
+		}
+		
 		function addFeatures(featureDefinitions) {
 			if (typeof (featureDefinitions) === 'string') {
-				var _featureDefinitions = {};
-				_featureDefinitions[featureDefinitions] = featureDefinitions;
-				featureDefinitions = _featureDefinitions;
+				featureDefinitions = wrapInObject(featureDefinitions);
 			}
-			featureDefinitions = processFeaturesWithDefaultProperties('featureType', featureDefinitions);
+			featureDefinitions = getFeaturesWithDefaultPropertiesIfProceed(featureDefinitions);
 			featureDefinitions = getFeaturesDefinitions(this, featureDefinitions);
 			this.definition.features = util._extend(this.definition.features, featureDefinitions);
 			return this; // fluent api
 		}
 
-		function processFeaturesWithDefaultProperties(propertyName, definitions) {
-			var areFeaturesAndPropertyDefined = (definitions[propertyName] && definitions.features);
-			if (!areFeaturesAndPropertyDefined)
+		function getFeaturesWithDefaultPropertiesIfProceed(definitions) { // multiple returns
+			var areDefaultPropertiesDefined = definitions.features;
+			if (!areDefaultPropertiesDefined)
 				return definitions;
 
-			for (var featureName in definitions.features) { // not [].forEach() because iterating {}
-				definitions.features[featureName][propertyName] = definitions[propertyName];
+			for (var propertyName in definitions) { // not [].forEach() because iterating {}
+				if (propertyName !== 'feature')
+					fillProperty(definitions, propertyName);
 			}
 			return definitions.features;
+		}
+
+		function fillProperty(definitions, propertyName) {
+			var features = definitions.features;
+			var propertyValue = definitions[propertyName];
+			for (var featureName in features) { // not [].forEach() because iterating {}
+				features[featureName][propertyName] = propertyValue;
+			}
 		}
 
 		function getFeaturesDefinitions(apzDefinition, featureDefinitions) {
@@ -88,14 +95,14 @@ define(['src/system/logger'],
 			return featureDefinitions;
 		}
 
-		function processStringDefinition(featureDefinitionConfig) {
+		function processStringDefinition(featureDefinitionConfig) { // multiple returns
 			if (typeof (featureDefinitionConfig) === 'string')
 				return { featureName: featureDefinitionConfig };
 
 			return featureDefinitionConfig;
 		}
 
-		function toArray(obj) {
+		function toArray(obj) { // multiple returns
 			if (!obj) return [];
 			if (Array.isArray(obj)) return obj;
 			return [obj];

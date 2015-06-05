@@ -22,7 +22,7 @@ define(['src/default/render/classRenderer'],
 		function createOptions(menu, features) {
 			var options = [];
 			var currentFeature; // accesible in exclude()
-			for (var f in features) { // not [].map() because iterating {}
+			for (var f in features) { // not [].forEach() because iterating {}
 				currentFeature = features[f];
 				options = options.concat(createFromFeature(currentFeature).filter(exclude));
 			}

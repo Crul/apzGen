@@ -12,7 +12,7 @@ define(['src/system/fsService', 'src/apzContext'],
 			return seed;
 		}
 
-		function getApzFiles(definition) {
+		function getApzFiles(definition) { // multiple returns
 			var definitionPath;
 			if (definition.featureName.match(allFilesWildcardPattern)) {
 				definitionPath = definition.featureName.replace(allFilesWildcardPattern, '');

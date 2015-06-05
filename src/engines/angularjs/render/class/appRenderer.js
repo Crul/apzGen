@@ -21,7 +21,7 @@ define(['src/system/fsService', 'src/render/class/js/jsFileRenderer'],
 			return body;
 		}
 
-		function renderRouteConfig(routes) {
+		function renderRouteConfig(routes) { // multiple returns
 			var code = '';
 			if (!(routes && routes.length > 0)) 
 				return code;

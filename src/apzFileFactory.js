@@ -24,34 +24,32 @@ define(
 
 		function createElementApzFiles(element) {
 			return (element.apzFiles || []).map(createElementApzFile);
-
+			
 			function createElementApzFile(apzFile) {
-				return createApzFile(apzFile.feature || element,
-					apzFile.path,
-					apzFile.fileName,
-					apzFile.fileType,
-					apzFile.renderer);
+				return createApzFile(apzFile, element);
 			}
 		}
 
-		function createApzFile(feature, filePath, fileName, fileType, renderer) {
-			fileType = fileType || getFileTypeByExtension(fileName);
-			filePath = filePath || '';
+		function createApzFile(apzFileDefinition, element) {
+			var feature = apzFileDefinition.feature || element;
+			var filePath = apzFileDefinition.path || '';
+			var fileName = apzFileDefinition.fileName;
+			var fileType = apzFileDefinition.fileType || getFileTypeByExtension(fileName);
+			var renderer = apzFileDefinition.renderer || feature.featureName;
 
 			if (fileName.indexOf('.') < 0)
 				fileName += '.' + apzContext.fileExtensions[fileType];
 
-			var apzFile = {
+			var fullPath = path.join(filePath, fileName);
+			logger.debug('created: ' + fullPath);			
+			return {
 				feature: feature,
 				fileType: fileType,
 				path: filePath,
 				fileName: fileName,
-				fullPath: path.join(filePath, fileName),
-				renderer: renderer || feature.featureName
+				fullPath: fullPath,
+				renderer: renderer
 			};
-
-			logger.debug('created: ' + apzFile.fullPath);
-			return apzFile;
 		}
 
 		function getFileTypeByExtension(filePath) {

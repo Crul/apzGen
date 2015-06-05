@@ -10,35 +10,42 @@ define([], function () {
 	};
 
 	function log(message) {
-		if (!dis.levels.log) return;
-		logToConsole({ message: message });
+		logToConsole('log', message);
 	}
 
 	function error(message) {
-		if (!dis.levels.error) return;
-		logToConsole({ message: message, linePrefix: 'ERROR! ' });
+		logWithPrefix('error', message, 'ERROR! ');
 	}
 
 	function debug(message) {
-		if (!dis.levels.debug) return;
-		logToConsole({ message: message, linePrefix: '>      ' });
+		logWithPrefix('debug', message, '>      ');
 	}
 
-	function logToConsole(messageOrConfig) {
-		if (!console && !console.log) return;
+	function logWithPrefix(logLevel, messageOrConfig, linePrefix) {
+		var config = getConfigFromString(messageOrConfig);
+		config.linePrefix = linePrefix;
+		logToConsole(logLevel, config);
+	}
 
-		var config = messageOrConfig || '';
-		if (typeof (messageOrConfig) === 'string')
-			config = { message: messageOrConfig };
+	function logToConsole(logLevel, messageOrConfig) {
+		if (!dis.levels[logLevel] || !console && !console.log)
+			return;
 
-		if (!config.message) return;
-
-		if (typeof (config.message) !== 'string')
-			config.message = JSON.stringify(config.message);
+		var config = getConfigFromString(messageOrConfig);
+		var message = config.message;
+		if (typeof (message) !== 'string')
+			message = JSON.stringify(message);
 
 		var linePrefix = config.linePrefix || '';
-		var message = linePrefix + config.message.replace(/\n/g, '\n' + linePrefix);
+		message = linePrefix + message.replace(/\n/g, '\n' + linePrefix);
 		console.log(message);
+	}
+
+	function getConfigFromString(messageOrConfig) {
+		if (typeof (messageOrConfig) === 'string')
+			return { message: messageOrConfig };
+		else
+			return messageOrConfig || { message: '' };
 	}
 
 	return dis;
