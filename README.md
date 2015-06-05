@@ -95,57 +95,57 @@ features create apzFiles
 apzFiles are rendered by renderers and written in files
 
 so, if you want to add a feature (e.g.: myNewFeature in myNewEngine) you have to:
-1. add a new engine and a new feature in the definition file:
-```
+
+1. define a new engine
+	- add a new engine and a new feature in the definition file:
+	```
 	var apzDefinition = apzDefinitionHelper.create()
 		(...)
 		.addEngines([(...), 'myNewEngine'])
 		(...)
 		.addFeatures({ featureType: 'myNewFeature', (...) });
-```
+	```
 
-2. write a factory that creates the feature
-save it in src/engines/myNewEngine/factories
-it has to implement a create function that:
-- receives as a parameter the object from appDefinition.features.myNewFeature
-- returns the feature with:
-	- all the data you want to use in the renderization
-	- an apzFiles property with the apzFiles you want to generate
-		- { path: 'path/', fileType: [ 'class' | 'view' ], fileName: 'fileName' } 
- 
-the properties of apzFiles are:
-- path: (optional) where the file will be created
-- fileName: file name, without extension
-- fileType: 'class', 'view' or 'seed', if 'class' or 'view', file extension should be inferred from it
-- renderer: (optional) if your render follows naming convention it can be empty
+2. create the Factory 
+	- write a factory that creates the feature
+	- save it in src/engines/myNewEngine/factories
+	- it has to implement a create function that:
+		- receives as a parameter the object from appDefinition.features.myNewFeature
+		- returns the feature with:
+			- all the data you want to use in the renderization
+			- an apzFiles property with the apzFiles you want to generate, the properties of apzFiles are:
+				- path: (optional) where the file will be created
+				- fileName: file name, without extension
+				- fileType: 'class', 'view' or 'seed', if 'class' or 'view', file extension should be inferred from it
+				- renderer: (optional) if your render follows naming convention it can be empty
 
 3. write as many renderers as file types you want to render
-if you want to render one js controller and one html view, then you have to write:
-- a myNewFeatureRenderer in src/engines/myNewEngine/render/class
-- a myNewFeatureRenderer in src/engines/myNewEngine/render/view
-
-they have to implement a render function that:
-- receives as a parameter each apzFile you have created in the factory
-- returns the content of the file
-
-for renderization you can use the following components:
-- in src/default/render/:
-	- appRenderer: to render default application
-	- classRenderer: to render default class application
-	- viewRenderer: ro render default view appliction, viewRenderer uses layoutRenderer to render elements
-	- layoutRenderer: to render default view elements (see file for api), layoutRenderer uses formRenderer to render form elements
-	- formRenderer: to render form elements (see file for api)
-- menuRenderer (in src/default/render/class and src/default/render/view): to render menu elements
-- in src/engines/angularjs: all the angularjs related stuff is here:
-	- factories: for angularjs app, menu and iud features
-	- render: 
-		- class and view renderers for angularjs app, menu and iu features
-		- html and kendo renderers for overwrite default html functionality
-- in src/render/class/js: simple renderers for javascript files and functions
-- in src/render/view/html: renderers for html files with a lot of functionality, you can overwrite them as src/render/view/bootstrap does
-- in src/render/view/bootstrap: renderer for html files, overwritting default html functionality
-
-you can also edit those files to change the default behaivor in renderization
+	- if you want to render one js controller and one html view, then you have to write:
+		- a myNewFeatureRenderer in src/engines/myNewEngine/render/class
+		- a myNewFeatureRenderer in src/engines/myNewEngine/render/view
+	
+	- they have to implement a render function that:
+		- receives as a parameter each apzFile you have created in the factory
+		- returns the content of the file
+	
+	- for renderization you can use the following components:
+		- in src/default/render/:
+			- appRenderer: to render default application
+			- classRenderer: to render default class application
+			- viewRenderer: ro render default view appliction, viewRenderer uses layoutRenderer to render elements
+			- layoutRenderer: to render default view elements (see file for api), layoutRenderer uses formRenderer to render form elements
+			- formRenderer: to render form elements (see file for api)
+		- menuRenderer (in src/default/render/class and src/default/render/view): to render menu elements
+		- in src/engines/angularjs: all the angularjs related stuff is here:
+			- factories: for angularjs app, menu and iud features
+			- render: 
+				- class and view renderers for angularjs app, menu and iu features
+				- html and kendo renderers for overwrite default html functionality
+		- in src/render/class/js: simple renderers for javascript files and functions
+		- in src/render/view/html: renderers for html files with a lot of functionality, you can overwrite them as src/render/view/bootstrap does
+		- in src/render/view/bootstrap: renderer for html files, overwritting default html functionality
+	
+	- you can also edit those files to change the default behaivor in renderization
 
 there is some advanced stuff about interaction between angularjs features, like:
 - setting a menuOptions[] property in any feature to add options to the menu 
