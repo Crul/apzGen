@@ -74,11 +74,11 @@ define(['src/apzDefinitionHelper'],
 ```
 
 ### detailed process
-apzGen is everything about features
-features are organized by engines
-factories create features
-features create apzFiles
-apzFiles are rendered by renderers and written in files
+- apzGen is everything about features
+- features are organized by engines
+- factories create features
+- features create apzFile specifications
+- apzFiles are rendered by renderers and written in files
 
 each implemented feature provides a specific functionality:
 - angularjs\app: app features are special features; angularjs feature generates:
@@ -121,7 +121,7 @@ if you want to add a feature (e.g.: myNewFeature in myNewEngine) you have to:
 				- renderer: (optional) if your render follows naming convention it can be empty
 
 3. write as many renderers as file types you want to render
-	- if you want to render one js controller and one html view, then you have to write:
+	- if you want to render one js file and one html view, then you have to write:
 		- a myNewFeatureRenderer in src/engines/myNewEngine/render/class
 		- a myNewFeatureRenderer in src/engines/myNewEngine/render/view
 	
