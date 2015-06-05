@@ -6,7 +6,7 @@ define(['src/system/fsService', 'src/apzContext'],
 		var seedPath = apzContext.seedPath;
 		var allFilesWildcardPattern = /\*\.\*$/;
 
-		function create(definition, appDefinition) {
+		function create(definition) {
 			var seed = require('util')._extend({}, definition);
 			seed.apzFiles = getApzFiles(definition);
 			return seed;

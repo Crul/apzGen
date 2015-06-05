@@ -3,7 +3,7 @@ define([], function () {
 	dis.create = create;
 	var controllers = ['menu/menu.js'];
 
-	function create(definition, appDefinition) {
+	function create(definition) {
 		var menu = require('util')._extend({}, definition);
 		
 		var featureName = menu.featureName;		

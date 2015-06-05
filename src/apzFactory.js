@@ -31,7 +31,7 @@ define(
 
 		function createApzFeatures(apzDefinition) {
 			initFeatureDefinitions(apzDefinition);
-			return createRecursiveFeatures(apzDefinition, apzDefinition.features);
+			return createRecursiveFeatures(apzDefinition.features);
 		}
 
 		function initFeatureDefinitions(apzDefinition) {
@@ -44,14 +44,14 @@ define(
 			}
 		}
 
-		function createRecursiveFeatures(apzDefinition, featureDefinitions, features) { // two params to allow recursivity
+		function createRecursiveFeatures(featureDefinitions, features) { // two params to allow recursivity
+			if (!featureDefinitions) return;
 			features = features || [];
-			if (!featureDefinitions) return [];
 			for (var featureName in featureDefinitions) { // not [].map() because iterating {}
 				var featureDefinition = featureDefinitions[featureName];
-				var feature = createFeature(featureDefinition, apzDefinition);				
-				createRecursiveFeatures(apzDefinition, feature.dependentFeatures, features);
-				features = addFeatures(features, feature);
+				var feature = createFeature(featureDefinition);
+				createRecursiveFeatures(feature.dependentFeatures, features);
+				addFeatures(features, feature);
 			}
 			return features;
 		}
@@ -65,15 +65,13 @@ define(
 
 			featuresToAdd.forEach(addFeature);
 
-			return featureArray;
-			
 			function addFeature(featureToAdd) {
 				if (featureArray.filter(getByFeatureName).length > 0) {
 					logger.debug('skip duplicated feature: ' + featureToAdd.featureName);
 					return;
 				}
 				logger.debug('created: ' + featureToAdd.featureName);
-				featureArray.push(featureToAdd);	
+				featureArray.push(featureToAdd);
 				function getByFeatureName(feature) {
 					return feature.featureName == featureToAdd.featureName;
 				}

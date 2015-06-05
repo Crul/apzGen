@@ -17,7 +17,7 @@ define(['src/engines/angularjs/factories/appFactory'],
 
 		var dependentFeatures = getDependentFeatures();
 
-		function create(definition, app) {
+		function create(definition) {
 			var iud = require('util')._extend({}, definition);
 
 			iud.dependentFeatures = dependentFeatures;
@@ -26,7 +26,7 @@ define(['src/engines/angularjs/factories/appFactory'],
 			iud.angularjs = iud.angularjs || {};
 			iud.angularjs.model = initModel(iud);
 			iud.angularjs.routes = getRoutes(iud);			
-			iud.angularjs.factories = getDependentFactories(app);
+			iud.angularjs.factories = getDependentFactories();
 			iud.angularjs.controllers = getControllers(iud);
 			iud.angularjs.menuOptions = getMenuOptions(iud);
 
@@ -47,7 +47,7 @@ define(['src/engines/angularjs/factories/appFactory'],
 			return _dependentFeatures;
 		}
 
-		function getDependentFactories(app) {
+		function getDependentFactories() {
 			return dependentServices.map(getDependentPathFn('services'))
 				.concat(dependentCtrlInitializers.map(getDependentPathFn('controllers')));
 		}
