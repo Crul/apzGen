@@ -1,30 +1,27 @@
-### apzGen
+# apzGen
 Node.js application generator. A non-ambitious project just for fun.
 For now, only foo angularjs+kendoui+bootstrap arquitecture.
 
-# node_modules required
+## node_modules required
 - requirejs
 - [optional] express (for hosting the generated app)
 
-### how it works
+## how it works
 - apzGen generates the application files from definition:
   - app properties: title, engines, third party libs dependencies
   - features: the core of apzGen
   - particular engine configuration (angularjs)
 
-each implemented feature provides a specific functionality:
-- angularjs\app: app features are special features; angularjs feature generates:
-	- app.js file with the angularjs bootstrapping 
-	- index.html file with the file includes and html code for angularjs
-- seedFeature copies a file or a folder to output path
-- menuFeature reads menu options from other features and generates: 
-	- menu angularjs controller 
-	- menu angularjs view
-- iudFeature: reads fields definition from model info and generates:
-	- list angularjs controller
-	- list angularjs view 
-	- iud (crud) angularjs controller 
-	- iud (crud) angularjs view
+## generating code
+```
+  node _run.js
+```
+## running web server
+you can change the port in webserver.js file
+```
+  node webServer.js
+```
+now you should see the application in http://localhost/
 
 ## application definition structure
 edit definition.js to change the configuration:
@@ -76,23 +73,26 @@ define(['src/apzDefinitionHelper'],
 
 ```
 
-## generating code
-```
-  node _run.js
-```
-## running web server
-you can change the port in webserver.js file
-```
-  node webServer.js
-```
-now you should see the application in http://localhost/
-
 ### detailed process
 apzGen is everything about features
 features are organized by engines
 factories create features
 features create apzFiles
 apzFiles are rendered by renderers and written in files
+
+each implemented feature provides a specific functionality:
+- angularjs\app: app features are special features; angularjs feature generates:
+	- app.js file with the angularjs bootstrapping 
+	- index.html file with the file includes and html code for angularjs
+- seedFeature copies a file or a folder to output path
+- menuFeature reads menu options from other features and generates: 
+	- menu angularjs controller 
+	- menu angularjs view
+- iudFeature: reads fields definition from model info and generates:
+	- list angularjs controller
+	- list angularjs view 
+	- iud (crud) angularjs controller 
+	- iud (crud) angularjs view
 
 ## adding new features
 if you want to add a feature (e.g.: myNewFeature in myNewEngine) you have to:
