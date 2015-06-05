@@ -31,7 +31,7 @@ define(['src/render/view/html/htmlRenderer'],
 			}
 		}
 
-		function renderInclude(config, file) {
+		function renderInclude(config, file) { // multiple returns
 			if (typeof (file) === 'string')
 				file = { fileName: file };
 

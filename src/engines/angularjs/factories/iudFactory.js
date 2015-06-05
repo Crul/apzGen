@@ -37,14 +37,14 @@ define(['src/engines/angularjs/factories/appFactory'],
 			var _dependentFeatures = {};
 			dependentServices.forEach(getSetDependentFileFn('services'));
 			dependentCtrlInitializers.forEach(getSetDependentFileFn('controllers'));
-
+			return _dependentFeatures;
+			
 			function getSetDependentFileFn(path) {
 				return function setDependantFile(fileName) {
 					var featureName = getDependentPath(path + '/' + fileName);
 					_dependentFeatures[fileName] = { featureType: 'seed', featureName: featureName };
 				};
 			}
-			return _dependentFeatures;
 		}
 
 		function getDependentFactories() {

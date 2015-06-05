@@ -51,7 +51,19 @@ define(
 			}
 		}
 
-		function addFeature(featureArray, featureToAdd) {
+		function createFeature(definition) { // multiple returns
+			var factory = factoryResolver.resolve(definition);
+			if (!factory)
+				return {}; // defensive (error logged in factoryResolver)
+
+			var feature = factory.create(definition);
+			if (!feature)
+				logger.error('FEATURE FACTORY RETURNED UNDEFINED:\ndefinition: ' + JSON.stringify(definition));
+
+			return feature;
+		}
+
+		function addFeature(featureArray, featureToAdd) { // multiple returns
 			if (featureArray.filter(getByFeatureName).length > 0) {
 				logger.debug('skip duplicated feature: ' + featureToAdd.featureName);
 				return;
@@ -62,14 +74,6 @@ define(
 			function getByFeatureName(feature) {
 				return feature.featureName == featureToAdd.featureName;
 			}
-		}
-
-		function createFeature(definition) {
-			var factory = factoryResolver.resolve(definition);
-			if (!factory) return {}; // defensive (error logged in factoryResolver)
-			var feature = factory.create(definition);
-			if (!feature) logger.error('FEATURE FACTORY RETURNED UNDEFINED:\ndefinition: ' + JSON.stringify(definition));
-			return feature;
 		}
 
 		return dis;

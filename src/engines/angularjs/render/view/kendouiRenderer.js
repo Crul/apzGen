@@ -11,17 +11,17 @@ define(['src/engines/angularjs/render/view/htmlRenderer'],
 			return angularjsRenderer.renderInput(fieldName, inputAttributes, inputConfig);
 		}
 
-		function getInputControlAttrigute(fieldType) {
+		function getInputControlAttrigute(fieldType) { // multiple returns
 			switch (fieldType) {
 				case 'numeric':
 					return 'kendo-numeric-text-box';
 			}
 		}
-		
-		function clearBootstrapCssClass(inputConfig, inputAttributes){
-			if (inputConfig.fieldType != 'numeric')
+
+		function clearBootstrapCssClass(inputConfig, inputAttributes) { // multiple returns
+			if (inputConfig.fieldType !== 'numeric')
 				return inputAttributes;
-			// TODO how?
+			
 			return (inputAttributes || '').replace('class="form-control"');
 		}
 

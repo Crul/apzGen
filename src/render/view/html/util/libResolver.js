@@ -44,7 +44,7 @@ define([], function () {
 		return { fileName: libPath };
 	}
 
-	function resolveCssLib(lib) {
+	function resolveCssLib(lib) { // multiple returns
 		switch (lib.toLowerCase()) {
 			case 'bootstrap':
 				return cdn.bootstrap + 'css/bootstrap.min.css';
@@ -60,7 +60,7 @@ define([], function () {
 		}
 	}
 
-	function resolveJsLib(lib) {
+	function resolveJsLib(lib) { // multiple returns
 		switch (lib.toLowerCase()) {
 			case 'jquery':
 				return cdn.jquery;

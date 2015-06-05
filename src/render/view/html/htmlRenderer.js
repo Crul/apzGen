@@ -103,15 +103,18 @@ define(['src/system/logger', 'src/system/codeRenderer'],
 			return renderTag('li', option.html, option.liAttributes);
 		}
 
-		function renderTag(tag, html, attributes) {
+		function renderTag(tag, html, attributes) { // multiple returns
 			var openTag = concat(tag, attributes);
-			if (!html) return '\n<' + openTag + ' />';
+			if (!html)
+				return '\n<' + openTag + ' />';
 
 			if (typeof (html) !== 'string')
 				logger.error('htmlRenderer.renderTag: HTML IS NOT STRING: ' + JSON.stringify(html));
 
 			var content = (html || '').trim();
-			if (content) content = dis.ident('\n' + content) + '\n';
+			if (content)
+				content = dis.ident('\n' + content) + '\n';
+				
 			return '\n<' + openTag + '>' + content + '</' + tag + '>';
 		}
 

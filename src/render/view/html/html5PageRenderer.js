@@ -22,13 +22,11 @@ define(
 		}
 
 		function renderHead(data) {
-			return renderPageElement(data, 'head',
-				libResolver.resolveCssFiles, includeRenderer.renderCssIncludes);
+			return renderPageElement(data, 'head', libResolver.resolveCssFiles, includeRenderer.renderCssIncludes);
 		}
 
 		function renderBody(data) {
-			return renderPageElement(data, 'body',
-				libResolver.resolveJsFiles, includeRenderer.renderJsIncludes);
+			return renderPageElement(data, 'body', libResolver.resolveJsFiles, includeRenderer.renderJsIncludes);
 		}
 
 		function renderPageElement(data, element, resolveFilesFn, renderIncludesFn) {

@@ -11,11 +11,17 @@ define(['src/default/render/classRenderer'],
 			return classRenderer.render(menu.featureName, body);
 		}
 
-		function createAreas(menu, app) {
+		function createAreas(menu, app) {  // multiple returns
 			var definition = menu.definition;
-			if (definition.areas) return definition.areas;
-			if (definition.options) return [definition];
-			if (Array.isArray(definition)) return definition;
+			if (definition.areas)
+				return definition.areas;
+
+			if (definition.options)
+				return [definition];
+
+			if (Array.isArray(definition))
+				return definition;
+
 			return [{ options: createOptions(menu, app.features) }];
 		}
 
@@ -33,8 +39,10 @@ define(['src/default/render/classRenderer'],
 			}
 		}
 
-		function createFromFeature(feature) {
-			if (!feature.angularjs) return [];
+		function createFromFeature(feature) { // multiple returns
+			if (!feature.angularjs)
+				return [];
+
 			return feature.angularjs.menuOptions || [];
 		}
 

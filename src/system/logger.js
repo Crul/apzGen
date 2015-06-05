@@ -41,7 +41,7 @@ define([], function () {
 		console.log(message);
 	}
 
-	function getConfigFromString(messageOrConfig) {
+	function getConfigFromString(messageOrConfig) { // multiple returns
 		if (typeof (messageOrConfig) === 'string')
 			return { message: messageOrConfig };
 		else
