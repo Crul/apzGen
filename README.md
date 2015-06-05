@@ -95,7 +95,7 @@ features create apzFiles
 apzFiles are rendered by renderers and written in files
 
 so, if you want to add a feature (e.g.: myNewFeature in myNewEngine) you have to:
-1	add a new engine and a new feature in the definition file:
+1. add a new engine and a new feature in the definition file:
 ```
 	var apzDefinition = apzDefinitionHelper.create()
 		(...)
@@ -104,7 +104,7 @@ so, if you want to add a feature (e.g.: myNewFeature in myNewEngine) you have to
 		.addFeatures({ featureType: 'myNewFeature', (...) });
 ```
 
-2	write a factory that creates the feature
+2. write a factory that creates the feature
 save it in src/engines/myNewEngine/factories
 it has to implement a create function that:
 - receives as a parameter the object from appDefinition.features.myNewFeature
@@ -119,7 +119,7 @@ the properties of apzFiles are:
 - fileType: 'class', 'view' or 'seed', if 'class' or 'view', file extension should be inferred from it
 - renderer: (optional) if your render follows naming convention it can be empty
 
-3	write as many renderers as file types you want to render
+3. write as many renderers as file types you want to render
 if you want to render one js controller and one html view, then you have to write:
 - a myNewFeatureRenderer in src/engines/myNewEngine/render/class
 - a myNewFeatureRenderer in src/engines/myNewEngine/render/view
