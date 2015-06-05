@@ -1,39 +1,63 @@
-define(
-	[
-		'src/system/logger',
-		'src/engines/angularjs/factories/appFactory'
-	],
-	function (logger, appFactory) {
+define(['src/system/logger'],
+	function (logger) {
 		var dis = {};
 		dis.create = create;
 
-		var requiredAngularjsFactories = [
-			'seedwork/services/dataservice.js',
-			'seedwork/controllers/baseCtrlInitializer.js',
-			'seedwork/controllers/listCtrlInitializer.js',
-			'seedwork/controllers/iudCtrlInitializer.js'
-		];
+		var requiredFeatures = ['context', 'dataservice', 'notifier'];
+
+		var dependentFilesPath = 'seedwork/controllers/';
+		var dependentFiles = ['baseCtrlInitializer', 'listCtrlInitializer', 'iudCtrlInitializer'];
+
+		var dependentFeatures = {};
+		dependentFiles.forEach(setDependentFile);
+
+		function setDependentFile(fileName) {
+			var featureName = getDependentPath(fileName);
+			dependentFeatures[fileName] = { featureType: 'seed', featureName: featureName };
+		}
 
 		function create(definition, app) {
 			var iud = require('util')._extend({}, definition);
 
-			appFactory.setFactories(app, requiredAngularjsFactories);
+			checkRequiredFeatures(app);
+			setDependentFactories(app);
 
-			iud.model = initModel(iud.model);
+			iud.model = initModel(iud);
 			iud.routes = getRoutes(iud);
 			iud.controllers = getControllers(iud);
 			iud.menuOptions = getMenuOptions(iud);
 			iud.apzFiles = getApzFiles(iud.featureName);
 
+			iud.dependentFeatures = dependentFeatures;
+
 			return iud;
 		}
 
-		function initModel(model) {
-			model = model || [];
-			if (Array.isArray(model))
-				model = { fields: model };
-			model.fields = model.fields.map(initModelField);
-			return model;
+		function setDependentFactories(app) {
+			if (!app.angularjs)
+				logger.error("iudFactory: angularJs NOT FOUND IN APP");
+
+			app.angularjs.factories = (app.angularjs.factories || [])
+				.concat(dependentFiles.map(getDependentPath));
+		}
+
+		function getDependentPath(fileName) {
+			return dependentFilesPath + fileName + '.js';
+		}
+
+		function checkRequiredFeatures(app) {
+			requiredFeatures.forEach(checkRequiredFeature);
+
+			function checkRequiredFeature(requiredFeature) {
+				if (!app.features[requiredFeature])
+					logger.error('iudFactory.create: REQUIRED FEATURE NOT FOUND: ' + requiredFeature);
+			}
+		}
+
+		function initModel(iud) {
+			var fields = iud.model || iud.fields;
+			fields = fields.map(initModelField);
+			return { fields: fields };
 		}
 
 		function initModelField(field) {

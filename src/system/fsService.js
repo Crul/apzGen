@@ -11,13 +11,13 @@ define(['src/system/logger'], function (logger) {
 	dis.getFileInfo = getFileInfo;
 	dis.getNameNoExtension = getNameNoExtension;
 	dis.getFileExtension = getFileExtension;
+	dis.readFile = readFile;
+	dis.readAllFiles = readAllFiles;
 	dis.writeFiles = writeFiles;
-	dis.copyFolder = copyFolder;
 	dis.clearFolder = clearFolder;
 	dis.concatPath = concatPath;
 	dis.getAllDeeps = getAllDeeps;
 
-	var outputFolder = 'bin/';
 	var fileInfoPatterns = {
 		path: /([a-zA-Z]*\/)*/i,
 		fileName: /[a-zA-Z|-]*\.[a-zA-Z]*/i,
@@ -51,59 +51,56 @@ define(['src/system/logger'], function (logger) {
 		return getFirstOrEmpty(fileName, fileInfoPatterns.extension);
 	}
 
-	function writeFiles(apzFiles) {
-		logger.log('writting apzFiles ...');
+	function readFile(filePath) {
+		return fs.readFileSync(filePath);
+	}
+
+	function readAllFiles(folder) {
+		return fs.readdirSync(folder);
+	}
+
+	function writeFiles(apzFiles, outputFolder) {
 		apzFiles.forEach(writeFile);
-	}
 
-	function writeFile(apzFile) {
-		var filePath = apzFile.path;
-		var fileName = apzFile.fileName;
-		var content = apzFile.content;
+		function writeFile(apzFile) {
+			var filePath = apzFile.path;
+			var fileName = apzFile.fileName;
+			var content = apzFile.content;
 
-		filePath = (filePath || '');
-		filePath = path.join(outputFolder, filePath);
-		if (!fs.existsSync(filePath)) fs.mkdirSync(filePath);
-		filePath = path.join(filePath, fileName);
-		fs.writeFileSync(filePath, content);
-		logger.debug('writen: ' + filePath);
-	}
+			filePath = (filePath || '');
+			filePath = path.join(outputFolder, filePath);
 
-	function copyFolder(src, target) {
-		logger.log('copying "' + src + '" to "' + target + '" ...');
-		copyRecursiveSync(src, target);
-	}
+			getAllDeeps(filePath).forEach(createPath);
+			var indexOfFolderSeparator = Math.max(fileName.lastIndexOf('/'), fileName.lastIndexOf('\\'));
+			if (indexOfFolderSeparator > 0) {
+				var pathFromFileName = concatPath(outputFolder, fileName.substring(0, indexOfFolderSeparator));
+				getAllDeeps(pathFromFileName).forEach(createPath);
+			}
 
-	function copyRecursiveSync(src, target) {
-		var exists = fs.existsSync(src);
-		var stats = exists && fs.statSync(src);
-		var isDirectory = exists && stats.isDirectory();
-		if (!isDirectory) {
-			fs.createReadStream(src).pipe(fs.createWriteStream(target));
-			return;
+			filePath = path.join(filePath, fileName);
+			fs.writeFileSync(filePath, content);
+			logger.debug('writen: ' + filePath);
 		}
-		if (!fs.existsSync(target)) fs.mkdir(target);
-		fs.readdirSync(src).forEach(_copyRecursiveSync);
-		logger.debug('copied: ' + src + ', into: ' + target);
+	}
 
-		function _copyRecursiveSync(childItemName) { // _ because naming collision
-			copyRecursiveSync(path.join(src, childItemName), path.join(target, childItemName));
-		}
+	function createPath(_path) {
+		if (fs.existsSync(_path)) return;
+		fs.mkdirSync(_path);
+		logger.debug('folder created: ' + _path);
 	}
 
 	function clearFolder(folder) {
-		logger.log('clearing bin ...');
 		if (fs.existsSync(folder)) removeFolder(folder);
 		fs.mkdirSync(folder);
 	}
 
 	function removeFolder(folder) {
 		// thanks! https://gist.github.com/tkihira/2367067		
-		fs.readdirSync(folder).forEach(removeFolderContent);
+		readAllFiles(folder).forEach(removeFolderContent);
 		fs.rmdirSync(folder);
 		logger.debug('removed: ' + folder);
-		
-		function removeFolderContent(element){
+
+		function removeFolderContent(element) {
 			var nextPath = path.join(folder, element);
 			var stat = fs.statSync(nextPath);
 			if (nextPath == "." || nextPath == "..") {
@@ -117,7 +114,7 @@ define(['src/system/logger'], function (logger) {
 			}
 		}
 	}
-	
+
 	function concatPath() {
 		var pathArray = [];
 		for (var i = 0; i < arguments.length; i++) // not [].forEach() because arguments is not an array (it only has length property)
@@ -135,7 +132,7 @@ define(['src/system/logger'], function (logger) {
 
 	function getAllDeeps(path) {
 		var currentDeep = '';
-		return path.split('/').map(getCurrentPath);
+		return path.replace(/\\/g, '/').split('/').map(getCurrentPath);
 
 		function getCurrentPath(token) {
 			currentDeep += token + '/';

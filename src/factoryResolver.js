@@ -5,7 +5,7 @@ define(['src/system/resolverFactory'],
 		
 		var rendererResolver = resolverFactory.createResolver('factories', 'Factory.js');
 		function resolve(definition){
-			return rendererResolver.resolve(definition, definition.factory);
+			return rendererResolver.resolve(definition, definition.featureType);
 		}
 		
 		return dis;

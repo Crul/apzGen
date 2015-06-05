@@ -5,11 +5,12 @@ define(['src/default/render/viewRenderer'],
 
 		var formAttributes = '';
 		var panelFormAttributes = 'style="margin-top: 24px;"';
-		function render(feature) {
-			feature.model = feature.model || {};
+		function render(apzFile) {
+			var feature = apzFile.feature;
+			var fields = feature.model.fields || [];
 			var backButton = viewRenderer.renderLinkButton('back', '#/' + feature.featureName + '/list'); // TODO access routes by properties
 			var saveButton = viewRenderer.renderButton('save', 'save()');
-			var formContent = renderFormControls(feature.model.fields);
+			var formContent = renderFormControls(fields);
 			var form = viewRenderer.renderForm(formContent, formAttributes, panelFormAttributes);
 
 			return backButton + form + saveButton;

@@ -6,6 +6,8 @@ define(
 	function (classRenderer, viewRenderer) {
 		var dis = {};
 		
+		dis.seedPath = '';
+		
 		dis.engines = [];
 		
 		dis.fileExtensions = {

@@ -1,37 +1,36 @@
 define(
 	[
+		'src/system/logger',
 		'src/engines/angularjs/factories/app/factoryFactory',
 		'src/engines/angularjs/factories/app/controllerFactory',
 		'src/engines/angularjs/factories/app/routeFactory'
 	],
-	function (factoryFactory, controllersFactory, routeFactory) {
+	function (logger, factoryFactory, controllersFactory, routeFactory) {
 		var dis = {};
 		dis.create = create;
-		dis.setFactories = setFactories;
 
-		var angularjsDependencies = ['ngRoute', 'LocalStorageModule', 'kendo.directives'];
-		var requiredFactories = ['seedwork/services/context.js'];
 		var requiredLibs = [
 			'jquery',
 			'angularjs',
 			'angularjs.route',
 			'kendo',
-			'lib/angular-local-storage.min.js',
+			'lib/angular-local-storage.min.js'
 		];
-
+		var angularjsDependencies = ['ngRoute', 'LocalStorageModule', 'kendo.directives'];
+		var requiredFactories = ['context', 'dataservice', 'notifier'];
 		var homeApzFiles = [
-			{ fileType: 'class', path: '', fileName: 'app' },
-			{ fileType: 'view', path: '', fileName: 'app', renderer: 'index' }
+			{ fileType: 'class', fileName: 'app' },
+			{ fileType: 'view', fileName: 'app', renderer: 'index' }
 		];
 
 		function create(definition, features) {
 			var app = require('util')._extend({}, definition);
 			app.path = '';
 			app.featureName = app.appName || app.featureName || 'apzApp';
-			
+
 			app.apzFiles = getApzFiles(app);
 			app.libs = getThirdPartyLibs(app, requiredLibs);
-			
+
 			app.angularjs = app.angularjs || {};
 			app.angularjs.dependencies = angularjsDependencies;
 			app.angularjs.factories = createFactories(app, features);
@@ -52,15 +51,23 @@ define(
 			}
 		}
 
-		function setFactories(app, factories) {
-			app.angularjs = app.angularjs || {};
-			app.angularjs.factories = (app.angularjs.factories || []).concat(factories);
-		}
-
 		function createFactories(app, features) {
-			return requiredFactories
+			return requiredFactories.map(getFactoryFromFeatures)
 				.concat(app.angularjs.factories || [])
 				.concat(factoryFactory.createFactories(features));
+
+			function getFactoryFromFeatures(factoryName) {
+				var factories = features.filter(getFactoryByFeatureName);
+				if (factories.length === 0) {
+					logger.error("appFactory.createFactories: REQUIRED FACTORY NOT FOUND: " + factoryName);
+					return;
+				}
+				return factories[0].path + factories[0].featureName;
+
+				function getFactoryByFeatureName(feature) {
+					return feature.featureName == factoryName + '.js';
+				}
+			}
 		}
 
 		function createRoutes(app, features) {
@@ -72,8 +79,8 @@ define(
 			return (app.angularjs.controllers || [])
 				.concat(controllersFactory.createControllers(features));
 		}
-		
-		function getApzFiles(app){
+
+		function getApzFiles(app) {
 			return (app.apzFiles || []).concat(homeApzFiles);
 		}
 

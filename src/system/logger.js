@@ -33,6 +33,9 @@ define([], function () {
 
 		if (!config.message) return;
 
+		if (typeof (config.message) !== 'string')
+			config.message = JSON.stringify(config.message);
+
 		var linePrefix = config.linePrefix || '';
 		var message = linePrefix + config.message.replace(/\n/g, '\n' + linePrefix);
 		console.log(message);

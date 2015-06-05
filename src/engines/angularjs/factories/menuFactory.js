@@ -26,8 +26,8 @@ define([], function () {
 	
 	function getApzFiles(featureName){
 		return [
-			{ fileType: 'class', fileName: featureName },
-			{ fileType: 'view', fileName: featureName },
+			{ fileType: 'class', path: featureName, fileName: featureName },
+			{ fileType: 'view', path: featureName, fileName: featureName },
 		];
 	}
 

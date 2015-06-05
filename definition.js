@@ -1,26 +1,44 @@
-define([], function () {
-	var model = {
-		tenant: ['name', 'description', 'contact'],
-		user: [
-			'name', 
-			{ fieldName: 'login', label: 'username'},  
-			'password', 
-			{ fieldName: 'age', fieldType: 'numeric' }]
-	};
+define(['src/apzDefinitionHelper'],
+	function (apzDefinitionHelper) {
 
-	var apzDefinition = {
-		title: 'generatedApz',
-		libs: ['jquery', 'bootstrap'],
-		engines: ['angularJs']
-	};
-	
-	apzDefinition.features = {
-		menu: true,
-		tenant: { factory: 'iud', model: model.tenant },
-		user: { factory: 'iud', model: model.user }
-	};
-	
-	// TODO define execution strategies [ direct, command ]
-	
-	return apzDefinition;
-});
+		var model = { // TODO move to .json file
+			tenant: {
+				fields: ['name', 'description', 'contact']
+			},
+			user: {
+				fields: [
+					'name',
+					{ fieldName: 'login', label: 'username' },
+					'password',
+					{ fieldName: 'age', fieldType: 'numeric' }
+				]
+			}
+		};
+
+		var libSeed = 'lib/*.*';
+		var servicesSeed = {
+			path: 'seedwork/services/',
+			features: {
+				context: 'context.js',
+				notifier: 'notifier.js',
+				dataservice: 'dataservice.js'
+			}
+		};
+		var iudFeatures = { featureType: 'iud', features: model };
+
+		var apzDefinition = apzDefinitionHelper.create()
+			.setTitle('generated apz')
+			.addLibs(['jquery', 'bootstrap'])
+			.addEngines('angularjs')
+			.addSeeds(libSeed)
+			.addSeeds(servicesSeed)
+			.addFeatures('menu')
+			.addFeatures(iudFeatures);
+
+		apzDefinition.definition.angularjs = {
+			notifier: 'notifier',
+			dataservice: 'dataservice'
+		};
+
+		return apzDefinition.definition;
+	});

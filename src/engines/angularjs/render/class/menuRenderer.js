@@ -3,7 +3,8 @@ define(['src/default/render/classRenderer'],
 		var dis = {};
 		dis.render = render;
 
-		function render(menu, app) {
+		function render(apzFile, app) {
+			var menu = apzFile.feature;
 			menu.model = menu.model || {};
 			menu.model.areas = createAreas(menu, app);
 			var body = classRenderer.renderModelInitializacion(menu.model);

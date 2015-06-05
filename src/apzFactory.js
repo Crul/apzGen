@@ -21,6 +21,7 @@ define(
 		}
 
 		function initApz(apzDefinition) {
+			apzContext.seedPath = 'seed' || apzDefinition.seedPath;
 			apzContext.engines = apzDefinition.engines || [];
 			if (apzContext.engines.length === 0)
 				apzDefinition.engines.push(defaultEngine);
@@ -30,10 +31,10 @@ define(
 
 		function createApzFeatures(apzDefinition) {
 			initFeatureDefinitions(apzDefinition);
-			return createFeatures(apzDefinition);
+			return createFeatures(apzDefinition, apzDefinition.features);
 		}
-		
-		function initFeatureDefinitions(apzDefinition){
+
+		function initFeatureDefinitions(apzDefinition) {
 			var featureDefinitions = apzDefinition.features;
 			for (var featureName in featureDefinitions) { // not [].map() because iterating {}
 				var featureDefinition = featureDefinitions[featureName];
@@ -42,17 +43,38 @@ define(
 				featureDefinitions[featureName].definition = clonedFeatureDefinition;
 			}
 		}
-		
-		function createFeatures(apzDefinition){
+
+		function createFeatures(apzDefinition, featureDefinitions) { // two params to allow recursivity
 			var features = [];
-			var featureDefinitions = apzDefinition.features;
+			if (!featureDefinitions) return features;
 			for (var featureName in featureDefinitions) { // not [].map() because iterating {}
 				var featureDefinition = featureDefinitions[featureName];
-				var feature = createFeature(featureDefinition, apzDefinition);
-				features.push(feature);
+				var feature = createFeature(featureDefinition, apzDefinition);				
+				var dependentFeatures = createFeatures(apzDefinition, feature.dependentFeatures);
+				addFeatures(features, dependentFeatures);				
+				addFeatures(features, feature);
 			}
 			return features;
-		} 
+		}
+
+		function addFeatures(featureArray, featuresToAdd) {
+			if (!Array.isArray(featuresToAdd))
+				featuresToAdd = [featuresToAdd];
+
+			featuresToAdd.forEach(addFeature);
+
+			function addFeature(featureToAdd) {
+				if (featureArray.filter(getByFeatureName).length > 0) {
+					logger.debug('skip duplicated feature: ' + featureToAdd.featureName);
+					return;
+				}
+				featureArray.push(featureToAdd);
+
+				function getByFeatureName(feature) {
+					return feature.featureName == featureToAdd.featureName;
+				}
+			}
+		}
 
 		function createFeature(definition, param) {
 			var factory = factoryResolver.resolve(definition);

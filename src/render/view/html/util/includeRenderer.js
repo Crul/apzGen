@@ -26,7 +26,7 @@ define(['src/render/view/html/htmlRenderer'],
 		function renderIncludes(files, config) {
 			return (files || []).map(_renderInclude).join('');
 
-			function _renderInclude(file) { // _ because naming collision
+			function _renderInclude(file) {
 				return renderInclude(config, file);
 			}
 		}

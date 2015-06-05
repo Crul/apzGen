@@ -18,7 +18,7 @@ define([], function () {
 		code = rendered;
 		return rendered;
 
-		function _renderVariableToken(variableToken) { // _ because naming collision
+		function _renderVariableToken(variableToken) {
 			rendered = renderVariableToken(rendered, data, variableToken);
 		}
 	}

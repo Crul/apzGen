@@ -3,7 +3,7 @@ define(['src/default/render/layoutRenderer'],
 		var dis = {};
 		dis.render = render;
 
-		function render(feature) {
+		function render(apzFile) {
 			var liOptions = [{
 				liAttributes: 'ng-repeat="option in area.options" style="margin-top: 12px;"',
 				html: layoutRenderer.renderLinkButton(

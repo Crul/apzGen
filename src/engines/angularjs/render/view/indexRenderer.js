@@ -3,7 +3,8 @@ define(['src/render/view/html/html5PageRenderer'],
 		var dis = require('util')._extend({}, html5PageRenderer);
 		dis.render = render;
 
-		function render(app) {
+		function render(apzFile) {
+			var app = apzFile.feature;
 			var appName = app.featureName;
 			var title = app.title || appName || 'angularjsApp';
 			var htmlAttributes = "ng-app='" + appName + "'";

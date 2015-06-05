@@ -14,10 +14,10 @@ define(
 			logger.log('creating apzFiles ...');
 			apz.apzFiles = createElementApzFiles(apz);
 			var apzFiles = apz.apzFiles.slice(0);
-			apz.features.forEach(concatFeatures);
+			apz.features.forEach(concatFeatureApzFiles);
 			return apzFiles;
 
-			function concatFeatures(feature) {
+			function concatFeatureApzFiles(feature) {
 				apzFiles = apzFiles.concat(createElementApzFiles(feature));
 			}
 		}
@@ -36,8 +36,7 @@ define(
 
 		function createApzFile(feature, filePath, fileName, fileType, renderer) {
 			fileType = fileType || getFileTypeByExtension(fileName);
-
-			if (filePath === undefined) filePath = fileName;
+			filePath = filePath || '';
 
 			if (fileName.indexOf('.') < 0)
 				fileName += '.' + apzContext.fileExtensions[fileType];
@@ -48,7 +47,7 @@ define(
 				path: filePath,
 				fileName: fileName,
 				fullPath: path.join(filePath, fileName),
-				renderer: renderer || feature.factory
+				renderer: renderer || feature.featureName
 			};
 
 			logger.debug('created: ' + apzFile.fullPath);
@@ -56,7 +55,7 @@ define(
 		}
 
 		function getFileTypeByExtension(filePath) {
-			var fileExtension = fsService.getExtension(filePath);
+			var fileExtension = fsService.getFileExtension(filePath);
 			for (var fileExtensionType in apzContext.fileExtensions) { // not [].forEach() because iterating {}
 				if (fileExtension == apzContext.fileExtensions[fileExtensionType])
 					return fileExtensionType;

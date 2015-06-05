@@ -7,7 +7,8 @@ define(['src/default/render/viewRenderer'],
 		var listTableActionColumns = [' ', ' '];
 		var listTableActionCells = ['edit', 'remove'].map(renderActionCell).join('');
 
-		function render(feature) {
+		function render(apzFile) {
+			var feature = apzFile.feature;
 			var featureName = feature.featureName;
 			var view = viewRenderer.renderLinkButton('back', '#/'); // TODO back > renderBackButton() { history.back }
 			view += viewRenderer.renderLinkButton('new ' + featureName, '#/' + featureName + '/edit/new'); // TODO access routes by properties

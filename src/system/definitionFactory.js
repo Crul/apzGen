@@ -6,10 +6,9 @@ define(['src/system/logger'], function (logger) {
 		definition = definition || {};
 		definition = createFromBasicTypes(definition, featureName);
 
-		definition.definitionFeatureName = featureName;
 		definition.featureName = definition.featureName || featureName;
 		if (typeof (definition.featureName) !== 'string')
-			logger.error('definitionFactory.init invalid featureName: ' + definition.featureName);
+			logger.error('definitionFactory.init INVALID FEATURE NAME: ' + definition.featureName);
 
 		definition.apzFiles = [];
 		return definition;

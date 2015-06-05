@@ -51,8 +51,8 @@ define(
 					baseElement,
 					definition,
 					definition.featureName,
+					definition.featureType,
 					definition.fileName,
-					definition.definitionFeatureName,
 					fileType
 				];
 				return prioritizedFilenames.filter(isValidFilename);
@@ -91,7 +91,7 @@ define(
 				var logInfo = '';
 				logInfo += 'elementType = "' + elementType + '"' + '\n';
 				logInfo += 'filePattern = "' + filePattern + '"' + '\n';
-				logInfo += 'definition.definitionFeatureName = "' + definition.definitionFeatureName + '"' + '\n';
+				logInfo += 'definition.featureType = "' + definition.featureType + '"' + '\n';
 				logInfo += 'definition.featureName = "' + definition.featureName + '"' + '\n';
 				logInfo += 'definition.fileName = "' + definition.fileName + '"' + '\n';
 				logInfo += 'baseElement = "' + baseElement + '"' + '\n';

@@ -2,7 +2,9 @@ define(['src/engines/angularjs/render/class/ctrlRenderer'],
 	function (ctrlRenderer) {
 		var dis = {};
 		dis.render = render;
-		function render(feature) {
+
+		function render(apzFile) {
+			var feature = apzFile.feature;
 			var ctrlInitializer = 'listCtrlInitializer';
 			var dependencies = ['dataservice'];
 			return ctrlRenderer.renderInitialization(
@@ -10,6 +12,7 @@ define(['src/engines/angularjs/render/class/ctrlRenderer'],
 				ctrlInitializer,
 				dependencies);
 		}
+
 		return dis;
 
 	});
