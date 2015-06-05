@@ -1,63 +1,70 @@
-define(['src/system/logger'],
-	function (logger) {
+define(['src/engines/angularjs/factories/appFactory'],
+	function (appFactory) {
 		var dis = {};
 		dis.create = create;
 
-		var requiredFeatures = ['context', 'dataservice', 'notifier'];
+		var dependentFilesPath = 'seedwork/';
+		var dependentServices = [
+			'context',
+			'dataservice',
+			'notifier'
+		];
+		var dependentCtrlInitializers = [
+			'baseCtrlInitializer',
+			'listCtrlInitializer',
+			'iudCtrlInitializer'
+		];
 
-		var dependentFilesPath = 'seedwork/controllers/';
-		var dependentFiles = ['baseCtrlInitializer', 'listCtrlInitializer', 'iudCtrlInitializer'];
-
-		var dependentFeatures = {};
-		dependentFiles.forEach(setDependentFile);
-
-		function setDependentFile(fileName) {
-			var featureName = getDependentPath(fileName);
-			dependentFeatures[fileName] = { featureType: 'seed', featureName: featureName };
-		}
+		var dependentFeatures = getDependentFeatures();
 
 		function create(definition, app) {
 			var iud = require('util')._extend({}, definition);
 
-			checkRequiredFeatures(app);
-			setDependentFactories(app);
-
-			iud.model = initModel(iud);
-			iud.routes = getRoutes(iud);
-			iud.controllers = getControllers(iud);
-			iud.menuOptions = getMenuOptions(iud);
-			iud.apzFiles = getApzFiles(iud.featureName);
-
 			iud.dependentFeatures = dependentFeatures;
+			iud.apzFiles = getApzFiles(iud.featureName);
+			
+			iud.angularjs = iud.angularjs || {};
+			iud.angularjs.model = initModel(iud);
+			iud.angularjs.routes = getRoutes(iud);			
+			iud.angularjs.factories = getDependentFactories(app);
+			iud.angularjs.controllers = getControllers(iud);
+			iud.angularjs.menuOptions = getMenuOptions(iud);
 
 			return iud;
 		}
 
-		function setDependentFactories(app) {
-			if (!app.angularjs)
-				logger.error("iudFactory: angularJs NOT FOUND IN APP");
+		function getDependentFeatures() {
+			var _dependentFeatures = {};
+			dependentServices.forEach(getSetDependentFileFn('services'));
+			dependentCtrlInitializers.forEach(getSetDependentFileFn('controllers'));
 
-			app.angularjs.factories = (app.angularjs.factories || [])
-				.concat(dependentFiles.map(getDependentPath));
+			function getSetDependentFileFn(path) {
+				return function setDependantFile(fileName) {
+					var featureName = getDependentPath(path + '/' + fileName);
+					_dependentFeatures[fileName] = { featureType: 'seed', featureName: featureName };
+				};
+			}
+			return _dependentFeatures;
+		}
+
+		function getDependentFactories(app) {
+			return dependentServices.map(getDependentPathFn('services'))
+				.concat(dependentCtrlInitializers.map(getDependentPathFn('controllers')));
+		}
+
+		function getDependentPathFn(path) {
+			return function _getDependentPath(fileName) {
+				return getDependentPath(path + '/' + fileName);
+			};
 		}
 
 		function getDependentPath(fileName) {
 			return dependentFilesPath + fileName + '.js';
 		}
 
-		function checkRequiredFeatures(app) {
-			requiredFeatures.forEach(checkRequiredFeature);
-
-			function checkRequiredFeature(requiredFeature) {
-				if (!app.features[requiredFeature])
-					logger.error('iudFactory.create: REQUIRED FEATURE NOT FOUND: ' + requiredFeature);
-			}
-		}
-
 		function initModel(iud) {
 			var fields = iud.model || iud.fields;
-			fields = fields.map(initModelField);
-			return { fields: fields };
+			return { fields: fields.map(initModelField) };
 		}
 
 		function initModelField(field) {

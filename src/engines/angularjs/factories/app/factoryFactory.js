@@ -8,7 +8,8 @@ define([], function () {
 		return factories;
 		
 		function concatFactories(feature) { // not [].map because [].concat()
-			factories = factories.concat(feature.factories || []);
+			if (!feature.angularjs) return;
+			factories = factories.concat(feature.angularjs.factories || []);
 		}
 	}
 

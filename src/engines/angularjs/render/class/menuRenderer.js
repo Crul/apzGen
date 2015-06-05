@@ -5,9 +5,9 @@ define(['src/default/render/classRenderer'],
 
 		function render(apzFile, app) {
 			var menu = apzFile.feature;
-			menu.model = menu.model || {};
-			menu.model.areas = createAreas(menu, app);
-			var body = classRenderer.renderModelInitializacion(menu.model);
+			var model = menu.angularjs.model || {};
+			model.areas = createAreas(menu, app);
+			var body = classRenderer.renderModelInitializacion(model);
 			return classRenderer.render(menu.featureName, body);
 		}
 
@@ -34,7 +34,8 @@ define(['src/default/render/classRenderer'],
 		}
 
 		function createFromFeature(feature) {
-			return feature.menuOptions || [];
+			if (!feature.angularjs) return [];
+			return feature.angularjs.menuOptions || [];
 		}
 
 		return dis;

@@ -6,10 +6,10 @@ define(['src/render/view/html/html5PageRenderer'],
 		function render(apzFile) {
 			var app = apzFile.feature;
 			var appName = app.featureName;
+
 			var title = app.title || appName || 'angularjsApp';
 			var htmlAttributes = "ng-app='" + appName + "'";
-			var body = dis.renderTag('h1', title);
-			body += dis.renderTag('div', ' ', 'ng-view');
+			var body = renderBody(title);
 			var libs = app.libs;
 			var files = getFiles(app);
 
@@ -22,6 +22,10 @@ define(['src/render/view/html/html5PageRenderer'],
 			};
 
 			return html5PageRenderer.render(data);
+		}
+
+		function renderBody(title) {
+			return dis.renderTag('h1', title) + dis.renderTag('div', ' ', 'ng-view');
 		}
 
 		function getFiles(app) {

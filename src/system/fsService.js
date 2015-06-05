@@ -79,14 +79,14 @@ define(['src/system/logger'], function (logger) {
 
 			filePath = path.join(filePath, fileName);
 			fs.writeFileSync(filePath, content);
-			logger.debug('writen: ' + filePath);
+			logger.debug('written: ' + filePath);
 		}
 	}
 
 	function createPath(_path) {
 		if (fs.existsSync(_path)) return;
 		fs.mkdirSync(_path);
-		logger.debug('folder created: ' + _path);
+		logger.debug('created: ' + _path);
 	}
 
 	function clearFolder(folder) {

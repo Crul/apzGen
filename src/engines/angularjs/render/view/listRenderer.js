@@ -19,7 +19,7 @@ define(['src/default/render/viewRenderer'],
 		}
 
 		function getTableConfig(feature) {
-			var columns = feature.model.fields.map(getFieldName);
+			var columns = feature.angularjs.model.fields.map(getFieldName);
 			var tableConfig = { columns: columns || [] };
 			var modelCells = (tableConfig.columns || []).map(renderModelCell).join('');
 			var cells = listTableActionCells.concat(modelCells);

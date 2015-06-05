@@ -45,14 +45,6 @@ define(['src/apzDefinitionHelper'],
 		};
 
 		var libSeed = 'lib/*.*';
-		var servicesSeed = {
-			path: 'seedwork/services/',
-			features: {
-				context: 'context.js',
-				notifier: 'notifier.js',
-				dataservice: 'dataservice.js'
-			}
-		};
 		var iudFeatures = { featureType: 'iud', features: model };
 
 		var apzDefinition = apzDefinitionHelper.create()
@@ -60,14 +52,8 @@ define(['src/apzDefinitionHelper'],
 			.addLibs(['jquery', 'bootstrap'])
 			.addEngines('angularjs')
 			.addSeeds(libSeed)
-			.addSeeds(servicesSeed)
 			.addFeatures('menu')
 			.addFeatures(iudFeatures);
-
-		apzDefinition.definition.angularjs = {
-			notifier: 'notifier',
-			dataservice: 'dataservice'
-		};
 
 		return apzDefinition.definition;
 	});
@@ -93,6 +79,10 @@ each implemented feature provides a specific functionality:
 	- list angularjs view 
 	- iud (crud) angularjs controller 
 	- iud (crud) angularjs view
+
+features support dependencies: 
+- set a dependentFeatures[] property in any feature and apzGen will create them for you
+- this allows to maintain the initial definition clean and distributes the dependency tree through the features
 
 ## adding new features
 if you want to add a feature (e.g.: myNewFeature in myNewEngine) you have to:
@@ -148,7 +138,8 @@ if you want to add a feature (e.g.: myNewFeature in myNewEngine) you have to:
 	
 	- you can also edit those files to change the default behaivor in renderization
 
-there is some advanced stuff about interaction between angularjs features, like:
-- setting a menuOptions[] property in any feature to add options to the menu 
+there is some advanced stuff about interaction between features, like:
+- setting a menuOptions[] property in any feature to add options to the angularjs menu 
+- setting a factories[] property in any feature to add angularjs factories 
 - setting a controllers[] property in any feature to add angularjs controllers
 - setting a routes[] property in any feature to add angularjs routes

@@ -7,7 +7,7 @@ define(['src/default/render/viewRenderer'],
 		var panelFormAttributes = 'style="margin-top: 24px;"';
 		function render(apzFile) {
 			var feature = apzFile.feature;
-			var fields = feature.model.fields || [];
+			var fields = feature.angularjs.model.fields || [];
 			var backButton = viewRenderer.renderLinkButton('back', '#/' + feature.featureName + '/list'); // TODO access routes by properties
 			var saveButton = viewRenderer.renderButton('save', 'save()');
 			var formContent = renderFormControls(fields);

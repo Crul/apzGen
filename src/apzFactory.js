@@ -31,7 +31,7 @@ define(
 
 		function createApzFeatures(apzDefinition) {
 			initFeatureDefinitions(apzDefinition);
-			return createFeatures(apzDefinition, apzDefinition.features);
+			return createRecursiveFeatures(apzDefinition, apzDefinition.features);
 		}
 
 		function initFeatureDefinitions(apzDefinition) {
@@ -44,32 +44,36 @@ define(
 			}
 		}
 
-		function createFeatures(apzDefinition, featureDefinitions) { // two params to allow recursivity
-			var features = [];
-			if (!featureDefinitions) return features;
+		function createRecursiveFeatures(apzDefinition, featureDefinitions, features) { // two params to allow recursivity
+			features = features || [];
+			if (!featureDefinitions) return [];
 			for (var featureName in featureDefinitions) { // not [].map() because iterating {}
 				var featureDefinition = featureDefinitions[featureName];
 				var feature = createFeature(featureDefinition, apzDefinition);				
-				var dependentFeatures = createFeatures(apzDefinition, feature.dependentFeatures);
-				addFeatures(features, dependentFeatures);				
-				addFeatures(features, feature);
+				createRecursiveFeatures(apzDefinition, feature.dependentFeatures, features);
+				features = addFeatures(features, feature);
 			}
 			return features;
 		}
 
 		function addFeatures(featureArray, featuresToAdd) {
+			if (!featuresToAdd)
+				return featureArray;
+
 			if (!Array.isArray(featuresToAdd))
 				featuresToAdd = [featuresToAdd];
 
 			featuresToAdd.forEach(addFeature);
 
+			return featureArray;
+			
 			function addFeature(featureToAdd) {
 				if (featureArray.filter(getByFeatureName).length > 0) {
 					logger.debug('skip duplicated feature: ' + featureToAdd.featureName);
 					return;
 				}
-				featureArray.push(featureToAdd);
-
+				logger.debug('created: ' + featureToAdd.featureName);
+				featureArray.push(featureToAdd);	
 				function getByFeatureName(feature) {
 					return feature.featureName == featureToAdd.featureName;
 				}
@@ -80,8 +84,7 @@ define(
 			var factory = factoryResolver.resolve(definition);
 			if (!factory) return {}; // defensive
 			var feature = factory.create(definition, param) || {};
-			if (feature) logger.debug('created: ' + feature.featureName);
-			else logger.error('FEATURE FACTORY RETURNED UNDEFINED:\ndefinition: ' + JSON.stringify(definition));
+			if (!feature) logger.error('FEATURE FACTORY RETURNED UNDEFINED:\ndefinition: ' + JSON.stringify(definition));
 			return feature;
 		}
 

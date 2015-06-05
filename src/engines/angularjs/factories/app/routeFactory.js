@@ -8,7 +8,8 @@ define(['src/system/fsService'], function (fsService) {
 		return routes.map(addStartSlash);
 		
 		function concatRoutes(feature) {
-			routes = routes.concat(feature.routes || []);
+			if (!feature.angularjs) return;
+			routes = routes.concat(feature.angularjs.routes || []);
 		}
 		
 		function addStartSlash(route) {

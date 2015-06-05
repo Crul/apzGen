@@ -8,7 +8,8 @@ define([], function () {
 		return controllers;
 		
 		function concatControllers(feature) { // not [].map because [].concat()
-			controllers = controllers.concat(feature.controllers || []);
+			if (!feature.angularjs) return;
+			controllers = controllers.concat(feature.angularjs.controllers || []);
 		}
 	}
 

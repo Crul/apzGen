@@ -7,13 +7,23 @@ define([], function () {
 		var menu = require('util')._extend({}, definition);
 		
 		var featureName = menu.featureName;		
-		menu.routes = getRoutes(featureName);
 		menu.apzFiles = getApzFiles(featureName);
-		menu.excludeMenuOptions = menu.routes.slice(0);
-		menu.controllers = controllers;
-		menu.model = menu.model || {};
+		
+		menu.angularjs = menu.angularjs || {};
+		menu.angularjs.controllers = controllers;
+		menu.angularjs.routes = getRoutes(featureName);
+		menu.angularjs.model = menu.model || {};
+		
+		menu.excludeMenuOptions = menu.angularjs.routes.slice(0);
 		
 		return menu;
+	}
+	
+	function getApzFiles(featureName){
+		return [
+			{ fileType: 'class', path: featureName, fileName: featureName },
+			{ fileType: 'view', path: featureName, fileName: featureName },
+		];
 	}
 	
 	function getRoutes(featureName){
@@ -22,13 +32,6 @@ define([], function () {
 			controller: featureName,
 			template: featureName + '/' + featureName
 		}];
-	}
-	
-	function getApzFiles(featureName){
-		return [
-			{ fileType: 'class', path: featureName, fileName: featureName },
-			{ fileType: 'view', path: featureName, fileName: featureName },
-		];
 	}
 
 	return dis;

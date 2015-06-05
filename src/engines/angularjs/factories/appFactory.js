@@ -17,7 +17,6 @@ define(
 			'lib/angular-local-storage.min.js'
 		];
 		var angularjsDependencies = ['ngRoute', 'LocalStorageModule', 'kendo.directives'];
-		var requiredFactories = ['context', 'dataservice', 'notifier'];
 		var homeApzFiles = [
 			{ fileType: 'class', fileName: 'app' },
 			{ fileType: 'view', fileName: 'index', renderer: 'index' }
@@ -52,22 +51,8 @@ define(
 		}
 
 		function createFactories(app, features) {
-			return requiredFactories.map(getFactoryFromFeatures)
-				.concat(app.angularjs.factories || [])
+			return (app.angularjs.factories || [])
 				.concat(factoryFactory.createFactories(features));
-
-			function getFactoryFromFeatures(factoryName) {
-				var factories = features.filter(getFactoryByFeatureName);
-				if (factories.length === 0) {
-					logger.error("appFactory.createFactories: REQUIRED FACTORY NOT FOUND: " + factoryName);
-					return;
-				}
-				return factories[0].path + factories[0].featureName;
-
-				function getFactoryByFeatureName(feature) {
-					return feature.featureName == factoryName + '.js';
-				}
-			}
 		}
 
 		function createRoutes(app, features) {
