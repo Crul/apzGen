@@ -1,5 +1,6 @@
 # apzGen
 Node.js application generator. A non-ambitious project just for fun.
+
 For now, only foo angularjs+kendoui+bootstrap arquitecture.
 
 ## node_modules required
@@ -7,10 +8,10 @@ For now, only foo angularjs+kendoui+bootstrap arquitecture.
 - [optional] express (for hosting the generated app)
 
 ## how it works
-- apzGen generates the application files from definition:
-  - app properties: title, engines, third party libs dependencies
-  - features: the core of apzGen
-  - particular engine configuration (angularjs)
+apzGen generates the application files from definition:
+- app properties: title, engines, third party libs dependencies
+- features: the core of apzGen
+- particular engine configuration (angularjs)
 
 ## generating code
 ```
@@ -24,7 +25,7 @@ you can change the port in webserver.js file
 now you should see the application in http://localhost/
 
 ## application definition structure
-edit definition.js to change the configuration:
+edit definition.js to change the configuration
 ```
 define(['src/apzDefinitionHelper'],
 	function (apzDefinitionHelper) {
@@ -70,15 +71,14 @@ define(['src/apzDefinitionHelper'],
 
 		return apzDefinition.definition;
 	});
-
 ```
 
 ### detailed process
 - apzGen is everything about features
-- features are organized by engines
-- factories create features
+- features are organized in engines
+- featureFactories create features
 - features create apzFile specifications
-- apzFiles are rendered by renderers and written in files
+- apzFiles are rendered by fileRenderers and written in files
 
 each implemented feature provides a specific functionality:
 - angularjs\app: app features are special features; angularjs feature generates:
