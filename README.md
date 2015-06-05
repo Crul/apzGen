@@ -96,13 +96,13 @@ apzFiles are rendered by renderers and written in files
 
 so, if you want to add a feature (e.g.: myNewFeature in myNewEngine) you have to:
 1	add a new engine and a new feature in the definition file:
-	```
-		var apzDefinition = apzDefinitionHelper.create()
-			(...)
-			.addEngines([(...), 'myNewEngine'])
-			(...)
-			.addFeatures({ featureType: 'myNewFeature', (...) });
-	```
+```
+	var apzDefinition = apzDefinitionHelper.create()
+		(...)
+		.addEngines([(...), 'myNewEngine'])
+		(...)
+		.addFeatures({ featureType: 'myNewFeature', (...) });
+```
 
 2	write a factory that creates the feature
 save it in src/engines/myNewEngine/factories
