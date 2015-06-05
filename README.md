@@ -9,9 +9,10 @@ For now, only foo angularjs+kendoui+bootstrap arquitecture.
 
 ## how it works
 apzGen generates the application files from definition:
-- app properties: title, engines, third party libs dependencies
-- features: the core of apzGen
-- particular engine configuration (angularjs)
+- title
+- third party libs (e.g.: jquery, bootstrap)
+- engines: libraries with featureFactories and featureRenderers (e.g.: angularjs)
+- feature definitions (e.g.: menu, iud/crud features)
 
 ## generating code
 ```
