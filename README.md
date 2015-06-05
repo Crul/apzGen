@@ -1,6 +1,6 @@
 ### apzGen
 Node.js application generator. A non-ambitious project just for fun.
-For now, only foo angularjs+bootstrap+(soon)kendoui arquitecture.
+For now, only foo angularjs+kendoui+bootstrap arquitecture.
 
 # node_modules required
 - requirejs
@@ -85,7 +85,7 @@ you can change the port in webserver.js file
 ```
   node webServer.js
 ```
-now you should see the application in http://localhost/app.html
+now you should see the application in http://localhost/
 
 ### detailed process
 apzGen is everything about features
@@ -94,7 +94,8 @@ factories create features
 features create apzFiles
 apzFiles are rendered by renderers and written in files
 
-so, if you want to add a feature (e.g.: myNewFeature in myNewEngine) you have to:
+## adding new features
+if you want to add a feature (e.g.: myNewFeature in myNewEngine) you have to:
 
 1. define a new engine
 	- add a new engine and a new feature in the definition file:
