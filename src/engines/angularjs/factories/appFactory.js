@@ -20,7 +20,7 @@ define(
 		var requiredFactories = ['context', 'dataservice', 'notifier'];
 		var homeApzFiles = [
 			{ fileType: 'class', fileName: 'app' },
-			{ fileType: 'view', fileName: 'app', renderer: 'index' }
+			{ fileType: 'view', fileName: 'index', renderer: 'index' }
 		];
 
 		function create(definition, features) {

@@ -10,121 +10,144 @@ For now, only foo angularjs+bootstrap+(soon)kendoui arquitecture.
 - apzGen generates the application files from definition:
   - app properties: title, engines, third party libs dependencies
   - features: the core of apzGen
-  - models: entities and their fields
   - particular engine configuration (angularjs)
-  - (coming soon) views
-- apzGen copies all files in seed folder to the generated app
+
+each implemented feature provides a specific functionality:
+- angularjs\app: app features are special features; angularjs feature generates:
+	- app.js file with the angularjs bootstrapping 
+	- index.html file with the file includes and html code for angularjs
+- seedFeature copies a file or a folder to output path
+- menuFeature reads menu options from other features and generates: 
+	- menu angularjs controller 
+	- menu angularjs view
+- iudFeature: reads fields definition from model info and generates:
+	- list angularjs controller
+	- list angularjs view 
+	- iud (crud) angularjs controller 
+	- iud (crud) angularjs view
 
 ## application definition structure
 edit definition.js to change the configuration:
 ```
-define([], function(){	
-	var model = {
-		tenant: ['name']	
-	};
-	
-	var appDefinition = { 
-		title: 'generatedApz',
-		libs: ['bootstrap'], // see supported libs in src/render/view/html/libResolver.js
-		engine: 'angularJs' // only angularJs supported, more can be added in src/engines
-	};
-	
-	appDefinition.angularjs = {
-		factories: [
-			'seedwork/services/context.js',
-			'seedwork/controllers/baseCtrlInitializer.js',
-			'seedwork/controllers/listCtrlInitializer.js',
-			'seedwork/controllers/iudCtrlInitializer.js'
-		]
-	};
-	
-	appDefinition.features = {
-		menu: true,
-		tenant: { factory: 'iud', model: model.tenant }
-	};
-	
-	return appDefinition;
-});
+define(['src/apzDefinitionHelper'],
+	function (apzDefinitionHelper) {
+
+		var model = {
+			tenant: {
+				fields: ['name', 'description', 'contact']
+			},
+			user: {
+				fields: [
+					'name',
+					{ fieldName: 'login', label: 'username' },
+					'password',
+					{ fieldName: 'age', fieldType: 'numeric' }
+				]
+			}
+		};
+
+		var libSeed = 'lib/*.*';
+		var servicesSeed = {
+			path: 'seedwork/services/',
+			features: {
+				context: 'context.js',
+				notifier: 'notifier.js',
+				dataservice: 'dataservice.js'
+			}
+		};
+		var iudFeatures = { featureType: 'iud', features: model };
+
+		var apzDefinition = apzDefinitionHelper.create()
+			.setTitle('generated apz')
+			.addLibs(['jquery', 'bootstrap'])
+			.addEngines('angularjs')
+			.addSeeds(libSeed)
+			.addSeeds(servicesSeed)
+			.addFeatures('menu')
+			.addFeatures(iudFeatures);
+
+		apzDefinition.definition.angularjs = {
+			notifier: 'notifier',
+			dataservice: 'dataservice'
+		};
+
+		return apzDefinition.definition;
+	});
+
 ```
 
 ## generating code
 ```
-  node _run
+  node _run.js
 ```
 ## running web server
+you can change the port in webserver.js file
 ```
-  node webServer
+  node webServer.js
 ```
 now you should see the application in http://localhost/app.html
 
 ### detailed process
-apzGen is everything about features.
-features are organized by engines.
-factories create features.
-features create apzFiles.
-apzFiles are rendered by renderers and exported to files.
+apzGen is everything about features
+features are organized by engines
+factories create features
+features create apzFiles
+apzFiles are rendered by renderers and written in files
 
 so, if you want to add a feature (e.g.: myNewFeature in myNewEngine) you have to:
 1	add a new engine and a new feature in the definition file:
 	```
-		appDefinition = {
-			(...),
-			engines: [(...), 'myNewEngine']
-		};
-		(...)
-		appDefinition.features = {
-			(...),
-			myNewFeature: { ... }
-		};
+		var apzDefinition = apzDefinitionHelper.create()
+			(...)
+			.addEngines([(...), 'myNewEngine'])
+			(...)
+			.addFeatures({ featureType: 'myNewFeature', (...) });
 	```
 
 2	write a factory that creates the feature
-	save it in src/engines/myNewEngine/factories
-	it has to implement a create function that:
-		- receives as a parameter the object from appDefinition.features.myNewFeature
-		- uses src/apzFileFactory to create the apzFiles, as many as files you want to create.
-	 	- returns the feature with an apzFiles property (with the apzFiles of course) and all the data you want to use in the renderization
-		 
-	the properties of apzFiles are:
-		- path: where the file will be created
-		- name: file name, without extension
-		- fileType: 'class' or 'view', the extension should be generated from this
-		- renderer: if your render follows naming convention it can be empty
-		- feature: in order to be accesible in the renderer
+save it in src/engines/myNewEngine/factories
+it has to implement a create function that:
+- receives as a parameter the object from appDefinition.features.myNewFeature
+- returns the feature with:
+	- all the data you want to use in the renderization
+	- an apzFiles property with the apzFiles you want to generate
+		- { path: 'path/', fileType: [ 'class' | 'view' ], fileName: 'fileName' } 
+ 
+the properties of apzFiles are:
+- path: (optional) where the file will be created
+- fileName: file name, without extension
+- fileType: 'class', 'view' or 'seed', if 'class' or 'view', file extension should be inferred from it
+- renderer: (optional) if your render follows naming convention it can be empty
 
 3	write as many renderers as file types you want to render
- 	if you want to render one js controller and one html view, then you have to write:
-	  	- a myNewFeatureRenderer in src/engines/myNewEngine/render/class
-	  	- a myNewFeatureRenderer in src/engines/myNewEngine/render/view
-	  
-	they have to implement a render function that:
-	  	- receives as a parameter each apzFile you have created in the factory
-		- returns the content of the file
+if you want to render one js controller and one html view, then you have to write:
+- a myNewFeatureRenderer in src/engines/myNewEngine/render/class
+- a myNewFeatureRenderer in src/engines/myNewEngine/render/view
+
+they have to implement a render function that:
+- receives as a parameter each apzFile you have created in the factory
+- returns the content of the file
 
 for renderization you can use the following components:
-	- in src/default/render/:
-		- appRenderer: to render default application
-		- classRenderer: to render default class application
-		- viewRenderer: ro render default view appliction. viewRenderer uses layoutRenderer to render elements
-		- layoutRenderer: to render default view elements (see file for api). layoutRenderer uses formRenderer to render form elements
-		- formRenderer: to render form elements (see file for api)
-	- menuRenderer (in src/default/render/class and src/default/render/view): to render menu elements
-	- in src/engines/angularjs:
-		// TODO  
-	- in src/render/class/js:
-		// TODO  
-	- in src/render/view/html:
-		// TODO  
-	- in src/render/view/kendo:
-		// TODO by default
-	- in src/render/view/bootstrap:
-		// TODO by default
+- in src/default/render/:
+	- appRenderer: to render default application
+	- classRenderer: to render default class application
+	- viewRenderer: ro render default view appliction, viewRenderer uses layoutRenderer to render elements
+	- layoutRenderer: to render default view elements (see file for api), layoutRenderer uses formRenderer to render form elements
+	- formRenderer: to render form elements (see file for api)
+- menuRenderer (in src/default/render/class and src/default/render/view): to render menu elements
+- in src/engines/angularjs: all the angularjs related stuff is here:
+	- factories: for angularjs app, menu and iud features
+	- render: 
+		- class and view renderers for angularjs app, menu and iu features
+		- html and kendo renderers for overwrite default html functionality
+- in src/render/class/js: simple renderers for javascript files and functions
+- in src/render/view/html: renderers for html files with a lot of functionality, you can overwrite them as src/render/view/bootstrap does
+- in src/render/view/bootstrap: renderer for html files, overwritting default html functionality
 
 you can also edit those files to change the default behaivor in renderization
 
-// TODO file extensions 
-
-there is some advanced stuff about interaction between features, like:
-- implementing a getMenuOptions(feature) function in the featureFactory to add options in the menu 
-- setting a controllers[] property in the feature to add controllers (angularjs)
-- setting a routes[] property in the feature to add routes (angularjs)
+there is some advanced stuff about interaction between angularjs features, like:
+- setting a menuOptions[] property in any feature to add options to the menu 
+- setting a controllers[] property in any feature to add angularjs controllers
+- setting a routes[] property in any feature to add angularjs routes

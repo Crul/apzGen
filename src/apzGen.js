@@ -11,7 +11,6 @@ define(
 		var dis = {};
 		dis.generate = generate;
 
-
 		function generate(_definition) {
 			var outputPath = 'bin' || _definition.outputPath;
 			var apz = apzFactory.create(_definition || definition);
