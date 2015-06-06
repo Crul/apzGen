@@ -1,4 +1,5 @@
 // TODO move to classRenderer hierarchy
+// TODO rename to js
 // TODO split in files (constatns, conditional, compare, variables, functions...)
 define([], function () {
 	var dis = {};
@@ -17,14 +18,14 @@ define([], function () {
 	dis.access = accessRenderer;
 	dis.concatJs = concatJsRenderer;
 	dis.renderJs = renderJs;
-	// TODO dis.conditional = {
-	dis.if = ifRenderer;
-	dis.ifNot = renderWrap(ifNot);
-	dis.ifNotNot = renderWrap(ifNotNot);
-	dis.iif = iifRenderer;
-	dis.ifNotConfirm = renderWrap(ifNotConfirm);
-	dis.ifConfirm = renderWrap(ifConfirm);
-	//}
+	dis.conditional = {
+		if: ifRenderer,
+		ifNot: renderWrap(ifNot),
+		ifNotNot: renderWrap(ifNotNot),
+		iif: iifRenderer,
+		ifNotConfirm: renderWrap(ifNotConfirm),
+		ifConfirm: renderWrap(ifConfirm),
+	}
 	dis.compare = {
 		equals: renderWrap(equals),
 		exactEquals: renderWrap(exactEquals),

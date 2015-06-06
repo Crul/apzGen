@@ -160,10 +160,10 @@ define(['src/render/class/js/jsHelper', 'src/factories/class/js/jsFactory'],
 			var assignExecuteUpdateToUpdated = jsHelper.variables.assign(updated, executeUpdate);
 			var executeGenerateId = jsHelper.functions.execute(generateIdFn.functionName, entityType);
 			var assignExecuteGenerateIdToDataId = jsHelper.variables.assign(dataId, executeGenerateId);
-			body.push(jsHelper.if(dataId, assignExecuteUpdateToUpdated, assignExecuteGenerateIdToDataId));
+			body.push(jsHelper.conditional.if(dataId, assignExecuteUpdateToUpdated, assignExecuteGenerateIdToDataId));
 
 			var executeInsert = jsHelper.functions.execute(insertFn.functionName, [model, data]);
-			body.push(jsHelper.ifNot(updated, executeInsert));
+			body.push(jsHelper.conditional.ifNot(updated, executeInsert));
 
 			body.push(executeSetModel);
 
@@ -189,7 +189,7 @@ define(['src/render/class/js/jsHelper', 'src/factories/class/js/jsFactory'],
 				jsHelper.functions.execute(model + '.splice', [indexOfEntity, 1]),
 				jsHelper.variables.assign(removed, jsHelper.constants._true)
 			];
-			body.push(jsHelper.ifNotNot(persistedEntity, ifIsPersistedEntity));
+			body.push(jsHelper.conditional.ifNotNot(persistedEntity, ifIsPersistedEntity));
 
 			body.push(executeSetModel);
 
@@ -206,7 +206,7 @@ define(['src/render/class/js/jsHelper', 'src/factories/class/js/jsFactory'],
 
 			var entitiesLengthGTZero = jsHelper.compare.gt(entities + '.length', 0);
 			var entitiesFirst = jsHelper.arrays.elementAt(entities, 0);
-			var entitiesFirstOrDefault = jsHelper.iif(entitiesLengthGTZero, entitiesFirst, jsHelper.constants.emptyObject);
+			var entitiesFirstOrDefault = jsHelper.conditional.iif(entitiesLengthGTZero, entitiesFirst, jsHelper.constants.emptyObject);
 			return [
 				jsHelper.variables.declare(entities, executeFilterModelById),
 				jsHelper.return(entitiesFirstOrDefault)
@@ -221,7 +221,7 @@ define(['src/render/class/js/jsHelper', 'src/factories/class/js/jsFactory'],
 			var indexOfEntity = 'indexOfEntity';
 			return [
 				jsHelper.variables.declare(entity, getExecuteGetById(dataId)),
-				jsHelper.ifNot(entity, jsHelper.return(jsHelper.constants._false)),
+				jsHelper.conditional.ifNot(entity, jsHelper.return(jsHelper.constants._false)),
 				jsHelper.variables.declare(indexOfEntity, jsHelper.arrays.indexOf(model, entity)),
 				jsHelper.variables.assign(jsHelper.arrays.elementAt(model, indexOfEntity), data),
 				jsHelper.return(jsHelper.constants._true)

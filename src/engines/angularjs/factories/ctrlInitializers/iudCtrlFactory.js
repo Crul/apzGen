@@ -105,7 +105,7 @@ define(['src/render/class/js/jsHelper', 'src/factories/class/js/jsInitializerFac
 			var dataserviceGet = jsHelper.functions.execute(dataservice + '.get', [entityName, entityId]);
 			var dataserviceGetThenFn = jsHelper.access(dataserviceGet, 'then');
 			return [
-				jsHelper.if(jsHelper.compare.exactEquals(entityId, "'new'"), jsHelper.return()),
+				jsHelper.conditional.if(jsHelper.compare.exactEquals(entityId, "'new'"), jsHelper.return()),
 				jsHelper.functions.execute(dataserviceGetThenFn, _loadedEntityFn.functionName)
 			];
 		}

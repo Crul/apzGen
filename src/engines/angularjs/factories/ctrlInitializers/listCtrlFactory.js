@@ -136,7 +136,7 @@ define(
 			var executeRemoveThenFn = jsHelper.access(executeRemove, 'then');
 			return [
 				jsHelper.variables.declare($scope, jsHelper.constants._this),
-				jsHelper.ifNotConfirm('remove?', jsHelper.return()),
+				jsHelper.conditional.ifNotConfirm('remove?', jsHelper.return()),
 				jsHelper.functions.execute(executeRemoveThenFn, _removedFn.functionName)
 			];
 		}
