@@ -6,7 +6,7 @@ define([], function () {
 	dis.levels = {
 		error: true,
 		log: true,
-		debug: false
+		debug: true
 	};
 
 	function log(message) {

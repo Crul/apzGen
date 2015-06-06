@@ -5,7 +5,10 @@ define(['src/render/class/js/jsFunctionRenderer'],
 		dis.renderInitialization = renderInitialization;
 		dis.renderModelInitializacion = renderModelInitializacion;
 
-		function render(controllerName, body, dependencies) {
+		function render(ctrlConfig) {
+			var controllerName = ctrlConfig.controllerName;
+			var body = ctrlConfig.body;
+			var dependencies = ctrlConfig.dependencies;
 			if (dependencies && !Array.isArray(dependencies))
 				dependencies = [dependencies];
 			dependencies = ['$scope'].concat(dependencies || []);
@@ -15,7 +18,11 @@ define(['src/render/class/js/jsFunctionRenderer'],
 		function renderInitialization(controllerName, ctrlInitializer, dependencies) {
 			dependencies = [ctrlInitializer].concat(dependencies || []);
 			var functionBody = renderCtrlInitialization(ctrlInitializer);
-			return render(controllerName, functionBody, dependencies);
+			return render({
+				controllerName: controllerName,
+				body: functionBody,
+				dependencies: dependencies
+			});
 		}
 
 		function renderCtrlInitialization(ctrlInitializer) {

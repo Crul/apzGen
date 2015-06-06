@@ -1,5 +1,5 @@
-define(['src/default/render/classRenderer'],
-	function (classRenderer) {
+define(['src/engines/angularjs/render/class/ctrlRenderer'],
+	function (ctrlRenderer) {
 		var dis = {};
 		dis.render = render;
 
@@ -7,8 +7,11 @@ define(['src/default/render/classRenderer'],
 			var menu = apzFile.feature;
 			var model = menu.angularjs.model || {};
 			model.areas = createAreas(menu, app);
-			var body = classRenderer.renderModelInitializacion(model);
-			return classRenderer.render(menu.featureName, body);
+			var body = ctrlRenderer.renderModelInitializacion(model);
+			return ctrlRenderer.render({ 
+				controllerName: menu.featureName, 
+				body: body
+			});
 		}
 
 		function createAreas(menu, app) {  // multiple returns

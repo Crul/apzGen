@@ -1,5 +1,5 @@
-define(['src/render/view/html/html5PageRenderer'],
-	function (html5PageRenderer) {
+define(['src/system/utils', 'src/render/view/html/html5PageRenderer'],
+	function (utils, html5PageRenderer) {
 		var dis = require('util')._extend({}, html5PageRenderer);
 		dis.render = render;
 
@@ -29,9 +29,10 @@ define(['src/render/view/html/html5PageRenderer'],
 		}
 
 		function getFiles(app) {
-			return (app.angularjs.factories || [])
+			var files = (app.angularjs.factories || [])
 				.concat(app.angularjs.controllers || [])
 				.concat(app.apzFiles || []);
+			return utils.arrays.distinct(files);
 		}
 
 		return dis;

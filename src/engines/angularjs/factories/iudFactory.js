@@ -3,63 +3,44 @@ define(['src/engines/angularjs/factories/appFactory'],
 		var dis = {};
 		dis.create = create;
 
-		var dependentFilesPath = 'seedwork/';
-		var dependentServices = [
-			'context',
-			'dataservice',
-			'notifier'
-		];
-		var dependentCtrlInitializers = [
-			'baseCtrlInitializer',
-			'listCtrlInitializer',
-			'iudCtrlInitializer'
-		];
-
-		var dependentFeatures = getDependentFeatures();
+		var ctrlInitializers = ['list', 'iud'];
+		
+		var _Ctrl = 'Ctrl';
+		var _CtrlInitializer = _Ctrl + 'Initializer';
+		var dependentFeatures = getDependentFeatures(ctrlInitializers);
+		var dependentFactories = ctrlInitializers.map(getDependentFactory);
 
 		function create(definition) {
 			var iud = require('util')._extend({}, definition);
 
 			iud.dependentFeatures = dependentFeatures;
 			iud.apzFiles = getApzFiles(iud.featureName);
-			
+
 			iud.angularjs = iud.angularjs || {};
 			iud.angularjs.model = initModel(iud);
-			iud.angularjs.routes = getRoutes(iud);			
-			iud.angularjs.factories = getDependentFactories();
+			iud.angularjs.routes = getRoutes(iud);
+			iud.angularjs.factories = dependentFactories;
 			iud.angularjs.controllers = getControllers(iud);
 			iud.angularjs.menuOptions = getMenuOptions(iud);
 
 			return iud;
 		}
 
-		function getDependentFeatures() {
+		function getDependentFeatures(ctrlInitializer) {
 			var _dependentFeatures = {};
-			dependentServices.forEach(getSetDependentFileFn('services'));
-			dependentCtrlInitializers.forEach(getSetDependentFileFn('controllers'));
+			ctrlInitializer.forEach(setDependentFeature);
 			return _dependentFeatures;
 			
-			function getSetDependentFileFn(path) {
-				return function setDependantFile(fileName) {
-					var featureName = getDependentPath(path + '/' + fileName);
-					_dependentFeatures[fileName] = { featureType: 'seed', featureName: featureName };
+			function setDependentFeature(ctrlInitializer) {
+				_dependentFeatures[ctrlInitializer + _Ctrl] = {
+					featureType: 'ctrlInitializers/' + ctrlInitializer + _Ctrl,
+					featureName: ctrlInitializer + _CtrlInitializer
 				};
 			}
 		}
 
-		function getDependentFactories() {
-			return dependentServices.map(getDependentPathFn('services'))
-				.concat(dependentCtrlInitializers.map(getDependentPathFn('controllers')));
-		}
-
-		function getDependentPathFn(path) {
-			return function _getDependentPath(fileName) {
-				return getDependentPath(path + '/' + fileName);
-			};
-		}
-
-		function getDependentPath(fileName) {
-			return dependentFilesPath + fileName + '.js';
+		function getDependentFactory(ctrlInitializer) {
+			return 'seedwork/controllers/' + ctrlInitializer + _CtrlInitializer + '.js';
 		}
 
 		function initModel(iud) {
