@@ -1,6 +1,6 @@
-define(['src/render/class/js/jsHelper', 'src/render/class/js/jsFunctionRenderer'],
-	function (jsHelper, jsFunctionRenderer) {
-		var dis = require('util')._extend({}, jsFunctionRenderer);
+define(['src/render/class/js/jsRenderer'],
+	function (js) {
+		var dis = require('util')._extend({}, js);
 		dis.render = render;
 
 		var constants = { dis: 'dis' };
@@ -9,15 +9,15 @@ define(['src/render/class/js/jsHelper', 'src/render/class/js/jsFunctionRenderer'
 			var functionName = factoryConfig.functionName;
 			var body = renderFactoryBody(factoryConfig);
 			var dependencies = factoryConfig.dependencies;
-			return jsFunctionRenderer.render(functionName, body, dependencies);
+			return dis.functions.render(functionName, body, dependencies);
 		}
 
 		function renderFactoryBody(factoryConfig) {
 			var fooFn = {
 				body: [
-					jsHelper.variables.declare(constants.dis, jsHelper.constants.emptyObject),
+					dis.variables.declare(constants.dis, dis.constants.emptyObject),
 					(factoryConfig.functions || []).map(renderFunction).join('\n'),
-					jsHelper.return(constants.dis)
+					dis.return(constants.dis)
 				]
 			};
 			return renderBody(fooFn);
@@ -27,11 +27,11 @@ define(['src/render/class/js/jsHelper', 'src/render/class/js/jsFunctionRenderer'
 			var code = '';
 			if (fn.isPublic) {
 				var propertyName = fn.isPublic.propertyName || fn.functionName;
-				code = jsHelper.variables.assign(constants.dis + '.' + propertyName, fn.functionName).render() + jsHelper.constants.eol;
+				code = dis.variables.assign(constants.dis + '.' + propertyName, fn.functionName).render() + dis.constants.eol;
 			}
 
 			var body = renderBody(fn);
-			code += jsFunctionRenderer.render(fn.functionName, body, fn.parameters);
+			code += dis.functions.render(fn.functionName, body, fn.parameters);
 			return code;
 		}
 
@@ -40,7 +40,7 @@ define(['src/render/class/js/jsHelper', 'src/render/class/js/jsFunctionRenderer'
 			if (!Array.isArray(fnBody))
 				fnBody = [fnBody];
 
-			var body = fnBody.map(jsHelper.renderJs).join('') + jsHelper.constants.eol;
+			var body = fnBody.map(dis.renderJs).join('') + dis.constants.eol;
 			body += (fn.functions || []).map(renderFunction).join('\n');
 			return body;
 		}

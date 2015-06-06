@@ -1,5 +1,5 @@
-define(['src/render/class/js/jsHelper', 'src/factories/class/js/jsFactory'],
-	function (jsHelper, jsFactory) {
+define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsFactory'],
+	function (js, jsFactory) {
 		var dis = {};
 		dis.create = create;
 
@@ -26,22 +26,22 @@ define(['src/render/class/js/jsHelper', 'src/factories/class/js/jsFactory'],
 			parameters: [entityType],
 			body: getGetKeyFnBody()
 		};
-		var executeGetKey = jsHelper.functions.execute(getKeyFn.functionName, entityType);
+		var executeGetKey = js.functions.execute(getKeyFn.functionName, entityType);
 
 		var setModelFn = {
 			functionName: 'setModel',
 			parameters: [entityType, model],
 			body: getSetModelFnBody()
 		};
-		var executeSetModel = jsHelper.functions.execute(setModelFn.functionName, [entityType, model]);
+		var executeSetModel = js.functions.execute(setModelFn.functionName, [entityType, model]);
 
 		var getModelFn = {
 			functionName: 'getModel',
 			parameters: [entityType],
 			body: getGetModelFnBody()
 		};
-		var executeGetModel = jsHelper.functions.execute(getModelFn.functionName, entityType);
-		var declareModelFromGetModel = jsHelper.variables.declare(model, executeGetModel);
+		var executeGetModel = js.functions.execute(getModelFn.functionName, entityType);
+		var declareModelFromGetModel = js.variables.declare(model, executeGetModel);
 
 		var generateIdFn = {
 			functionName: 'generateId',
@@ -52,7 +52,7 @@ define(['src/render/class/js/jsHelper', 'src/factories/class/js/jsFactory'],
 		var byIdFn = {
 			functionName: '_byId',
 			parameters: entity,
-			body: [jsHelper.return(jsHelper.compare.equals(entityId, id))]
+			body: [js.return(js.compare.equals(entityId, id))]
 		};
 
 		var getByIdFn = {
@@ -130,22 +130,22 @@ define(['src/render/class/js/jsHelper', 'src/factories/class/js/jsFactory'],
 		}
 
 		function getExecuteGetById(secondParam) {
-			return jsHelper.functions.execute(getByIdFn.functionName, [model, secondParam]);
+			return js.functions.execute(getByIdFn.functionName, [model, secondParam]);
 		}
 
 		function getExecuteSimulateCall(param) {
-			return jsHelper.functions.execute(simulateCallFn.functionName, param);
+			return js.functions.execute(simulateCallFn.functionName, param);
 		}
 
 		function getGetAllFnBody() {
-			var executeGetModelOrDefault = jsHelper.variables.defaultValue(executeGetModel, jsHelper.constants.emptyArray);
-			return [jsHelper.return(getExecuteSimulateCall(executeGetModelOrDefault))];
+			var executeGetModelOrDefault = js.variables.defaultValue(executeGetModel, js.constants.emptyArray);
+			return [js.return(getExecuteSimulateCall(executeGetModelOrDefault))];
 		}
 
 		function getGetEntityFnBody() {
 			return [
 				declareModelFromGetModel,
-				jsHelper.return(getExecuteSimulateCall(getExecuteGetById(id)))
+				js.return(getExecuteSimulateCall(getExecuteGetById(id)))
 			];
 		}
 
@@ -154,21 +154,21 @@ define(['src/render/class/js/jsHelper', 'src/factories/class/js/jsFactory'],
 
 			var body = [];
 			body.push(declareModelFromGetModel);
-			body.push(jsHelper.variables.declare(updated, jsHelper.constants._false));
+			body.push(js.variables.declare(updated, js.constants._false));
 
-			var executeUpdate = jsHelper.functions.execute(updateFn.functionName, [model, data]);
-			var assignExecuteUpdateToUpdated = jsHelper.variables.assign(updated, executeUpdate);
-			var executeGenerateId = jsHelper.functions.execute(generateIdFn.functionName, entityType);
-			var assignExecuteGenerateIdToDataId = jsHelper.variables.assign(dataId, executeGenerateId);
-			body.push(jsHelper.conditional.if(dataId, assignExecuteUpdateToUpdated, assignExecuteGenerateIdToDataId));
+			var executeUpdate = js.functions.execute(updateFn.functionName, [model, data]);
+			var assignExecuteUpdateToUpdated = js.variables.assign(updated, executeUpdate);
+			var executeGenerateId = js.functions.execute(generateIdFn.functionName, entityType);
+			var assignExecuteGenerateIdToDataId = js.variables.assign(dataId, executeGenerateId);
+			body.push(js.conditional.if(dataId, assignExecuteUpdateToUpdated, assignExecuteGenerateIdToDataId));
 
-			var executeInsert = jsHelper.functions.execute(insertFn.functionName, [model, data]);
-			body.push(jsHelper.conditional.ifNot(updated, executeInsert));
+			var executeInsert = js.functions.execute(insertFn.functionName, [model, data]);
+			body.push(js.conditional.ifNot(updated, executeInsert));
 
 			body.push(executeSetModel);
 
-			var executeSimulateCall = getExecuteSimulateCall(jsHelper.arrays.elementAt(model, dataId));
-			body.push(jsHelper.return(executeSimulateCall));
+			var executeSimulateCall = getExecuteSimulateCall(js.arrays.elementAt(model, dataId));
+			body.push(js.return(executeSimulateCall));
 
 			return body;
 		}
@@ -180,21 +180,21 @@ define(['src/render/class/js/jsHelper', 'src/factories/class/js/jsFactory'],
 
 			var body = [];
 			body.push(declareModelFromGetModel);
-			body.push(jsHelper.variables.declare(persistedEntity, getExecuteGetById(id)));
+			body.push(js.variables.declare(persistedEntity, getExecuteGetById(id)));
 
-			body.push(jsHelper.variables.declare(removed, jsHelper.constants._false));
+			body.push(js.variables.declare(removed, js.constants._false));
 
 			var ifIsPersistedEntity = [
-				jsHelper.variables.declare(indexOfEntity, jsHelper.arrays.indexOf(model, persistedEntity)),
-				jsHelper.functions.execute(model + '.splice', [indexOfEntity, 1]),
-				jsHelper.variables.assign(removed, jsHelper.constants._true)
+				js.variables.declare(indexOfEntity, js.arrays.indexOf(model, persistedEntity)),
+				js.functions.execute(model + '.splice', [indexOfEntity, 1]),
+				js.variables.assign(removed, js.constants._true)
 			];
-			body.push(jsHelper.conditional.ifNotNot(persistedEntity, ifIsPersistedEntity));
+			body.push(js.conditional.ifNotNot(persistedEntity, ifIsPersistedEntity));
 
 			body.push(executeSetModel);
 
 			var executeSimulateCall = getExecuteSimulateCall(removed);
-			body.push(jsHelper.return(executeSimulateCall));
+			body.push(js.return(executeSimulateCall));
 
 			return body;
 		}
@@ -202,48 +202,48 @@ define(['src/render/class/js/jsHelper', 'src/factories/class/js/jsFactory'],
 		function getGetByIdFnBody() {
 			var entities = 'entities';
 
-			var executeFilterModelById = jsHelper.functions.execute(model + '.filter', byIdFn.functionName);
+			var executeFilterModelById = js.functions.execute(model + '.filter', byIdFn.functionName);
 
-			var entitiesLengthGTZero = jsHelper.compare.gt(entities + '.length', 0);
-			var entitiesFirst = jsHelper.arrays.elementAt(entities, 0);
-			var entitiesFirstOrDefault = jsHelper.conditional.iif(entitiesLengthGTZero, entitiesFirst, jsHelper.constants.emptyObject);
+			var entitiesLengthGTZero = js.compare.gt(entities + '.length', 0);
+			var entitiesFirst = js.arrays.elementAt(entities, 0);
+			var entitiesFirstOrDefault = js.conditional.iif(entitiesLengthGTZero, entitiesFirst, js.constants.emptyObject);
 			return [
-				jsHelper.variables.declare(entities, executeFilterModelById),
-				jsHelper.return(entitiesFirstOrDefault)
+				js.variables.declare(entities, executeFilterModelById),
+				js.return(entitiesFirstOrDefault)
 			];
 		}
 
 		function getInsertFnBody() {
-			return [jsHelper.functions.execute(model + '.push', data)];
+			return [js.functions.execute(model + '.push', data)];
 		}
 
 		function getUpdateFnBody() {
 			var indexOfEntity = 'indexOfEntity';
 			return [
-				jsHelper.variables.declare(entity, getExecuteGetById(dataId)),
-				jsHelper.conditional.ifNot(entity, jsHelper.return(jsHelper.constants._false)),
-				jsHelper.variables.declare(indexOfEntity, jsHelper.arrays.indexOf(model, entity)),
-				jsHelper.variables.assign(jsHelper.arrays.elementAt(model, indexOfEntity), data),
-				jsHelper.return(jsHelper.constants._true)
+				js.variables.declare(entity, getExecuteGetById(dataId)),
+				js.conditional.ifNot(entity, js.return(js.constants._false)),
+				js.variables.declare(indexOfEntity, js.arrays.indexOf(model, entity)),
+				js.variables.assign(js.arrays.elementAt(model, indexOfEntity), data),
+				js.return(js.constants._true)
 			];
 		}
 
 		function getGetModelFnBody() {
-			var executeLocalStorageGet = jsHelper.variables.defaultValue(
-				jsHelper.functions.execute(localStorageService + '.get', executeGetKey),
-				jsHelper.constants.emptyArray);
+			var executeLocalStorageGet = js.variables.defaultValue(
+				js.functions.execute(localStorageService + '.get', executeGetKey),
+				js.constants.emptyArray);
 
-			return [jsHelper.return(executeLocalStorageGet)];
+			return [js.return(executeLocalStorageGet)];
 		}
 
 		function getSetModelFnBody() {
-			var modelOrDefault = jsHelper.variables.defaultValue(model, jsHelper.constants.emptyArray);
-			var executeLocalStorageSet = jsHelper.functions.execute(localStorageService + '.set', [executeGetKey, modelOrDefault]);
+			var modelOrDefault = js.variables.defaultValue(model, js.constants.emptyArray);
+			var executeLocalStorageSet = js.functions.execute(localStorageService + '.set', [executeGetKey, modelOrDefault]);
 			return [executeLocalStorageSet];
 		}
 
 		function getGetKeyFnBody() {
-			return jsHelper.return(entityType + " + 'List'");
+			return js.return(entityType + " + 'List'");
 		}
 
 		function getGenerateIdFnBody() {
@@ -251,27 +251,27 @@ define(['src/render/class/js/jsHelper', 'src/factories/class/js/jsFactory'],
 			var forIndex = 'e';
 
 			var forLoopCode = [
-				jsHelper.variables.declare(entity, jsHelper.arrays.elementAt(model, forIndex)),
-				jsHelper.functions.execute(ids + '.push', entityId)
+				js.variables.declare(entity, js.arrays.elementAt(model, forIndex)),
+				js.functions.execute(ids + '.push', entityId)
 			];
 
-			var _Math_max_id = jsHelper.functions.execute('Math.max.apply', [jsHelper.constants._null, ids]);
-			var _Math_max_id_plus_1 = jsHelper.concatJs(_Math_max_id, ' + 1');
+			var _Math_max_id = js.functions.execute('Math.max.apply', [js.constants._null, ids]);
+			var _Math_max_id_plus_1 = js.concatJs(_Math_max_id, ' + 1');
 
 			return [
 				declareModelFromGetModel,
-				jsHelper.variables.declare(ids, jsHelper.arrays.value(0)),
-				jsHelper.loops.forVarIn(forIndex, model, forLoopCode), // not [].forEach() because iterating {}
-				jsHelper.return(_Math_max_id_plus_1)
+				js.variables.declare(ids, js.arrays.value(0)),
+				js.loops.forVarIn(forIndex, model, forLoopCode), // not [].forEach() because iterating {}
+				js.return(_Math_max_id_plus_1)
 			];
 		}
 
 		function getSimulateCallFnBody() {
 			var deferred = 'deferred';
 			return [
-				jsHelper.variables.declare(deferred, jsHelper.functions.execute($q + '.defer')),
-				jsHelper.functions.execute(deferred + '.resolve', response),
-				jsHelper.return(deferred + '.promise')
+				js.variables.declare(deferred, js.functions.execute($q + '.defer')),
+				js.functions.execute(deferred + '.resolve', response),
+				js.return(deferred + '.promise')
 			];
 		}
 

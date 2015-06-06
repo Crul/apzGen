@@ -2,7 +2,7 @@ define([], function () {
 	var dis = {};
 	dis.render = render;
 	dis.toString = toString;
-	dis.ident = ident;
+	dis.indent = indent;
 
 	var code = '';
 	var variablePatternSeed;
@@ -53,7 +53,7 @@ define([], function () {
 		return code;
 	}
 
-	function ident(code) { // TODO (indent) merge with others
+	function indent(code) { 
 		return (code || '').replace(/(\r\n|\n|\r)/gm, '\r\n\t').replace(/^/, '\t');
 	}
 

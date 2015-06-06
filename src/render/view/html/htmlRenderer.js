@@ -1,3 +1,4 @@
+// TODO split in helpers as in js
 define(['src/system/logger', 'src/render/codeRenderer'],
 	function (logger, codeRenderer) {
 		var dis = require('util')._extend({}, codeRenderer);
@@ -113,7 +114,7 @@ define(['src/system/logger', 'src/render/codeRenderer'],
 
 			var content = (html || '').trim();
 			if (content)
-				content = dis.ident('\n' + content) + '\n';
+				content = dis.indent('\n' + content) + '\n';
 				
 			return '\n<' + openTag + '>' + content + '</' + tag + '>';
 		}

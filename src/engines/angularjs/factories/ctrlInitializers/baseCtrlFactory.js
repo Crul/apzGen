@@ -1,5 +1,5 @@
-define(['src/render/class/js/jsHelper', 'src/factories/class/js/jsInitializerFactory'],
-	function (jsHelper, jsInitializerFactory) {
+define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsInitializerFactory'],
+	function (js, jsInitializerFactory) {
 		var dis = {};
 		dis.create = create;
 
@@ -16,7 +16,7 @@ define(['src/render/class/js/jsHelper', 'src/factories/class/js/jsInitializerFac
 		var navigateToFn = {
 			functionName: 'navigateTo',
 			parameters: 'to',
-			body: [jsHelper.functions.execute($location + '.path', 'to')]
+			body: [js.functions.execute($location + '.path', 'to')]
 		};
 
 		var getPathTokensFn = {
@@ -56,24 +56,24 @@ define(['src/render/class/js/jsHelper', 'src/factories/class/js/jsInitializerFac
 
 		function getInitFnBody() {
 			return [
-				jsHelper.variables.defaultInitialization(config, jsHelper.constants.emptyObject),
-				jsHelper.variables.defaultInitialization($scope + '.model', jsHelper.constants.emptyObject),
-				jsHelper.variables.assign($scope + '.navigate', navigateToFn.functionName),
-				jsHelper.variables.assign($scope + '.' + dataservice, dataservice),
-				jsHelper.variables.assign($scope + '.pathTokens', jsHelper.functions.execute(getPathTokensFn.functionName))
+				js.variables.defaultInitialization(config, js.constants.emptyObject),
+				js.variables.defaultInitialization($scope + '.model', js.constants.emptyObject),
+				js.variables.assign($scope + '.navigate', navigateToFn.functionName),
+				js.variables.assign($scope + '.' + dataservice, dataservice),
+				js.variables.assign($scope + '.pathTokens', js.functions.execute(getPathTokensFn.functionName))
 			];
 		}
 
 		function getPathTokensFnBody() {
-			var locationPathVar = jsHelper.variables.defaultValue($location + '.\$\$\$\$\$path', jsHelper.constants.emptyString);
+			var locationPathVar = js.variables.defaultValue($location + '.\$\$\$\$\$path', js.constants.emptyString);
 			
-			var splitPathFn = jsHelper.access(locationPathVar, 'split');
-			var executeSplitPath = jsHelper.functions.execute(splitPathFn, "'/'");
+			var splitPathFn = js.access(locationPathVar, 'split');
+			var executeSplitPath = js.functions.execute(splitPathFn, "'/'");
 			
-			var filterPathFn = jsHelper.access(executeSplitPath, 'filter');
-			var executeFilterPath = jsHelper.functions.execute(filterPathFn, jsHelper.functions.filters.getIfNotNot);
+			var filterPathFn = js.access(executeSplitPath, 'filter');
+			var executeFilterPath = js.functions.execute(filterPathFn, js.functions.filters.getIfNotNot);
 			
-			return [jsHelper.return(executeFilterPath)];
+			return [js.return(executeFilterPath)];
 		}
 
 		return dis;

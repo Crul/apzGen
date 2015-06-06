@@ -1,6 +1,6 @@
-define(['src/render/class/js/jsHelper', 'src/render/class/js/jsFunctionRenderer'],
-	function (jsHelper, jsFunctionRenderer) {
-		var dis = require('util')._extend({}, jsFunctionRenderer);
+define(['src/render/class/js/jsRenderer'],
+	function (js) {
+		var dis = require('util')._extend({}, js);
 		dis.render = render;
 		dis.renderInitialization = renderInitialization;
 		dis.renderModelInitializacion = renderModelInitializacion;
@@ -13,7 +13,7 @@ define(['src/render/class/js/jsHelper', 'src/render/class/js/jsFunctionRenderer'
 			if (dependencies && !Array.isArray(dependencies))
 				dependencies = [dependencies];
 			dependencies = [$scope].concat(dependencies || []);
-			return jsFunctionRenderer.render(controllerName, body, dependencies);
+			return dis.functions.render(controllerName, body, dependencies);
 		}
 
 		function renderInitialization(controllerName, ctrlInitializer, dependencies) {
@@ -28,12 +28,12 @@ define(['src/render/class/js/jsHelper', 'src/render/class/js/jsFunctionRenderer'
 
 		function renderCtrlInitialization(ctrlInitializer) {
 			ctrlInitializer = ctrlInitializer || 'ctrlInitializer';
-			return jsHelper.functions.execute(ctrlInitializer + '.init', $scope).render() + jsHelper.constants.eol;
+			return dis.functions.execute(ctrlInitializer + '.init', $scope).render() + js.constants.eol;
 		}
 
 		function renderModelInitializacion(model) {
 			model = JSON.stringify(model || {});
-			return jsHelper.variables.assign($scope + '.model', model).render() + jsHelper.constants.eol;
+			return dis.variables.assign($scope + '.model', model).render() + js.constants.eol;
 		}
 
 		return dis;

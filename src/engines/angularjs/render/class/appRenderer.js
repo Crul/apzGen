@@ -1,12 +1,12 @@
-define(['src/system/fsService', 'src/render/class/js/jsFileRenderer'],
-	function (fsService, jsFileRenderer) {
-		var dis = require('util')._extend({}, jsFileRenderer);
+define(['src/system/fsService', 'src/render/class/js/jsRenderer'],
+	function (fsService, js) {
+		var dis = require('util')._extend({}, js);
 		dis.render = render;
 
 		function render(apzFile) {
 			var app = apzFile.feature;
 			var body = renderBody(app);
-			return jsFileRenderer.render(body);
+			return js.render(body);
 		}
 
 		function renderBody(app) {

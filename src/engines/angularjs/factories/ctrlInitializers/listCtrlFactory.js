@@ -1,9 +1,5 @@
-define(
-	[
-		'src/render/class/js/jsHelper',
-		'src/factories/class/js/jsInitializerFactory'
-	],
-	function (jsHelper, jsInitializerFactory) {
+define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsInitializerFactory'],
+	function (js, jsInitializerFactory) {
 		var dis = {};
 		dis.create = create;
 
@@ -29,7 +25,7 @@ define(
 		var _listLoadedFn = {
 			functionName: '_listLoaded',
 			parameters: response,
-			body: [jsHelper.return(jsHelper.functions.execute(listLoadedFn.functionName, [$scope, response]))]
+			body: [js.return(js.functions.execute(listLoadedFn.functionName, [$scope, response]))]
 		};
 
 		var loadListFn = {
@@ -55,7 +51,7 @@ define(
 		var _removedFn = {
 			functionName: '_removed',
 			parameters: response,
-			body: [jsHelper.return(jsHelper.functions.execute(removedFn.functionName, [$scope, response]))]
+			body: [js.return(js.functions.execute(removedFn.functionName, [$scope, response]))]
 		};
 
 		var removeFn = {
@@ -98,53 +94,53 @@ define(
 
 		function getInitFnBody() {
 			return [
-				jsHelper.variables.defaultInitialization(config, jsHelper.constants.emptyObject),
-				jsHelper.functions.execute(baseCtrlInitializer + '.init', [$scope, config]),
-				jsHelper.variables.assign(entityName, jsHelper.arrays.elementAt($scope + '.pathTokens', 0)),
-				jsHelper.variables.assign($scope + '.' + editFn.functionName, editFn.functionName),
-				jsHelper.variables.assign($scope + '.' + removeFn.functionName, removeFn.functionName),
-				jsHelper.functions.execute(loadListFn.functionName, $scope),
+				js.variables.defaultInitialization(config, js.constants.emptyObject),
+				js.functions.execute(baseCtrlInitializer + '.init', [$scope, config]),
+				js.variables.assign(entityName, js.arrays.elementAt($scope + '.pathTokens', 0)),
+				js.variables.assign($scope + '.' + editFn.functionName, editFn.functionName),
+				js.variables.assign($scope + '.' + removeFn.functionName, removeFn.functionName),
+				js.functions.execute(loadListFn.functionName, $scope),
 			];
 		}
 
 		function getLoadListFnBody() {
-			var executeGetAll = jsHelper.functions.execute($scope + '.dataservice.getAll', entityName);
-			var executeGetAllThenFn = jsHelper.access(executeGetAll, 'then');
+			var executeGetAll = js.functions.execute($scope + '.dataservice.getAll', entityName);
+			var executeGetAllThenFn = js.access(executeGetAll, 'then');
 			return [
-				jsHelper.functions.execute(executeGetAllThenFn, _listLoadedFn.functionName)
+				js.functions.execute(executeGetAllThenFn, _listLoadedFn.functionName)
 			];
 		}
 
 		function getListLoadedFnBody() {
-			var entityModel = jsHelper.arrays.elementAt(model, entityName);
-			var entityModelListProperty = jsHelper.access(entityModel, 'list');
+			var entityModel = js.arrays.elementAt(model, entityName);
+			var entityModelListProperty = js.access(entityModel, 'list');
 			return [
-				jsHelper.variables.defaultInitialization(entityModel, jsHelper.constants.emptyObject),
-				jsHelper.variables.assign(entityModelListProperty, response)
+				js.variables.defaultInitialization(entityModel, js.constants.emptyObject),
+				js.variables.assign(entityModelListProperty, response)
 			];
 		}
 
 		function getEditFnBody() {
 			return [
-				jsHelper.variables.declare($scope, jsHelper.constants._this),
-				jsHelper.functions.execute($scope + '.navigate', entityName + " + /edit/ + " + entityId)
+				js.variables.declare($scope, js.constants._this),
+				js.functions.execute($scope + '.navigate', entityName + " + /edit/ + " + entityId)
 			];
 		}
 
 		function getRemoveFnBody() {
-			var executeRemove = jsHelper.functions.execute($scope + '.dataservice.remove', [entityName, entityId]);
-			var executeRemoveThenFn = jsHelper.access(executeRemove, 'then');
+			var executeRemove = js.functions.execute($scope + '.dataservice.remove', [entityName, entityId]);
+			var executeRemoveThenFn = js.access(executeRemove, 'then');
 			return [
-				jsHelper.variables.declare($scope, jsHelper.constants._this),
-				jsHelper.conditional.ifNotConfirm('remove?', jsHelper.return()),
-				jsHelper.functions.execute(executeRemoveThenFn, _removedFn.functionName)
+				js.variables.declare($scope, js.constants._this),
+				js.conditional.ifNotConfirm('remove?', js.return()),
+				js.functions.execute(executeRemoveThenFn, _removedFn.functionName)
 			];
 		}
 
 		function getRemovedFnBody() {
 			return [
-				jsHelper.functions.execute(loadListFn.functionName, $scope),
-				jsHelper.notifier.notify('removed')
+				js.functions.execute(loadListFn.functionName, $scope),
+				js.notifier.notify('removed')
 			];
 		}
 
