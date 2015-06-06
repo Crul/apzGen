@@ -14,12 +14,14 @@ define([], function () {
 		emptyArray: arrayValue()
 	};
 
+	dis.access = accessRenderer;
+	dis.concatJs = concatJsRenderer;
 	dis.renderJs = renderJs;
 	// TODO dis.conditional = {
-	dis.if = renderWrap(getIf);
+	dis.if = ifRenderer;
 	dis.ifNot = renderWrap(ifNot);
 	dis.ifNotNot = renderWrap(ifNotNot);
-	dis.iif = renderWrap(getIif);
+	dis.iif = iifRenderer;
 	dis.ifNotConfirm = renderWrap(ifNotConfirm);
 	dis.ifConfirm = renderWrap(ifConfirm);
 	//}
@@ -30,14 +32,14 @@ define([], function () {
 	};
 
 	dis.variables = {
-		declare: renderWrap(declareVariable),
-		assign: renderWrap(assign),
-		defaultValue: renderWrap(defaultValue),
-		defaultInitialization: renderWrap(defaultInitialization)
+		declare: declareVariableRenderer,
+		assign: assignRenderer,
+		defaultValue: defaultValueRenderer,
+		defaultInitialization: defaultInitializationRenderer
 	};
-	dis.return = renderWrap(executeReturn); // TODO move to functions?
+	dis.return = returnRenderer; // TODO move to functions?
 	dis.functions = {
-		execute: renderWrap(execute),
+		execute: executeRenderer,
 		filters: {
 			getIfNotNot: 'function (_e) { return !!_e; }'
 		}
@@ -67,14 +69,40 @@ define([], function () {
 		return _wrappedFunction;
 	}
 
-	function renderJs(elem) { // multiple returns
+	function renderJs(elem, avoidEol) { // multiple returns	
+		if (elem === undefined) return '';
+
+		var eol = (avoidEol === true ? '' : dis.constants.eol);
 		if (typeof (elem) === 'string')
-			return elem + dis.constants.eol;
+			return elem + eol;
 
 		if (elem.render)
-			return elem.render() + dis.constants.eol;
+			return elem.render() + eol;
 
-		return JSON.stringify(elem) + dis.constants.eol;
+		return JSON.stringify(elem) + eol;
+	}
+
+	function renderJsNoEol(elem) { // TODO refactor
+		return renderJs(elem, true);
+	}
+
+	function accessRenderer(leftSide, rightSide) {
+		rightSide = concatJsRenderer('.', rightSide);
+		return concatJsRenderer(leftSide, rightSide);
+	}
+
+	function concatJsRenderer(leftSide, rightSide) {
+		function render() {
+			return renderJsNoEol(leftSide) + renderJsNoEol(rightSide);
+		}
+		return { render: render };
+	}
+
+	function ifRenderer(condition, ifTrueBody, elseBody) {
+		function render() {
+			return getIf(renderJsNoEol(condition), renderJsNoEol(ifTrueBody), renderJsNoEol(elseBody));
+		}
+		return { render: render };
 	}
 
 	function getIf(condition, ifTrueBody, elseBody) {
@@ -103,8 +131,11 @@ define([], function () {
 		return ifNot('!' + condition, body);
 	}
 
-	function getIif(condition, trueValue, falseValue) {
-		return '(' + condition + ' ? ' + trueValue + ' : ' + falseValue + ')';
+	function iifRenderer(condition, trueValue, falseValue) {
+		function render() {
+			return '(' + renderJsNoEol(condition) + ' ? ' + renderJsNoEol(trueValue) + ' : ' + renderJsNoEol(falseValue) + ')';
+		}
+		return { render: render };
 	}
 
 	function ifConfirm(confirmMessage, ifTrueBody, elseBody) {
@@ -117,32 +148,69 @@ define([], function () {
 		return ifNot(executeConfirm, ifTrueBody, elseBody);
 	}
 
-	function declareVariable(variableName, value) {
-		return 'var ' + variableName + ' = ' + value;
+	function declareVariableRenderer(variableName, value) {
+		function render() {
+			return 'var ' + variableName + ' = ' + renderJsNoEol(value);
+		}
+		return { render: render };
 	}
 
-	function assign(leftSide, rightSide) {
-		return leftSide + ' = ' + rightSide;
+	function assignRenderer(leftSide, rightSide) {
+		function render() {
+			return renderJsNoEol(leftSide) + ' = ' + renderJsNoEol(rightSide);
+		}
+		return { render: render };
+	}
+
+	function defaultValueRenderer(variableName, value) {
+		function render() {
+			return defaultValue(renderJsNoEol(variableName), renderJsNoEol(value));
+		}
+		return { render: render };
 	}
 
 	function defaultValue(variableName, value) {
 		return '(' + variableName + ' || ' + value + ')';
 	}
 
-	function defaultInitialization(variableName, value) {
-		return variableName + ' = ' + defaultValue(variableName, value);
+	function defaultInitializationRenderer(variableName, value) {
+		function render() {
+			variableName = renderJsNoEol(variableName);
+			return variableName + ' = ' + defaultValue(variableName, value);
+		}
+		return { render: render };
 	}
 
-	function execute(methodName, parameters) {
-		if (Array.isArray(parameters))
-			parameters = parameters.join(', ');
-		return methodName + '(' + (parameters || '') + ')';
+	function executeRenderer(method, parameters) {
+
+		function render() {
+			return executeFunction(method, parameters);
+		}
+		return { render: render };
 	}
 
-	function executeReturn(value) {
-		if (value === undefined) // for return undefined; use constants.undefined
-			value = '';
-		return 'return' + (value === '' ? '' : ' ') + value;
+	function executeFunction(method, parameters) {
+		parameters = parameters || [];
+		if (!Array.isArray(parameters))
+			parameters = [parameters];
+
+		parameters = parameters.map(renderJsNoEol).join(', ');
+
+		if (method.render)
+			method = method.render();
+
+		return method + '(' + (parameters || '') + ')';
+	}
+
+	function returnRenderer(value) {
+		function render() {
+			if (value === undefined) // for "return undefined;" use constants.undefined
+				value = '';
+
+			value = renderJsNoEol(value);
+			return 'return' + (value === '' ? '' : ' ') + value;
+		}
+		return { render: render };
 	}
 
 	function arrayValue(values) {
@@ -188,7 +256,7 @@ define([], function () {
 	function notifyRenderer(message) {
 		function render() {
 			// TODO inject notifier
-			return execute('alert', '"' + message + '"');
+			return executeFunction('alert', '"' + message + '"');
 		}
 		return { render: render };
 	}
@@ -196,7 +264,7 @@ define([], function () {
 	function confirmRenderer(message) {
 		function render() {
 			// TODO inject notifier
-			return execute('confirm', '"' + message + '"');
+			return executeFunction('confirm', '"' + message + '"');
 		}
 		return { render: render };
 	}

@@ -89,8 +89,8 @@ define(['src/render/class/js/jsHelper', 'src/factories/class/js/jsInitializerFac
 		}
 
 		function getSetEntityDataFromPathFnBody() {
-			var pathTokens_0 = jsHelper.arrays.elementAt(pathTokens, 0).render();
-			var pathTokens_2 = jsHelper.arrays.elementAt(pathTokens, 2).render();
+			var pathTokens_0 = jsHelper.arrays.elementAt(pathTokens, 0);
+			var pathTokens_2 = jsHelper.arrays.elementAt(pathTokens, 2);
 			return [
 				jsHelper.variables.assign(entityName, pathTokens_0),
 				jsHelper.variables.assign(entityId, pathTokens_2)
@@ -102,18 +102,20 @@ define(['src/render/class/js/jsHelper', 'src/factories/class/js/jsInitializerFac
 		}
 
 		function getLoadEntityFnBody() {
-			var dataserviceGet = jsHelper.functions.execute(dataservice + '.get', [entityName, entityId]).render();
+			var dataserviceGet = jsHelper.functions.execute(dataservice + '.get', [entityName, entityId]);
+			var dataserviceGetThenFn = jsHelper.access(dataserviceGet, 'then');
 			return [
-				jsHelper.if(jsHelper.compare.exactEquals(entityId, "'new'").render(), jsHelper.return()),
-				jsHelper.functions.execute(dataserviceGet + '.then', _loadedEntityFn.functionName)
+				jsHelper.if(jsHelper.compare.exactEquals(entityId, "'new'"), jsHelper.return()),
+				jsHelper.functions.execute(dataserviceGetThenFn, _loadedEntityFn.functionName)
 			];
 		}
 
 		function getSaveFnBody() {
-			var dataserviceSet = jsHelper.functions.execute(dataservice + '.set', [entityName, model]).render();
+			var dataserviceSet = jsHelper.functions.execute(dataservice + '.set', [entityName, model]);
+			var dataserviceSetThenFn = jsHelper.access(dataserviceSet, 'then');			
 			return [
 				jsHelper.variables.declare($scope, jsHelper.constants._this),
-				jsHelper.functions.execute(dataserviceSet + '.then', savedFn.functionName)
+				jsHelper.functions.execute(dataserviceSetThenFn, savedFn.functionName)
 			];
 		}
 

@@ -60,15 +60,20 @@ define(['src/render/class/js/jsHelper', 'src/factories/class/js/jsInitializerFac
 				jsHelper.variables.defaultInitialization($scope + '.model', jsHelper.constants.emptyObject),
 				jsHelper.variables.assign($scope + '.navigate', navigateToFn.functionName),
 				jsHelper.variables.assign($scope + '.' + dataservice, dataservice),
-				jsHelper.variables.assign($scope + '.pathTokens', jsHelper.functions.execute(getPathTokensFn.functionName).render())
+				jsHelper.variables.assign($scope + '.pathTokens', jsHelper.functions.execute(getPathTokensFn.functionName))
 			];
 		}
 
 		function getPathTokensFnBody() {
-			var locationPathVar = jsHelper.variables.defaultValue($location + '.\$\$\$\$\$path', jsHelper.constants.emptyString).render();
-			var splitPath = jsHelper.functions.execute(locationPathVar + '.split', "'/'").render();
-			var filteredPath = jsHelper.functions.execute(splitPath + '.filter', jsHelper.functions.filters.getIfNotNot).render();
-			return [jsHelper.return(filteredPath)];
+			var locationPathVar = jsHelper.variables.defaultValue($location + '.\$\$\$\$\$path', jsHelper.constants.emptyString);
+			
+			var splitPathFn = jsHelper.access(locationPathVar, 'split');
+			var executeSplitPath = jsHelper.functions.execute(splitPathFn, "'/'");
+			
+			var filterPathFn = jsHelper.access(executeSplitPath, 'filter');
+			var executeFilterPath = jsHelper.functions.execute(filterPathFn, jsHelper.functions.filters.getIfNotNot);
+			
+			return [jsHelper.return(executeFilterPath)];
 		}
 
 		return dis;

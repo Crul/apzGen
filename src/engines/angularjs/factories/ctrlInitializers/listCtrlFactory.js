@@ -29,7 +29,7 @@ define(
 		var _listLoadedFn = {
 			functionName: '_listLoaded',
 			parameters: response,
-			body: [jsHelper.return(jsHelper.functions.execute(listLoadedFn.functionName, [$scope, response]).render())]
+			body: [jsHelper.return(jsHelper.functions.execute(listLoadedFn.functionName, [$scope, response]))]
 		};
 
 		var loadListFn = {
@@ -55,7 +55,7 @@ define(
 		var _removedFn = {
 			functionName: '_removed',
 			parameters: response,
-			body: [jsHelper.return(jsHelper.functions.execute(removedFn.functionName, [$scope, response]).render())]
+			body: [jsHelper.return(jsHelper.functions.execute(removedFn.functionName, [$scope, response]))]
 		};
 
 		var removeFn = {
@@ -100,7 +100,7 @@ define(
 			return [
 				jsHelper.variables.defaultInitialization(config, jsHelper.constants.emptyObject),
 				jsHelper.functions.execute(baseCtrlInitializer + '.init', [$scope, config]),
-				jsHelper.variables.assign(entityName, jsHelper.arrays.elementAt($scope + '.pathTokens', 0).render()),
+				jsHelper.variables.assign(entityName, jsHelper.arrays.elementAt($scope + '.pathTokens', 0)),
 				jsHelper.variables.assign($scope + '.' + editFn.functionName, editFn.functionName),
 				jsHelper.variables.assign($scope + '.' + removeFn.functionName, removeFn.functionName),
 				jsHelper.functions.execute(loadListFn.functionName, $scope),
@@ -108,17 +108,19 @@ define(
 		}
 
 		function getLoadListFnBody() {
-			var getAll = jsHelper.functions.execute($scope + '.dataservice.getAll', entityName).render();
+			var executeGetAll = jsHelper.functions.execute($scope + '.dataservice.getAll', entityName);
+			var executeGetAllThenFn = jsHelper.access(executeGetAll, 'then');
 			return [
-				jsHelper.functions.execute(getAll + '.then', _listLoadedFn.functionName)
+				jsHelper.functions.execute(executeGetAllThenFn, _listLoadedFn.functionName)
 			];
 		}
 
 		function getListLoadedFnBody() {
-			var entityModel = jsHelper.arrays.elementAt(model, entityName).render();
+			var entityModel = jsHelper.arrays.elementAt(model, entityName);
+			var entityModelListProperty = jsHelper.access(entityModel, 'list');
 			return [
 				jsHelper.variables.defaultInitialization(entityModel, jsHelper.constants.emptyObject),
-				jsHelper.variables.assign(entityModel + '.list', response)
+				jsHelper.variables.assign(entityModelListProperty, response)
 			];
 		}
 
@@ -130,11 +132,12 @@ define(
 		}
 
 		function getRemoveFnBody() {
-			var remove = jsHelper.functions.execute($scope + '.dataservice.remove', [entityName, entityId]).render();
+			var executeRemove = jsHelper.functions.execute($scope + '.dataservice.remove', [entityName, entityId]);
+			var executeRemoveThenFn = jsHelper.access(executeRemove, 'then');
 			return [
 				jsHelper.variables.declare($scope, jsHelper.constants._this),
 				jsHelper.ifNotConfirm('remove?', jsHelper.return()),
-				jsHelper.functions.execute(remove + '.then', _removedFn.functionName)
+				jsHelper.functions.execute(executeRemoveThenFn, _removedFn.functionName)
 			];
 		}
 
