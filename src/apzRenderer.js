@@ -1,4 +1,4 @@
-define(['src/system/logger', 'src/rendererResolver'],
+define(['src/system/logger', 'src/resolve/rendererResolver'],
 	function (logger, rendererResolver) {
 		var dis = {};
 		dis.render = render;

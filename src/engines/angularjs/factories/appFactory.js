@@ -2,9 +2,9 @@ define(
 	[
 		'src/system/logger',
 		'src/system/fsService',
-		'src/engines/angularjs/factories/angularjsElementFactory'
+		'src/engines/angularjs/factories/appBootstrapFactory'
 	],
-	function (logger, fsService, angularjsElementFactory) {
+	function (logger, fsService, appBootstrapFactory) {
 		var dis = {};
 		dis.create = create;
 
@@ -30,9 +30,9 @@ define(
 
 			app.angularjs = app.angularjs || {};
 			app.angularjs.dependencies = angularjsDependencies;
-			app.angularjs.factories = createElements('factories', app);
-			app.angularjs.controllers = createElements('controllers', app);
-			app.angularjs.routes = createElements('routes', app).map(fsService.addStartSlash);
+			app.angularjs.factories = initElements('factories', app);
+			app.angularjs.controllers = initElements('controllers', app);
+			app.angularjs.routes = initElements('routes', app).map(fsService.addStartSlash);
 
 			return app;
 		}
@@ -48,9 +48,9 @@ define(
 			}
 		}
 
-		function createElements(elementObject, app) {
+		function initElements(elementObject, app) {
 			return (app.angularjs[elementObject] || [])
-				.concat(angularjsElementFactory.createElements(elementObject, app.features));
+				.concat(appBootstrapFactory.initElements(elementObject, app.features));
 		}
 
 		function getApzFiles(app) {

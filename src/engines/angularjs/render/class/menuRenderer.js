@@ -1,4 +1,4 @@
-define(['src/engines/angularjs/render/class/ctrlRenderer'],
+define(['src/engines/angularjs/render/class/_default/ctrlRenderer'],
 	function (ctrlRenderer) {
 		var dis = {};
 		dis.render = render;

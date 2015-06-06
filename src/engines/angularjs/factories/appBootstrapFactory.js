@@ -1,8 +1,8 @@
 define([], function () {
 	var dis = {};
-	dis.createElements = createElements;
+	dis.initElements = initElements;
 
-	function createElements(elementObject, features) {
+	function initElements(elementObject, features) {
 		var elements = [];
 		features.forEach(concatElements);
 		return elements;

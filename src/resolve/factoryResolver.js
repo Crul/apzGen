@@ -1,4 +1,4 @@
-define(['src/system/resolverFactory'], 
+define(['src/resolve/resolverFactory'], 
 	function (resolverFactory){
 		var dis = {};
 		dis.resolve = resolve;

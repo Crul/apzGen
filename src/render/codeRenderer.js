@@ -53,7 +53,7 @@ define([], function () {
 		return code;
 	}
 
-	function ident(code) {
+	function ident(code) { // TODO (indent) merge with others
 		return (code || '').replace(/(\r\n|\n|\r)/gm, '\r\n\t').replace(/^/, '\t');
 	}
 

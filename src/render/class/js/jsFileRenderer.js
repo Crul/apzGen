@@ -1,4 +1,4 @@
-define(['src/system/codeRenderer'],
+define(['src/render/codeRenderer'],
 	function (codeRenderer) {
 		var dis = require('util')._extend({}, codeRenderer);
 		dis.fileExtension = 'js';

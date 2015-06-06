@@ -2,7 +2,7 @@ define(
 	[
 		'src/system/logger',
 		'src/system/definitionFactory',
-		'src/factoryResolver',
+		'src/resolve/factoryResolver',
 		'src/apzContext'
 	],
 	function (logger, definitionFactory, factoryResolver, apzContext) {

@@ -1,4 +1,4 @@
-define(['src/system/logger', 'src/system/codeRenderer'],
+define(['src/system/logger', 'src/render/codeRenderer'],
 	function (logger, codeRenderer) {
 		var dis = require('util')._extend({}, codeRenderer);
 		dis.fileExtension = 'html';
