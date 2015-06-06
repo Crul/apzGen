@@ -16,12 +16,12 @@ define([], function () {
 
 	dis.renderJs = renderJs;
 	// TODO dis.conditional = {
-		dis.if = renderWrap(getIf);
-		dis.ifNot = renderWrap(ifNot);
-		dis.ifNotNot = renderWrap(ifNotNot);
-		dis.iif = renderWrap(getIif);
-		dis.ifNotConfirm = renderWrap(ifNotConfirm);
-		dis.ifConfirm = renderWrap(ifConfirm);
+	dis.if = renderWrap(getIf);
+	dis.ifNot = renderWrap(ifNot);
+	dis.ifNotNot = renderWrap(ifNotNot);
+	dis.iif = renderWrap(getIif);
+	dis.ifNotConfirm = renderWrap(ifNotConfirm);
+	dis.ifConfirm = renderWrap(ifConfirm);
 	//}
 	dis.compare = {
 		equals: renderWrap(equals),
@@ -53,18 +53,18 @@ define([], function () {
 	dis.notifier = {
 		notify: notifyRenderer,
 		confirm: confirmRenderer
-	}
+	};
 
 	function renderWrap(fn) {
-		return function () {
+		function _wrappedFunction() {
 			var _fn = fn;
 			var _args = arguments;
-			return {
-				render: function () {
-					return _fn.apply(dis, _args);
-				}
-			};
+			function render() {
+				return _fn.apply(dis, _args);
+			}
+			return { render: render };
 		}
+		return _wrappedFunction;
 	}
 
 	function renderJs(elem) { // multiple returns
@@ -116,7 +116,7 @@ define([], function () {
 		var executeConfirm = confirmRenderer(confirmMessage).render();
 		return ifNot(executeConfirm, ifTrueBody, elseBody);
 	}
-	
+
 	function declareVariable(variableName, value) {
 		return 'var ' + variableName + ' = ' + value;
 	}
@@ -186,21 +186,19 @@ define([], function () {
 	}
 
 	function notifyRenderer(message) {
-		return {
-			render: function () {
-				// TODO inject notifier
-				return 'alert("' + message + '")';
-			}
-		};
+		function render() {
+			// TODO inject notifier
+			return execute('alert', '"' + message + '"');
+		}
+		return { render: render };
 	}
 
 	function confirmRenderer(message) {
-		return {
-			render: function () {
-				// TODO inject notifier
-				return 'confirm("' + message + '")';
-			}
-		};
+		function render() {
+			// TODO inject notifier
+			return execute('confirm', '"' + message + '"');
+		}
+		return { render: render };
 	}
 
 	function indent(code) {
