@@ -15,12 +15,13 @@ define(['src/render/codeRenderer'],
 			return dis.concatJs(leftSide, rightSide);
 		}
 
-		function concatJs(leftSide, rightSide) {
-			return renderJsNoEol(leftSide) + renderJsNoEol(rightSide);
+		function concatJs(p1, p2, p3) {
+			return renderJsNoEol(p1) + renderJsNoEol(p2) + renderJsNoEol(p3);
 		}
 
 		function renderJs(elem, avoidEol) { // multiple returns	
-			if (elem === undefined) return '';
+			if (elem === undefined)
+				return '';
 
 			var eol = (avoidEol === true ? '' : dis.eol);
 			if (typeof (elem) === 'string')

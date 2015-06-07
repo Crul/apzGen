@@ -1,8 +1,9 @@
-define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsInitializerFactory'],
-	function (js, jsInitializerFactory) {
+define(['src/default/render/classRenderer', 'src/factories/class/js/jsInitializerFactory'],
+	function (classRenderer, jsInitializerFactory) {
 		var dis = {};
 		dis.create = create;
 
+		var js = classRenderer;
 		var dependentFeatures = {};
 		dependentFeatures.baseCtrl = { featureType: 'ctrlInitializers/baseCtrl', featureName: 'baseCtrlInitializer' };
 
@@ -11,11 +12,11 @@ define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsInitializerF
 		var $scope = '$scope';
 		var config = 'config';
 		var response = 'response';
-		var pathTokens = $scope + '.pathTokens';
-		var dataservice = $scope + '.' + 'dataservice';
-		var model = $scope + '.model';
-		var entityName = $scope + '.entityName';
-		var entityId = $scope + '.entityId';
+		var pathTokens = js.access($scope, 'pathTokens');
+		var dataservice = js.access($scope, 'dataservice');
+		var model = js.access($scope, 'model');
+		var entityName = js.access($scope, 'entityName');
+		var entityId = js.access($scope, 'entityId');
 
 		var setEntityDataFromPathFn = {
 			functionName: 'setEntityDataFromPath',
@@ -81,8 +82,8 @@ define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsInitializerF
 		function getInitFnBody() {
 			return [
 				js.variables.defaultInitialization(config, js.constants.emptyObject),
-				js.variables.assign($scope + '.' + saveFn.functionName, saveFn.functionName),
-				js.functions.execute(baseCtrlInitializer + '.init', [$scope, config]),
+				js.variables.assign(js.access($scope, saveFn.functionName), saveFn.functionName),
+				js.functions.execute(js.access(baseCtrlInitializer, 'init'), [$scope, config]),
 				js.functions.execute(setEntityDataFromPathFn.functionName, $scope),
 				js.functions.execute(loadEntityFn.functionName, $scope)
 			];
@@ -102,7 +103,7 @@ define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsInitializerF
 		}
 
 		function getLoadEntityFnBody() {
-			var dataserviceGet = js.functions.execute(dataservice + '.get', [entityName, entityId]);
+			var dataserviceGet = js.functions.execute(js.access(dataservice, 'get'), [entityName, entityId]);
 			var dataserviceGetThenFn = js.access(dataserviceGet, 'then');
 			return [
 				js.conditional.if(js.compare.exactEquals(entityId, "'new'"), js.return()),
@@ -111,8 +112,8 @@ define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsInitializerF
 		}
 
 		function getSaveFnBody() {
-			var dataserviceSet = js.functions.execute(dataservice + '.set', [entityName, model]);
-			var dataserviceSetThenFn = js.access(dataserviceSet, 'then');			
+			var dataserviceSet = js.functions.execute(js.access(dataservice, 'set'), [entityName, model]);
+			var dataserviceSetThenFn = js.access(dataserviceSet, 'then');
 			return [
 				js.variables.declare($scope, js.constants._this),
 				js.functions.execute(dataserviceSetThenFn, savedFn.functionName)

@@ -38,7 +38,7 @@ define(['src/default/render/viewRenderer'],
 		}
 
 		function renderModelCell(column) {
-			return viewRenderer.renderTableCell(column, 'ng-bind="entity.' + column + '"');
+			return viewRenderer.renderTableCell(column, viewRenderer.renderAttr('ng-bind', 'entity.' + column));
 		}
 
 		return dis;

@@ -15,6 +15,15 @@ define(
 		dis.ifConfirm = jsUtils.renderWrap(ifConfirm);
 
 		function getIf(condition, ifTrueBody, elseBody) {
+			if (Array.isArray(condition))
+				condition = condition.map(jsUtils.renderJsNoEol).join('');
+				
+			if (Array.isArray(ifTrueBody))
+				ifTrueBody = ifTrueBody.map(jsUtils.renderJs).join('');
+			
+			if (Array.isArray(elseBody))
+				elseBody = elseBody.map(jsUtils.renderJs).join('');
+			
 			condition = jsUtils.renderJsNoEol(condition);
 			ifTrueBody = jsUtils.renderJsNoEol(ifTrueBody);
 			elseBody = jsUtils.renderJsNoEol(elseBody);

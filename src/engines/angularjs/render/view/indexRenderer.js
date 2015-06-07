@@ -8,7 +8,7 @@ define(['src/system/utils', 'src/render/view/html/html5PageRenderer'],
 			var appName = app.featureName;
 
 			var title = app.title || appName || 'angularjsApp';
-			var htmlAttributes = "ng-app='" + appName + "'";
+			var htmlAttributes = dis.renderAttr('ng-app', appName);
 			var body = renderBody(title);
 			var libs = app.libs;
 			var files = getFiles(app);
@@ -32,6 +32,7 @@ define(['src/system/utils', 'src/render/view/html/html5PageRenderer'],
 			var files = (app.angularjs.factories || [])
 				.concat(app.angularjs.controllers || [])
 				.concat(app.apzFiles || []);
+
 			return utils.arrays.distinct(files);
 		}
 

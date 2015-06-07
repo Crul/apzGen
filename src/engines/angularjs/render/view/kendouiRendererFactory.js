@@ -1,6 +1,11 @@
-define(['src/engines/angularjs/render/view/htmlRenderer'],
-	function (angularjsRenderer) {
-		var dis = require('util')._extend({}, angularjsRenderer);
+define([], function () {
+
+	return { create: create };
+
+	function create(viewRenderer) {
+		var util = require('util');
+		var _viewRenderer = util._extend({}, viewRenderer);
+		var dis = util._extend({}, viewRenderer);
 
 		dis.renderInput = renderInput;
 
@@ -8,7 +13,7 @@ define(['src/engines/angularjs/render/view/htmlRenderer'],
 			inputConfig = inputConfig || {};
 			inputAttributes = clearBootstrapCssClass(inputConfig, inputAttributes);
 			inputAttributes = dis.concat(inputAttributes, getInputControlAttrigute(inputConfig.fieldType));
-			return angularjsRenderer.renderInput(fieldName, inputAttributes, inputConfig);
+			return _viewRenderer.renderInput(fieldName, inputAttributes, inputConfig);
 		}
 
 		function getInputControlAttrigute(fieldType) { // multiple returns
@@ -21,9 +26,10 @@ define(['src/engines/angularjs/render/view/htmlRenderer'],
 		function clearBootstrapCssClass(inputConfig, inputAttributes) { // multiple returns
 			if (inputConfig.fieldType !== 'numeric')
 				return inputAttributes;
-			
+
 			return (inputAttributes || '').replace('class="form-control"');
 		}
 
 		return dis;
-	});
+	}
+});

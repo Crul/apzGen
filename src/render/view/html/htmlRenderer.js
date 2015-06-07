@@ -1,4 +1,4 @@
-// TODO split in helpers as in js
+// TODO split in helpers as js/helpers
 define(['src/system/logger', 'src/render/codeRenderer'],
 	function (logger, codeRenderer) {
 		var dis = require('util')._extend({}, codeRenderer);
@@ -7,20 +7,26 @@ define(['src/system/logger', 'src/render/codeRenderer'],
 
 		dis.renderBody = renderBody;
 		dis.renderTitle = renderTitle;
+
 		dis.renderTable = renderTable;
 		dis.renderTableRow = renderTableRow;
 		dis.renderTableCell = renderTableCell;
-		dis.renderLink = renderLink;
+
 		dis.renderUnorderedList = renderUnorderedList;
 
+		dis.renderLink = renderLink;
 		dis.renderButton = renderButton;
 		dis.renderLinkButton = renderLink; // no special linkButton
-		dis.renderLabel = renderLabel;
-		dis.renderInput = renderInput;
+		
 		dis.renderForm = renderForm;
 		dis.renderControl = renderControl;
 
+		dis.renderLabel = renderLabel;
+		dis.renderInput = renderInput;
+
 		dis.renderTag = renderTag;
+		dis.renderAttr = renderAttr;
+
 		dis.concat = concat;
 
 		function render(definition) {
@@ -65,22 +71,22 @@ define(['src/system/logger', 'src/render/codeRenderer'],
 		}
 
 		function renderLink(text, target, attributes) {
-			attributes = concat('href="' + target + '"', attributes);
+			attributes = concat(dis.renderAttr('href', target), attributes);
 			return renderTag('a', text, attributes);
 		}
 
 		function renderButton(text, action, attributes, clickAttribute) {
-			attributes = concat(attributes,(clickAttribute || 'click') + '="' + action + '"');
+			attributes = concat(attributes, dis.renderAttr((clickAttribute || 'click'), action));
 			return renderTag('button', text, attributes);
 		}
 
 		function renderLabel(fieldName, labelAttributes) {
-			labelAttributes = concat(labelAttributes, 'for="' + fieldName + '"');
+			labelAttributes = concat(labelAttributes, dis.renderAttr('for', fieldName));
 			return renderTag('label', fieldName, labelAttributes);
 		}
 
 		function renderInput(fieldName, inputAttributes) {
-			inputAttributes = concat(inputAttributes, 'id="' + fieldName + '"');
+			inputAttributes = concat(inputAttributes, dis.renderAttr('id', fieldName));
 			return renderTag('input', '', inputAttributes);
 		}
 
@@ -115,8 +121,12 @@ define(['src/system/logger', 'src/render/codeRenderer'],
 			var content = (html || '').trim();
 			if (content)
 				content = dis.indent('\n' + content) + '\n';
-				
+
 			return '\n<' + openTag + '>' + content + '</' + tag + '>';
+		}
+
+		function renderAttr(attrName, attrValue) {
+			return ' ' + attrName + '="' + attrValue + '" ';
 		}
 
 		function concat(s1, s2) {

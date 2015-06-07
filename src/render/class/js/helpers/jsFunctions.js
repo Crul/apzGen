@@ -1,6 +1,6 @@
 define(
 	[
-		'src/render/class/js/helpers/jsUtils', 
+		'src/render/class/js/helpers/jsUtils',
 		'src/render/class/js/helpers/jsConstants',
 		'src/render/codeRenderer',
 	],
@@ -17,14 +17,28 @@ define(
 		dis.return = jsUtils.renderWrap(executeReturn);
 		dis.execute = jsUtils.renderWrap(executeFunction);
 		dis.filters = {
-			getIfNotNot: renderFunction('', executeReturn('!!_e') + jsConstants.eol, '_e')
+			getIfNotNot: renderFunction({ body: executeReturn('!!_e'), parameters: '_e' })
 		};
 
-		function renderFunction(functionName, body, parameters) {
-			if (parameters && !Array.isArray(parameters))
+		function renderFunction(fnConfig) {
+			if (fnConfig.render)
+				fnConfig = fnConfig.render();
+
+			if (typeof (fnConfig) === 'string')
+				fnConfig = { body: fnConfig };
+
+			var functionName = fnConfig.functionName || '';
+			var body = fnConfig.body;
+			var parameters = fnConfig.parameters || fnConfig.dependencies || [];
+
+
+			if (!Array.isArray(parameters))
 				parameters = [parameters];
 
-			body = (body || '')
+			if (Array.isArray(body))
+				body = body.map(jsUtils.renderJs).join('');
+
+			body = jsUtils.renderJs(body)
 				.replace(/^/, '\t') 					// indent first line
 				.replace(/\n/g, '\n\t') 				// indent non first lines
 				.replace(/\n([ \t]*)(;*)$/mg, '')		// remove emtpy lines and alone ;

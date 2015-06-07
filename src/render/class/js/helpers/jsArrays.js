@@ -1,27 +1,29 @@
-define(['src/render/class/js/helpers/jsUtils'], function (jsUtils) {
-	var dis = {};
+define(['src/render/class/js/helpers/jsUtils', 'src/render/class/js/helpers/jsFunctions'],
+	function (jsUtils, jsFunctions) {
+		var dis = {};
 
-	dis.value = jsUtils.renderWrap(arrayValue);
-	dis.elementAt = jsUtils.renderWrap(elementAt);
-	dis.indexOf = jsUtils.renderWrap(indexOf);
+		dis.value = jsUtils.renderWrap(arrayValue);
+		dis.elementAt = jsUtils.renderWrap(elementAt);
+		dis.indexOf = jsUtils.renderWrap(indexOf);
 
-	function arrayValue(values) {
-		if (Array.isArray(values))
-			values = values.join(', ');
+		function arrayValue(values) {
+			if (values === undefined)
+				values = [];
 
-		if (values === undefined)
-			values = '';
+			if (!Array.isArray(values))
+				values = [values];
 
-		return '[' + values + ']';
-	}
+			values = values.map(jsUtils.renderJsNoEol).join(', ');
+			return '[' + values + ']';
+		}
 
-	function elementAt(array, position) {
-		return array + arrayValue(position);
-	}
+		function elementAt(array, position) {
+			return jsUtils.renderJsNoEol(array) + arrayValue(position);
+		}
 
-	function indexOf(array, element) {
-		return array + '.indexOf(' + element + ')';
-	}
+		function indexOf(array, element) {
+			return jsUtils.access(array, jsFunctions.execute('indexOf', element)).render();
+		}
 
-	return dis;
-});
+		return dis;
+	});

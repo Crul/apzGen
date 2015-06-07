@@ -1,8 +1,9 @@
-define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsInitializerFactory'],
-	function (js, jsInitializerFactory) {
+define(['src/default/render/classRenderer', 'src/factories/class/js/jsInitializerFactory'],
+	function (classRenderer, jsInitializerFactory) {
 		var dis = {};
 		dis.create = create;
 
+		var js = classRenderer;
 		var dependentFeatures = {};
 		dependentFeatures.baseCtrl = { featureType: 'ctrlInitializers/baseCtrl', featureName: 'baseCtrlInitializer' };
 
@@ -10,11 +11,12 @@ define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsInitializerF
 		var baseCtrlInitializer = 'baseCtrlInitializer';
 		var config = 'config';
 		var $scope = '$scope';
-		var entityName = $scope + '.entityName';
-		var model = $scope + '.model';
+		var dataservice = js.access($scope, 'dataservice');
+		var model = js.access($scope, 'model');
+		var entityName = js.access($scope, 'entityName');
 		var response = 'response';
 		var entity = 'entity';
-		var entityId = entity + '.id';
+		var entityId = js.access(entity, 'id');
 
 		var listLoadedFn = {
 			functionName: 'listLoaded',
@@ -95,16 +97,16 @@ define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsInitializerF
 		function getInitFnBody() {
 			return [
 				js.variables.defaultInitialization(config, js.constants.emptyObject),
-				js.functions.execute(baseCtrlInitializer + '.init', [$scope, config]),
-				js.variables.assign(entityName, js.arrays.elementAt($scope + '.pathTokens', 0)),
-				js.variables.assign($scope + '.' + editFn.functionName, editFn.functionName),
-				js.variables.assign($scope + '.' + removeFn.functionName, removeFn.functionName),
+				js.functions.execute(js.access(baseCtrlInitializer, 'init'), [$scope, config]),
+				js.variables.assign(entityName, js.arrays.elementAt(js.access($scope, 'pathTokens'), 0)),
+				js.variables.assign(js.access($scope, editFn.functionName), editFn.functionName),
+				js.variables.assign(js.access($scope, removeFn.functionName), removeFn.functionName),
 				js.functions.execute(loadListFn.functionName, $scope),
 			];
 		}
 
 		function getLoadListFnBody() {
-			var executeGetAll = js.functions.execute($scope + '.dataservice.getAll', entityName);
+			var executeGetAll = js.functions.execute(js.access(dataservice, 'getAll'), entityName);
 			var executeGetAllThenFn = js.access(executeGetAll, 'then');
 			return [
 				js.functions.execute(executeGetAllThenFn, _listLoadedFn.functionName)
@@ -123,12 +125,12 @@ define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsInitializerF
 		function getEditFnBody() {
 			return [
 				js.variables.declare($scope, js.constants._this),
-				js.functions.execute($scope + '.navigate', entityName + " + /edit/ + " + entityId)
+				js.functions.execute(js.access($scope, 'navigate'), js.concatJs(entityName, ' + /edit/ + ', entityId))
 			];
 		}
 
 		function getRemoveFnBody() {
-			var executeRemove = js.functions.execute($scope + '.dataservice.remove', [entityName, entityId]);
+			var executeRemove = js.functions.execute(js.access(dataservice, 'remove'), [entityName, entityId]);
 			var executeRemoveThenFn = js.access(executeRemove, 'then');
 			return [
 				js.variables.declare($scope, js.constants._this),

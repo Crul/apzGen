@@ -2,9 +2,10 @@ define(
 	[
 		'src/system/logger',
 		'src/system/fsService',
+		'src/system/utils',
 		'src/engines/angularjs/factories/appBootstrapFactory'
 	],
-	function (logger, fsService, appBootstrapFactory) {
+	function (logger, fsService, utils, appBootstrapFactory) {
 		var dis = {};
 		dis.create = create;
 
@@ -49,8 +50,9 @@ define(
 		}
 
 		function initElements(elementObject, app) {
-			return (app.angularjs[elementObject] || [])
+			var elements = (app.angularjs[elementObject] || [])
 				.concat(appBootstrapFactory.initElements(elementObject, app.features));
+			return utils.arrays.distinct(elements);
 		}
 
 		function getApzFiles(app) {

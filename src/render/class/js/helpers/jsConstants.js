@@ -1,5 +1,5 @@
-define(['src/render/class/js/helpers/jsUtils', 'src/render/class/js/helpers/jsArrays'],
-	function (jsUtils, jsArrays) {
+define(['src/render/class/js/helpers/jsUtils'],
+	function (jsUtils) {
 		return {
 			_this: 'this',
 			_true: 'true',
@@ -8,6 +8,6 @@ define(['src/render/class/js/helpers/jsUtils', 'src/render/class/js/helpers/jsAr
 			eol: jsUtils.eol,
 			emptyObject: '{}',
 			emptyString: "''",
-			emptyArray: jsArrays.value().render()
+			emptyArray: '[]'
 		};
 	});

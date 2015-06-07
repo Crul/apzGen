@@ -1,11 +1,11 @@
 define(
 	[
-		'src/default/render/layoutRenderer',
+		'src/default/render/viewRenderer',
 		'src/render/view/html/util/includeRenderer',
 		'src/render/view/html/util/libResolver'
 	],
-	function (layoutRenderer, includeRenderer, libResolver) {
-		var dis = require('util')._extend({}, layoutRenderer);
+	function (viewRenderer, includeRenderer, libResolver) {
+		var dis = require('util')._extend({}, viewRenderer);
 		dis.render = render;
 
 		var html5 = '<!DOCTYPE html>';

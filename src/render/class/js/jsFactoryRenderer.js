@@ -1,4 +1,4 @@
-define(['src/render/class/js/jsRenderer'],
+define(['src/default/render/classRenderer'],
 	function (js) {
 		var dis = require('util')._extend({}, js);
 		dis.render = render;
@@ -6,10 +6,8 @@ define(['src/render/class/js/jsRenderer'],
 		var constants = { dis: 'dis' };
 
 		function render(factoryConfig) {
-			var functionName = factoryConfig.functionName;
-			var body = renderFactoryBody(factoryConfig);
-			var dependencies = factoryConfig.dependencies;
-			return dis.functions.render(functionName, body, dependencies);
+			factoryConfig.body = renderFactoryBody(factoryConfig);
+			return dis.functions.render(factoryConfig);
 		}
 
 		function renderFactoryBody(factoryConfig) {
@@ -24,15 +22,16 @@ define(['src/render/class/js/jsRenderer'],
 		}
 
 		function renderFunction(fn) {
-			var code = '';
+			var code = [];
 			if (fn.isPublic) {
-				var propertyName = fn.isPublic.propertyName || fn.functionName;
-				code = dis.variables.assign(constants.dis + '.' + propertyName, fn.functionName).render() + dis.constants.eol;
+				var propertyName = js.access(constants.dis,(fn.isPublic.propertyName || fn.functionName));
+				code.push(js.concatJs(dis.variables.assign(propertyName, fn.functionName), dis.constants.eol));
 			}
 
-			var body = renderBody(fn);
-			code += dis.functions.render(fn.functionName, body, fn.parameters);
-			return code;
+			fn.body = renderBody(fn);
+			code = code.concat(dis.functions.render(fn));
+
+			return code.map(dis.renderJs).join('') + dis.constants.eol;;
 		}
 
 		function renderBody(fn) {
@@ -40,9 +39,8 @@ define(['src/render/class/js/jsRenderer'],
 			if (!Array.isArray(fnBody))
 				fnBody = [fnBody];
 
-			var body = fnBody.map(dis.renderJs).join('') + dis.constants.eol;
-			body += (fn.functions || []).map(renderFunction).join('\n');
-			return body;
+			var functionsCode = (fn.functions || []).map(renderFunction);
+			return fnBody.concat(functionsCode);
 		}
 
 		return dis;

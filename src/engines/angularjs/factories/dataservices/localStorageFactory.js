@@ -1,8 +1,9 @@
-define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsFactory'],
-	function (js, jsFactory) {
+define(['src/default/render/classRenderer', 'src/factories/class/js/jsFactory'],
+	function (classRenderer, jsFactory) {
 		var dis = {};
 		dis.create = create;
 
+		var js = classRenderer;
 		var $q = '$q';
 		var localStorageService = 'localStorageService';
 		var dataservice = 'dataservice';
@@ -12,8 +13,8 @@ define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsFactory'],
 		var model = 'model';
 		var response = 'response';
 		var entity = 'entity';
-		var entityId = entity + '.' + id;
-		var dataId = data + '.' + id;
+		var entityId = js.access(entity, id);
+		var dataId = js.access(data, id);
 
 		var simulateCallFn = {
 			functionName: 'simulateCall',
@@ -186,7 +187,7 @@ define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsFactory'],
 
 			var ifIsPersistedEntity = [
 				js.variables.declare(indexOfEntity, js.arrays.indexOf(model, persistedEntity)),
-				js.functions.execute(model + '.splice', [indexOfEntity, 1]),
+				js.functions.execute(js.access(model, 'splice'), [indexOfEntity, 1]),
 				js.variables.assign(removed, js.constants._true)
 			];
 			body.push(js.conditional.ifNotNot(persistedEntity, ifIsPersistedEntity));
@@ -202,9 +203,9 @@ define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsFactory'],
 		function getGetByIdFnBody() {
 			var entities = 'entities';
 
-			var executeFilterModelById = js.functions.execute(model + '.filter', byIdFn.functionName);
+			var executeFilterModelById = js.functions.execute(js.access(model, 'filter'), byIdFn.functionName);
 
-			var entitiesLengthGTZero = js.compare.gt(entities + '.length', 0);
+			var entitiesLengthGTZero = js.compare.gt(js.access(entities, 'length'), 0);
 			var entitiesFirst = js.arrays.elementAt(entities, 0);
 			var entitiesFirstOrDefault = js.conditional.iif(entitiesLengthGTZero, entitiesFirst, js.constants.emptyObject);
 			return [
@@ -214,7 +215,7 @@ define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsFactory'],
 		}
 
 		function getInsertFnBody() {
-			return [js.functions.execute(model + '.push', data)];
+			return [js.functions.execute(js.access(model, 'push'), data)];
 		}
 
 		function getUpdateFnBody() {
@@ -230,7 +231,7 @@ define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsFactory'],
 
 		function getGetModelFnBody() {
 			var executeLocalStorageGet = js.variables.defaultValue(
-				js.functions.execute(localStorageService + '.get', executeGetKey),
+				js.functions.execute(js.access(localStorageService, 'get'), executeGetKey),
 				js.constants.emptyArray);
 
 			return [js.return(executeLocalStorageGet)];
@@ -238,12 +239,12 @@ define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsFactory'],
 
 		function getSetModelFnBody() {
 			var modelOrDefault = js.variables.defaultValue(model, js.constants.emptyArray);
-			var executeLocalStorageSet = js.functions.execute(localStorageService + '.set', [executeGetKey, modelOrDefault]);
+			var executeLocalStorageSet = js.functions.execute(js.access(localStorageService, 'set'), [executeGetKey, modelOrDefault]);
 			return [executeLocalStorageSet];
 		}
 
 		function getGetKeyFnBody() {
-			return js.return(entityType + " + 'List'");
+			return js.return(js.concatJs(entityType, " + 'List'"));
 		}
 
 		function getGenerateIdFnBody() {
@@ -252,7 +253,7 @@ define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsFactory'],
 
 			var forLoopCode = [
 				js.variables.declare(entity, js.arrays.elementAt(model, forIndex)),
-				js.functions.execute(ids + '.push', entityId)
+				js.functions.execute(js.access(ids, 'push'), entityId)
 			];
 
 			var _Math_max_id = js.functions.execute('Math.max.apply', [js.constants._null, ids]);
@@ -269,9 +270,9 @@ define(['src/render/class/js/jsRenderer', 'src/factories/class/js/jsFactory'],
 		function getSimulateCallFnBody() {
 			var deferred = 'deferred';
 			return [
-				js.variables.declare(deferred, js.functions.execute($q + '.defer')),
-				js.functions.execute(deferred + '.resolve', response),
-				js.return(deferred + '.promise')
+				js.variables.declare(deferred, js.functions.execute(js.access($q, 'defer'))),
+				js.functions.execute(js.access(deferred, 'resolve'), response),
+				js.return(js.access(deferred, 'promise'))
 			];
 		}
 
