@@ -1,12 +1,15 @@
-define(['src/system/logger', 'src/resolve/rendererResolver'],
-	function (logger, rendererResolver) {
+define(['src/system/logger', 'src/apzContext', 'src/resolve/rendererResolver'],
+	function (logger, apzContext, rendererResolver) {
 		var dis = {};
 		dis.render = render;
 
 		function render(apzFiles, apz) {
 			logger.log('rendering apz ...');
-			return apzFiles.map(_renderApzFile);
-			
+			apzContext.isRendering = true;
+			var renderedFiles = apzFiles.map(_renderApzFile);
+			apzContext.isRendering = false;
+			return renderedFiles;
+
 			function _renderApzFile(apzFile) {
 				return renderApzFile(apzFile, apz);
 			}

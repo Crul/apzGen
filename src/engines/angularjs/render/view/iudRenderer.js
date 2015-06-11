@@ -1,5 +1,6 @@
-define(['src/default/render/viewRenderer'],
-	function (viewRenderer) {
+define(['src/render/renderService'],
+	function (renderService) {
+		var html = renderService.view.renderer;
 		var dis = {};
 		dis.render = render;
 
@@ -8,10 +9,10 @@ define(['src/default/render/viewRenderer'],
 		function render(apzFile) {
 			var feature = apzFile.feature;
 			var fields = feature.angularjs.model.fields || [];
-			var backButton = viewRenderer.renderLinkButton('back', '#/' + feature.featureName + '/list'); // TODO access routes by properties
-			var saveButton = viewRenderer.renderButton('save', 'save()');
+			var backButton = html.renderLinkButton('back', '#/' + feature.featureName + '/list'); // TODO access routes by properties
+			var saveButton = html.renderButton('save', 'save()');
 			var formContent = renderFormControls(fields);
-			var form = viewRenderer.renderForm(formContent, formAttributes, panelFormAttributes);
+			var form = html.renderForm(formContent, formAttributes, panelFormAttributes);
 
 			return backButton + form + saveButton;
 		}
@@ -22,7 +23,7 @@ define(['src/default/render/viewRenderer'],
 
 		function renderFormControl(field) {
 			// wrapped to avoid re-send second param (arrayIndex because of [].map())
-			return viewRenderer.renderControl(field);
+			return html.renderControl(field);
 		}
 
 		return dis;

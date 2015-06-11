@@ -20,7 +20,7 @@ define(['src/system/logger'],
 			apzDefinition.definition.engines = apzDefinition.definition.engines || [];
 			apzDefinition.definition.libs = apzDefinition.definition.libs || [];
 
-			return apzDefinition; // fluent api
+			return apzDefinition;
 		}
 
 		function setTitle(title) {
@@ -47,12 +47,12 @@ define(['src/system/logger'],
 			return this.addFeatures(featureDefinition);
 		}
 
-		function wrapInObject(value, propertyName) { // multiple returns
+		function wrapInObject(value, propertyName) {
 			var obj = {};
 			obj[propertyName || value] = value;
 			return obj;
 		}
-		
+
 		function addFeatures(featureDefinitions) {
 			if (typeof (featureDefinitions) === 'string') {
 				featureDefinitions = wrapInObject(featureDefinitions);

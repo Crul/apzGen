@@ -7,7 +7,6 @@ define([], function () {
 	var _Ctrl = 'Ctrl';
 	var _CtrlInitializer = _Ctrl + 'Initializer';
 	var dependentFeatures = getDependentFeatures(ctrlInitializers);
-	var dependentFactories = ctrlInitializers.map(getDependentFactory);
 
 	function create(definition) {
 		var iud = require('util')._extend({}, definition);
@@ -17,8 +16,8 @@ define([], function () {
 
 		iud.angularjs = iud.angularjs || {};
 		iud.angularjs.model = initModel(iud);
+		
 		iud.angularjs.routes = getRoutes(iud);
-		iud.angularjs.factories = dependentFactories;
 		iud.angularjs.controllers = getControllers(iud);
 		iud.angularjs.menuOptions = getMenuOptions(iud);
 
@@ -26,20 +25,16 @@ define([], function () {
 	}
 
 	function getDependentFeatures(ctrlInitializer) {
-		var _dependentFeatures = {};
+		var dependentFeatures = {};
 		ctrlInitializer.forEach(setDependentFeature);
-		return _dependentFeatures;
+		return dependentFeatures;
 
 		function setDependentFeature(ctrlInitializer) {
-			_dependentFeatures[ctrlInitializer + _Ctrl] = {
+			dependentFeatures[ctrlInitializer + _Ctrl] = {
 				featureType: 'ctrlInitializers/' + ctrlInitializer + _Ctrl,
 				featureName: ctrlInitializer + _CtrlInitializer
 			};
 		}
-	}
-
-	function getDependentFactory(ctrlInitializer) {
-		return 'seedwork/controllers/' + ctrlInitializer + _CtrlInitializer + '.js';
 	}
 
 	function initModel(iud) {

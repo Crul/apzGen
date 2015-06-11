@@ -29,6 +29,7 @@ define([], function () {
 
 	function getRoutes(featureName) {
 		return [{ // TODO: angularjsRouteFactory 
+			isDefault: true,
 			path: featureName,
 			controller: featureName,
 			template: featureName + '/' + featureName

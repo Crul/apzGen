@@ -1,11 +1,12 @@
-define(['src/default/render/classRenderer', 'src/default/render/viewRenderer'],
-	function (classRenderer, viewRenderer) {
+define([],
+	function () {
 		return {
 			seedPath: '',
 			engines: [],
+			isRendering: false,
 			fileExtensions: {
-				class: classRenderer.fileExtension,
-				view: viewRenderer.fileExtension
+				class: 'class', 
+				view: 'view'
 			}
 		};
 	});

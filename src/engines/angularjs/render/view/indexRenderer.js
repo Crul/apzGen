@@ -1,4 +1,4 @@
-define(['src/system/utils', 'src/render/view/html/html5PageRenderer'],
+define(['src/system/utils', 'src/engines/html/html5PageRenderer'],
 	function (utils, html5PageRenderer) {
 		var dis = require('util')._extend({}, html5PageRenderer);
 		dis.render = render;
@@ -33,6 +33,12 @@ define(['src/system/utils', 'src/render/view/html/html5PageRenderer'],
 				.concat(app.angularjs.controllers || [])
 				.concat(app.apzFiles || []);
 
+			app.features.forEach(concatFeatureApzFiles);
+			function concatFeatureApzFiles(feature) {
+				var apzFilePaths = (feature.apzFiles || []);
+				files = files.concat(apzFilePaths);
+			}
+			
 			return utils.arrays.distinct(files);
 		}
 

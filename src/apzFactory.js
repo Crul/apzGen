@@ -6,6 +6,7 @@ define(
 		'src/apzContext'
 	],
 	function (logger, definitionFactory, factoryResolver, apzContext) {
+		var util = require('util');
 		var dis = {};
 		dis.create = create;
 
@@ -14,7 +15,8 @@ define(
 		function create(apzDefinition) {
 			logger.log('creating apz ...');
 			initApz(apzDefinition);
-			apzDefinition.features = createApzFeatures(apzDefinition);
+			var dependentFeatures = getFeatureFactory(apzDefinition).dependentFeatures;
+			apzDefinition.features = createApzFeatures(apzDefinition, dependentFeatures);
 			return createFeature(apzDefinition);
 		}
 
@@ -24,15 +26,15 @@ define(
 			apzDefinition = definitionFactory.create(apzDefinition, 'app');
 		}
 
-		function createApzFeatures(apzDefinition) {
-			initFeatureDefinitions(apzDefinition);
+		function createApzFeatures(apzDefinition, dependentFeatures) {
+			var featureDefinitions = util._extend(dependentFeatures || {}, apzDefinition.features);
+			initFeatureDefinitions(featureDefinitions);
 			var featureArray = [];
-			createRecursiveFeatures(apzDefinition.features, featureArray);
+			createRecursiveFeatures(featureDefinitions, featureArray);
 			return featureArray;
 		}
 
-		function initFeatureDefinitions(apzDefinition) {
-			var featureDefinitions = apzDefinition.features;
+		function initFeatureDefinitions(featureDefinitions) {
 			for (var featureName in featureDefinitions) { // not [].forEach() because iterating {}
 				var featureDefinition = featureDefinitions[featureName];
 				var clonedFeatureDefinition = require('util')._extend({}, featureDefinition);
@@ -52,15 +54,19 @@ define(
 		}
 
 		function createFeature(definition) { // multiple returns
-			var factory = factoryResolver.resolve(definition);
-			if (!factory)
-				return {}; // defensive (error logged in factoryResolver)
+			var factory = getFeatureFactory(definition);
+			if (!factory) // defensive (error logged in factoryResolver)
+				return {};
 
 			var feature = factory.create(definition);
 			if (!feature)
 				logger.error('FEATURE FACTORY RETURNED UNDEFINED:\ndefinition: ' + JSON.stringify(definition));
 
 			return feature;
+		}
+
+		function getFeatureFactory(definition) {
+			return factoryResolver.resolve(definition);
 		}
 
 		function addFeature(featureArray, featureToAdd) { // multiple returns

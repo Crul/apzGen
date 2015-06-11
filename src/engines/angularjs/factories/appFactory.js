@@ -2,20 +2,14 @@ define(
 	[
 		'src/system/logger',
 		'src/system/fsService',
-		'src/system/utils',
-		'src/engines/angularjs/factories/appBootstrapFactory'
+		'src/engines/angularjs/factories/appBootstrap'
 	],
-	function (logger, fsService, utils, appBootstrapFactory) {
+	function (logger, fsService, appBootstrap) {
 		var dis = {};
 		dis.create = create;
+		dis.dependentFeatures = { featureName: 'bootstrap' };
 
-		var requiredLibs = [
-			'jquery',
-			'angularjs',
-			'angularjs.route',
-			'kendo',
-			'lib/angular-local-storage.min.js'
-		];
+		var requiredLibs = ['jquery', 'angularjs', 'angularjs.route', 'lib/angular-local-storage.min.js'];
 		var angularjsDependencies = ['ngRoute', 'LocalStorageModule', 'kendo.directives'];
 		var homeApzFiles = [
 			{ fileType: 'class', fileName: 'app' },
@@ -24,39 +18,38 @@ define(
 
 		function create(definition) {
 			var app = require('util')._extend({}, definition);
-			app.featureName = app.appName || app.featureName || 'apzApp';
-
-			app.apzFiles = getApzFiles(app);
-			app.libs = getThirdPartyLibs(app, requiredLibs);
-
-			app.angularjs = app.angularjs || {};
-			app.angularjs.dependencies = angularjsDependencies;
-			app.angularjs.factories = initElements('factories', app);
-			app.angularjs.controllers = initElements('controllers', app);
-			app.angularjs.routes = initElements('routes', app).map(fsService.addStartSlash);
-
+			initFeature(app);
+			initRenderPipeline(app);
+			initAngularjs(app);
 			return app;
-		}
 
-		function getThirdPartyLibs(app, requiredLibs) {
-			var libs = [];
-			requiredLibs.concat(app.libs || []).forEach(addLib);
-			return libs;
-
-			function addLib(requiredLib) {
-				if (libs.indexOf(requiredLib) < 0)
-					libs.push(requiredLib);
+			function initFeature() {
+				app.featureName = app.appName || app.featureName || 'apzApp';
+				app.apzFiles = appBootstrap.getApzFiles(app, homeApzFiles);
+				app.libs = appBootstrap.getThirdPartyLibs(app, requiredLibs);
 			}
-		}
 
-		function initElements(elementObject, app) {
-			var elements = (app.angularjs[elementObject] || [])
-				.concat(appBootstrapFactory.initElements(elementObject, app.features));
-			return utils.arrays.distinct(elements);
-		}
+			function initRenderPipeline() {
+				initAppElement('renderPipeline', 'view');
+				initAppElement('renderPipeline', 'class');
+				appBootstrap.setRenderPipeline(app.renderPipeline);
+			}
 
-		function getApzFiles(app) {
-			return (app.apzFiles || []).concat(homeApzFiles);
+			function initAngularjs() {
+				var angularjsElements = ['routes', 'config', 'factories', 'controllers'];
+				angularjsElements.forEach(initAngularjsElement);
+				app.angularjs.routes = app.angularjs.routes.map(fsService.addStartSlash);
+				app.angularjs.dependencies = angularjsDependencies;
+				
+				function initAngularjsElement(elementsName) {
+					return initAppElement('angularjs', elementsName);
+				}
+			}
+
+			function initAppElement(baseName, elementsName) {
+				app[baseName] = app[baseName] || {};
+				app[baseName][elementsName] = appBootstrap.initElements(baseName + '.' + elementsName, app);
+			}
 		}
 
 		return dis;

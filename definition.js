@@ -20,9 +20,13 @@ define(['src/apzDefinitionHelper'],
 
 		var apzDefinition = apzDefinitionHelper.create()
 			.setTitle('generated apz')
-			.addLibs(['jquery', 'bootstrap'])
-			.addEngines('angularjs')
+			 // TODO add .app('angularjs') ?
+			.addLibs(['jquery'])
+			 // TODO remove when featureName == engineName, add convention
+			.addEngines(['bootstrap', 'angularjs', 'kendoui'])
 			.addSeeds('lib', libSeed)
+			.addFeatures('kendoui')
+			.addFeatures('services/logger')
 			.addFeatures('menu')
 			.addFeatures(iudFeatures);
 

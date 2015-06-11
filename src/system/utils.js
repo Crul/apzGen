@@ -1,29 +1,25 @@
 define([], function () {
-	var util = require('util');
-	
 	var dis = {};
-	dis.extendPipeline = extendPipeline;
+	dis.getPropertyValue = getPropertyValue;
 	dis.extendWithHelpers = extendWithHelpers;
 	dis.arrays = {
 		distinct: distinct
 	};
-
-	function extendPipeline(baseRenderer, pipeline) {
-		var dis = require(baseRenderer);
-		pipeline.forEach(extendPipelineObject);
-		return dis;
-
-		function extendPipelineObject(factory) {
-			var rendererFactory = require(factory);
-			dis = util._extend(dis, rendererFactory.create(dis));
-		}
-	}
 
 	function extendWithHelpers(dis, helpers) {
 		helpers.forEach(setHelper);
 		return dis;
 		function setHelper(helper) {
 			dis[helper.propertyName] = require(helper.fileName);
+		}
+	}
+	function getPropertyValue(obj, propertyPath) {
+		var propertyValue = obj;
+		propertyPath.split('.').forEach(getCurrentPropertyValue);
+		return propertyValue;
+		
+		function getCurrentPropertyValue(propertyName) {
+			propertyValue = (propertyValue || {})[propertyName];
 		}
 	}
 

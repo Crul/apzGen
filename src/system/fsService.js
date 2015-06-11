@@ -10,8 +10,8 @@ define(['src/system/logger'], function (logger) {
 	dis.getFileInfo = getFileInfo;
 	dis.getNameNoExtension = getNameNoExtension;
 	dis.getFileExtension = getFileExtension;
-	dis.readFile = readFile;
-	dis.readAllFiles = readAllFiles;
+	dis.readFile = fs.readFileSync;
+	dis.readAllFiles = fs.readdirSync;
 	dis.writeFiles = writeFiles;
 	dis.clearFolder = clearFolder;
 	dis.concatPath = concatPath;
@@ -50,15 +50,7 @@ define(['src/system/logger'], function (logger) {
 		var fileName = getFirstOrEmpty(fullPath, fileInfoPatterns.fileName) || fullPath;
 		return getFirstOrEmpty(fileName, fileInfoPatterns.extension);
 	}
-
-	function readFile(filePath) {
-		return fs.readFileSync(filePath);
-	}
-
-	function readAllFiles(folder) {
-		return fs.readdirSync(folder);
-	}
-
+	
 	function writeFiles(apzFiles, outputFolder) {
 		apzFiles.forEach(writeFile);
 
@@ -96,7 +88,7 @@ define(['src/system/logger'], function (logger) {
 
 	function removeFolder(folder) {
 		// thanks! https://gist.github.com/tkihira/2367067		
-		readAllFiles(folder).forEach(removeFolderContent);
+		dis.readAllFiles(folder).forEach(removeFolderContent);
 		fs.rmdirSync(folder);
 		logger.debug('removed: ' + folder);
 

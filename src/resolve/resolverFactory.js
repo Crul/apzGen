@@ -13,8 +13,11 @@ define(['src/system/logger', 'src/system/fsService', 'src/apzContext'],
 				var fileNames = getFileNames(baseElement, definition, fileType);
 				var resolvedInfo = resolveFile(paths, fileNames);
 
-				if (!resolvedInfo) {
+				if (!resolvedInfo || !resolvedInfo.file) {
 					var logErrorMessage = '\n' + 'resolverFactory: FACTORY NOT FOUND:';
+					if (!!resolvedInfo) 
+						logErrorMessage += '\n> filePath: ' + resolvedInfo.filePath; 
+					 
 					logError(logErrorMessage, paths, fileNames, baseElement, definition, fileType);
 					return;
 				}

@@ -1,5 +1,6 @@
-define(['src/default/render/classRenderer'],
-	function (classRenderer) {
+define(['src/render/renderService'],
+	function (renderService) {
+		var js = renderService.class.renderer;
 		var dis = {};
 		dis.render = render;
 
@@ -7,8 +8,8 @@ define(['src/default/render/classRenderer'],
 			var menu = apzFile.feature;
 			var model = menu.angularjs.model || {};
 			model.areas = createAreas(menu, app);
-			var body = classRenderer.angularjs.modelInitializacion(model);
-			return classRenderer.angularjs.renderCtrl({ 
+			var body = js.angularjs.modelInitializacion(model);
+			return js.angularjs.renderCtrl({ 
 				controllerName: menu.featureName, 
 				body: body
 			});

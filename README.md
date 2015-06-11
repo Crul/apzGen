@@ -120,7 +120,7 @@ if you want to add a feature (e.g.: myNewFeature in myNewEngine) you have to:
 		- receives as a parameter each apzFile you have created in the factory
 		- returns the content of the file
 	
-	- for renderization you can use the following components:
+	- for renderization you can use the following components: // TODO update
 		- in src/default/render/:
 			- appRenderer: to render default application
 			- classRenderer: to render default class application
@@ -132,7 +132,9 @@ if you want to add a feature (e.g.: myNewFeature in myNewEngine) you have to:
 			- factories: for angularjs app, menu and iud features
 			- render: 
 				- class and view renderers for angularjs app, menu and iu features
-				- html and kendo renderers for overwrite default html functionality
+				- html and kendoui renderers for overwrite default html functionality
+				
+		// TODO update:
 		- in src/render/class/js: simple renderers for javascript files and functions
 		- in src/render/view/html: renderers for html files with a lot of functionality, you can overwrite them as src/render/view/bootstrap does
 		- in src/render/view/bootstrap: renderer for html files, overwritting default html functionality

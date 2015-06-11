@@ -1,5 +1,6 @@
-define(['src/default/render/viewRenderer'],
-	function (viewRenderer) {
+define(['src/render/renderService'],
+	function (renderService) {
+		var html = renderService.view.renderer;
 		var dis = {};
 		dis.render = render;
 
@@ -10,11 +11,11 @@ define(['src/default/render/viewRenderer'],
 		function render(apzFile) {
 			var feature = apzFile.feature;
 			var featureName = feature.featureName;
-			var view = viewRenderer.renderLinkButton('back', '#/'); // TODO back > renderBackButton() { history.back }
-			view += viewRenderer.renderLinkButton('new ' + featureName, '#/' + featureName + '/edit/new'); // TODO access routes by properties
-			view += viewRenderer.renderTitle(featureName);
+			var view = html.renderLinkButton('back', '#/'); // TODO back > renderBackButton() { history.back }
+			view += html.renderLinkButton('new ' + featureName, '#/' + featureName + '/edit/new'); // TODO access routes by properties
+			view += html.renderTitle(featureName);
 			var htmlTableConfig = getTableConfig(feature);
-			view += viewRenderer.renderTable(htmlTableConfig);
+			view += html.renderTable(htmlTableConfig);
 			return view;
 		}
 
@@ -24,7 +25,7 @@ define(['src/default/render/viewRenderer'],
 			var modelCells = (tableConfig.columns || []).map(renderModelCell).join('');
 			var cells = listTableActionCells.concat(modelCells);
 			tableConfig.columns = listTableActionColumns.concat(tableConfig.columns);
-			tableConfig.body = viewRenderer.renderTableRow(cells, listTableBodyAttributes);
+			tableConfig.body = html.renderTableRow(cells, listTableBodyAttributes);
 			return tableConfig;
 		}
 		
@@ -33,12 +34,12 @@ define(['src/default/render/viewRenderer'],
 		}
 
 		function renderActionCell(action) {
-			var actionButton = viewRenderer.renderButton(action, action + '(entity)', '', 'ng-click');
-			return viewRenderer.renderTableCell(actionButton);
+			var actionButton = html.renderButton(action, action + '(entity)', '', 'ng-click');
+			return html.renderTableCell(actionButton);
 		}
 
 		function renderModelCell(column) {
-			return viewRenderer.renderTableCell(column, viewRenderer.renderAttr('ng-bind', 'entity.' + column));
+			return html.renderTableCell(column, html.renderAttr('ng-bind', 'entity.' + column));
 		}
 
 		return dis;
