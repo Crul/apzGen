@@ -10,6 +10,9 @@ define([], function () {
 	};
 
 	function log(message) {
+		if (dis.levels.debug)
+			message = '\n' + message;
+			
 		logToConsole('log', message);
 	}
 
@@ -18,7 +21,7 @@ define([], function () {
 	}
 
 	function debug(message) {
-		logWithPrefix('debug', message, '>      ');
+		logWithPrefix('debug', message, '  ');
 	}
 
 	function logWithPrefix(logLevel, messageOrConfig, linePrefix) {

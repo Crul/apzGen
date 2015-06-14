@@ -1,31 +1,17 @@
-define(['src/apzDefinitionHelper'],
-	function (apzDefinitionHelper) {
-
-		var model = { // TODO move to .json file
-			tenant: {
-				fields: ['name', 'description', 'contact']
-			},
-			user: {
-				fields: [
-					'name',
-					{ fieldName: 'login', label: 'username' },
-					'password',
-					{ fieldName: 'age', fieldType: 'numeric' }
-				]
-			}
-		};
+define(['src/core/apzDefinitionHelper', 'src/system/fsService'],
+	function (apzDefinitionHelper, fsService) {
 
 		var libSeed = 'lib/*.*';
+		var model = JSON.parse(fsService.readFile('definition-model.json'));
 		var iudFeatures = { featureType: 'iud', features: model };
 
 		var apzDefinition = apzDefinitionHelper.create()
 			.setTitle('generated apz')
-			 // TODO add .app('angularjs') ?
+		// TODO .app('angularjs') and remove from engines?
 			.addLibs(['jquery'])
-			 // TODO remove when featureName == engineName, add convention
-			.addEngines(['bootstrap', 'angularjs', 'kendoui'])
-			.addSeeds('lib', libSeed)
-			.addFeatures('kendoui')
+			.addEngines(['seed', 'angularjs'])
+			.addSeeds('lib', libSeed) // TODO remove apzDefinitionHelper.addSeeds
+			.addFeatures('services/dataservice')
 			.addFeatures('services/logger')
 			.addFeatures('menu')
 			.addFeatures(iudFeatures);

@@ -1,23 +1,32 @@
 define([], function () {
 	var dis = {};
+	dis.getArray = getArray;
 	dis.getPropertyValue = getPropertyValue;
 	dis.extendWithHelpers = extendWithHelpers;
 	dis.arrays = {
 		distinct: distinct
 	};
 
+	function getArray(param) {
+		param = param || [];
+		if (!Array.isArray(param))
+			param = [param];
+		return param;
+	}
+
 	function extendWithHelpers(dis, helpers) {
 		helpers.forEach(setHelper);
 		return dis;
 		function setHelper(helper) {
-			dis[helper.propertyName] = require(helper.fileName);
+			dis[helper.propertyName] = require(helper.filePath);
 		}
 	}
+
 	function getPropertyValue(obj, propertyPath) {
 		var propertyValue = obj;
 		propertyPath.split('.').forEach(getCurrentPropertyValue);
 		return propertyValue;
-		
+
 		function getCurrentPropertyValue(propertyName) {
 			propertyValue = (propertyValue || {})[propertyName];
 		}

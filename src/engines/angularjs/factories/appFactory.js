@@ -1,55 +1,32 @@
 define(
 	[
-		'src/system/logger',
-		'src/system/fsService',
-		'src/engines/angularjs/factories/appBootstrap'
+		'src/engines/angularjs/aspects/angularjsHtmlAspect',
+		'src/engines/angularjs/factories/appBootstrap',
+		'src/engines/angularjs/fileFactories/appJs',
+		'src/engines/angularjs/fileFactories/indexHtml'
 	],
-	function (logger, fsService, appBootstrap) {
+	function (angularjsHtmlAspect, appBootstrap, appJs, indexHtml) {
 		var dis = {};
 		dis.create = create;
-		dis.dependentFeatures = { featureName: 'bootstrap' };
-
-		var requiredLibs = ['jquery', 'angularjs', 'angularjs.route', 'lib/angular-local-storage.min.js'];
-		var angularjsDependencies = ['ngRoute', 'LocalStorageModule', 'kendo.directives'];
-		var homeApzFiles = [
-			{ fileType: 'class', fileName: 'app' },
-			{ fileType: 'view', fileName: 'index', renderer: 'index' }
+		dis.dependentFeatures = [
+			{ featureName: 'bootstrap' },
+			{ featureName: 'kendoui' }
 		];
 
+		var requiredLibs = ['jquery', 'angularjs', 'angularjs.route'];
 		function create(definition) {
 			var app = require('util')._extend({}, definition);
-			initFeature(app);
-			initRenderPipeline(app);
+			app.libs = requiredLibs;
+			app.aspects = [angularjsHtmlAspect];
 			initAngularjs(app);
+			appBootstrap.initFeature(app, [appJs, indexHtml]);
 			return app;
+		}
 
-			function initFeature() {
-				app.featureName = app.appName || app.featureName || 'apzApp';
-				app.apzFiles = appBootstrap.getApzFiles(app, homeApzFiles);
-				app.libs = appBootstrap.getThirdPartyLibs(app, requiredLibs);
-			}
-
-			function initRenderPipeline() {
-				initAppElement('renderPipeline', 'view');
-				initAppElement('renderPipeline', 'class');
-				appBootstrap.setRenderPipeline(app.renderPipeline);
-			}
-
-			function initAngularjs() {
-				var angularjsElements = ['routes', 'config', 'factories', 'controllers'];
-				angularjsElements.forEach(initAngularjsElement);
-				app.angularjs.routes = app.angularjs.routes.map(fsService.addStartSlash);
-				app.angularjs.dependencies = angularjsDependencies;
-				
-				function initAngularjsElement(elementsName) {
-					return initAppElement('angularjs', elementsName);
-				}
-			}
-
-			function initAppElement(baseName, elementsName) {
-				app[baseName] = app[baseName] || {};
-				app[baseName][elementsName] = appBootstrap.initElements(baseName + '.' + elementsName, app);
-			}
+		var angularjsDependencies = ['ngRoute'];
+		function initAngularjs(app) {
+			app.angularjs = { dependencies: angularjsDependencies };
+			appBootstrap.initAngularjs(app, requiredLibs); // before initFeature because angularjs is needed for apzFiles
 		}
 
 		return dis;

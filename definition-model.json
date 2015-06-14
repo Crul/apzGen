@@ -1,0 +1,23 @@
+{
+	"tenant": {
+		"fields": [
+			"name",
+			"description",
+			"contact"
+		]
+	},
+	"user": {
+		"fields": [
+			"name",
+			{
+				"fieldName": "login",
+				"label": "username"
+			},
+			"password",
+			{
+				"fieldName": "age",
+				"fieldType": "numeric"
+			}
+		]
+	}
+}

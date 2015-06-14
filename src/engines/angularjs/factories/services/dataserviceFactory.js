@@ -1,13 +1,11 @@
 define(['src/engines/angularjs/factories/angularjsFactoryProvider'],
 	function (angularjsFactoryProvider) {
 		var factoryConfig = {
-			factoryName: 'listCtrlInitializer',
-			path: 'seedwork/controllers',
-			dependentFeatures: {
-				dataservice: {
-					featureType: 'ctrlInitializers/baseCtrl',
-					featureName: 'baseCtrlInitializer'
-				}
+			factoryName: 'dataservice',
+			path: 'seedwork/services',
+			libs: 'lib/angular-local-storage.min.js',
+			angularjs: {
+				dependencies: ['LocalStorageModule']
 			}
 		};
 		return angularjsFactoryProvider.createFactory(factoryConfig);

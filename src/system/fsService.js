@@ -7,9 +7,9 @@ define(['src/system/logger'], function (logger) {
 	};
 
 	var dis = {};
-	dis.getFileInfo = getFileInfo;
 	dis.getNameNoExtension = getNameNoExtension;
 	dis.getFileExtension = getFileExtension;
+	dis.exists = fs.existsSync;
 	dis.readFile = fs.readFileSync;
 	dis.readAllFiles = fs.readdirSync;
 	dis.writeFiles = writeFiles;
@@ -19,27 +19,10 @@ define(['src/system/logger'], function (logger) {
 	dis.addStartSlash = addStartSlash;
 
 	var fileInfoPatterns = {
-		path: /([a-zA-Z]*\/)*/i,
 		fileName: /[a-zA-Z|-]*\.[a-zA-Z]*/i,
 		extension: /\.[a-zA-Z]*/i,
 		nameNoExtension: /[a-zA-Z|-]*/i
 	};
-
-	function getFileInfo(fullPath) {
-		var path = getFirstOrEmpty(fullPath, fileInfoPatterns.path);
-		var pathLength = path.length;
-		if (pathLength > 0) path = path.substring(0, pathLength - 1);
-
-		var fileName = getFirstOrEmpty(fullPath, fileInfoPatterns.fileName) || fullPath;
-		var extension = getFirstOrEmpty(fileName, fileInfoPatterns.extension);
-		var nameNoExtension = getFirstOrEmpty(fileName, fileInfoPatterns.nameNoExtension);
-		return {
-			path: path,
-			fileName: fileName,
-			extension: extension,
-			nameNoExtension: nameNoExtension
-		};
-	}
 
 	function getNameNoExtension(fullPath) {
 		var fileName = getFirstOrEmpty(fullPath, fileInfoPatterns.fileName) || fullPath;
@@ -48,28 +31,22 @@ define(['src/system/logger'], function (logger) {
 
 	function getFileExtension(fullPath) {
 		var fileName = getFirstOrEmpty(fullPath, fileInfoPatterns.fileName) || fullPath;
-		return getFirstOrEmpty(fileName, fileInfoPatterns.extension);
+		return getFirstOrEmpty(fileName, fileInfoPatterns.extension).substr(1);
 	}
-	
+
 	function writeFiles(apzFiles, outputFolder) {
 		apzFiles.forEach(writeFile);
 
 		function writeFile(apzFile) {
-			var filePath = apzFile.path;
-			var fileName = apzFile.fileName;
+			var filePath = apzFile.filePath;
 			var content = apzFile.content;
 
-			filePath = (filePath || '');
-			filePath = path.join(outputFolder, filePath);
-
-			getAllDeeps(filePath).forEach(createPath);
-			var indexOfFolderSeparator = Math.max(fileName.lastIndexOf('/'), fileName.lastIndexOf('\\'));
+			var indexOfFolderSeparator = Math.max(filePath.lastIndexOf('/'), filePath.lastIndexOf('\\'));
 			if (indexOfFolderSeparator > 0) {
-				var pathFromFileName = concatPath(outputFolder, fileName.substring(0, indexOfFolderSeparator));
-				getAllDeeps(pathFromFileName).forEach(createPath);
+				var folderPath = concatPath(outputFolder, filePath.substring(0, indexOfFolderSeparator));
+				getAllDeeps(folderPath).forEach(createPath);
 			}
-
-			filePath = path.join(filePath, fileName);
+			filePath = path.join(outputFolder, filePath);
 			fs.writeFileSync(filePath, content);
 			logger.debug('written: ' + filePath);
 		}

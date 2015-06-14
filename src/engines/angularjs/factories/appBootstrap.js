@@ -1,22 +1,33 @@
-define(
-	[
-		'src/system/utils',
-		'src/render/renderService'
-	],
-	function (utils, renderService) {
+define(['src/system/utils', 'src/system/fsService'],
+	function (utils, fsService) {
 		var dis = {};
-		dis.getThirdPartyLibs = getThirdPartyLibs;
-		dis.getApzFiles = getApzFiles;
-		dis.initElements = initElements;
-		dis.setRenderPipeline = setRenderPipeline;
+		dis.initAngularjs = initAngularjs;
+		dis.initFeature = initFeature;
 
-		var rendererFactoriesPath = {
-			class: ['src/engines/angularjs/render/factories/ctrlRendererFactory'],
-			view: ['src/engines/angularjs/render/factories/htmlRendererFactory']
-		};
+		var angularjsElements = ['routes', 'config', 'factories', 'controllers', 'dependencies'];
+		function initAngularjs(app) {
+			app.libs = getThirdPartyLibs(app);
+			app.angularjs = app.angularjs || {};
+			angularjsElements.forEach(initAngularjsElement);
+			app.angularjs.routes = app.angularjs.routes.map(fsService.addStartSlash);
 
-		function getThirdPartyLibs(app, requiredLibs) {
-			var libs = requiredLibs.concat(initElements('libs', app));
+			function initAngularjsElement(elementsName) {
+				app.angularjs[elementsName] = initElements('angularjs.' + elementsName, app);
+			}
+		}
+
+		function initFeature(app, fileFactories) {
+			app.featureName = app.appName || app.featureName || 'apzApp';
+			var files = fileFactories.map(createFile);
+			app.apzFiles = getApzFiles(app, files);
+
+			function createFile(fileFactory) {
+				return fileFactory.create(app);
+			}
+		}
+
+		function getThirdPartyLibs(app) {
+			var libs = (app.libs || []).concat(initElements('libs', app));
 			return utils.arrays.distinct(libs);
 		}
 
@@ -37,18 +48,6 @@ define(
 					elements = elements.concat(featurePropertyValue);
 				}
 			}
-		}
-
-		function setRenderPipeline(renderPipeline) {
-			addPipeline(renderService.view, rendererFactoriesPath.view, renderPipeline.view);
-			addPipeline(renderService.class, rendererFactoriesPath.class, renderPipeline.class);
-		}
-
-		function addPipeline(pipeline, baseRenderers, rendererFactoriesPaths) {
-			var renderersToAdd = baseRenderers.concat(rendererFactoriesPaths || []);
-			// TODO log pipeline
-			renderersToAdd = utils.arrays.distinct(renderersToAdd);
-			renderersToAdd.map(require).forEach(pipeline.addRenderer);
 		}
 
 		return dis;
