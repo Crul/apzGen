@@ -7,7 +7,7 @@ define([], function () {
 	dis.levels = {};
 	dis.levels.error = true;
 	dis.levels.log = true;
-	dis.levels.debug = dis.levels.log && true;
+	dis.levels.debug = dis.levels.log && false;
 	dis.levels.trace = dis.levels.debug && false;
 
 	function log(message) {

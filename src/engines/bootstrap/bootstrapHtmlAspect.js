@@ -49,9 +49,9 @@ define(['src/code/html/htmlElements', 'src/code/html/htmlTransform'],
 		function processForm(node) {
 			if (node[0] == 'form' && !isProcessedForm(node)) {
 				htmlTransform.extendAttributes(node, { 'class': formCssClasses.form, _meta: { processed: true } });
-				 // TODO move styles to CSS
+				// TODO move styles to CSS
 				var panelBody = htmlElements.node('div', [node], { 'class': formCssClasses.formBody, style: 'padding: 24px;' });
-				 // TODO move styles to CSS
+				// TODO move styles to CSS
 				var formContainer = htmlElements.node('div', [panelBody], { 'class': formCssClasses.formContainer, style: 'margin-top: 24px;' });
 				node = formContainer;
 			}
@@ -81,10 +81,11 @@ define(['src/code/html/htmlElements', 'src/code/html/htmlTransform'],
 			return node;
 		}
 
+		var controlTags = ['input', 'select', 'textarea'];
 		function isControlNode(node) {
 			return node.length > 2 &&
 				node[1].length > 0 && node[1][0] == 'label' &&
-				node[2].length > 0 && node[2][0] == 'input';
+				node[2].length > 0 && controlTags.indexOf(node[2][0]) >= 0;
 		}
 
 		function processButton(node) {

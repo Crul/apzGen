@@ -3,6 +3,7 @@ define(['src/system/utils'], function (utils) {
 	var dis = {};
 	dis.nodeVisitor = nodeVisitor;
 	dis.extendAttributes = extendAttributes;
+	dis.removeAttribute = removeAttribute;
 	dis.changeAttributeName = changeAttributeName;
 	dis.clearMetadata = clearMetadata;
 
@@ -26,13 +27,6 @@ define(['src/system/utils'], function (utils) {
 		}
 	}
 
-	function changeAttributeName(node, oldAttribute, newAttribute) {
-		if (node.length > 1 && node[1][oldAttribute]) {
-			node[1][newAttribute] = node[1][oldAttribute];
-			delete node[1][oldAttribute];
-		}
-	}
-
 	function extendAttributes(node, attributes) {
 		if (node.length < 2)
 			node.push({});
@@ -51,6 +45,18 @@ define(['src/system/utils'], function (utils) {
 				if (originalValue.indexOf(attributeValue) < 0)
 					node[1][attributeName] = originalValue + (originalValue ? ' ' : '') + attributeValue;
 			}
+		}
+	}
+
+	function removeAttribute(node, attributeName) {
+		if (node.length > 1 && node[1][attributeName])
+			delete node[1][attributeName];
+	}
+
+	function changeAttributeName(node, oldAttribute, newAttribute) {
+		if (node.length > 1 && node[1][oldAttribute]) {
+			node[1][newAttribute] = node[1][oldAttribute];
+			removeAttribute(node, oldAttribute);
 		}
 	}
 

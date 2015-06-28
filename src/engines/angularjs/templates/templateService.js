@@ -5,6 +5,20 @@ define([], function () {
 	var partialRelativePath = 'partial/';
 	var tmplExtension = '.tmpl';
 
+	function getTemplateLambda(template) {
+		return templateLambda;
+		function templateLambda() {
+			return getTemplate;
+			function getTemplate() {
+				return getPartialDefinition(template);
+			}
+		}
+	}
+
+	function getPartialDefinition(template) {
+		return '{{>' + template + '}}';
+	}
+
 	function getTemplate(template) {
 		return template + tmplExtension;
 	}
@@ -26,13 +40,16 @@ define([], function () {
 	}
 
 	return {
+		getTemplateLambda: getTemplateLambda,
 		html: {
 			get: getHtml,
 			getPartial: getHtmlPartial,
 			partials: {
 				backToListButton: getHtmlPartial('back-to-list-button'),
 				saveButton: getHtmlPartial('save-button'),
-				control: getHtmlPartial('control')
+				control: getHtmlPartial('control'),
+				textControl: getHtmlPartial('controls/text'),
+				dropdownListControl: getHtmlPartial('controls/dropdown-list')
 			},
 			index: getHtml('index'),
 			iud: getHtml('iud'),

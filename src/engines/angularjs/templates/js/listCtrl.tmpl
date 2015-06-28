@@ -1,3 +1,4 @@
 function {{entityName}}List($scope, listCtrlInitializer) {
-    listCtrlInitializer.init($scope);
+    var config = {{{config}}}{{^config}}{}{{/config}};
+    listCtrlInitializer.init($scope, config);
 }

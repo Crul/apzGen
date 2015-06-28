@@ -1,3 +1,4 @@
 function {{entityName}}($scope, iudCtrlInitializer) {
-    iudCtrlInitializer.init($scope);
+    var config = {{{config}}}{{^config}}{}{{/config}};
+    iudCtrlInitializer.init($scope, config);
 }

@@ -5,23 +5,23 @@ define(['src/system/logger', 'src/core/apzResolver', 'src/core/apzAspectPipeline
 		dis.createRecursiveFeatures = createRecursiveFeatures;
 		dis.getFeatureFactory = apzResolver.resolveFactory;
 
-		function createRecursiveFeatures(featureDefinitions, featureArray) {
+		function createRecursiveFeatures(apzDefinition, featureDefinitions, featureArray) {
 			featureDefinitions = featureDefinitions || [];
 			for (var featureName in featureDefinitions) { // not [].forEach() because iterating {}
 				var featureDefinition = featureDefinitions[featureName];
 				logger.debug('creating: ' + featureDefinition.featureName);
-				var feature = createFeature(featureDefinition);
+				var feature = createFeature(featureDefinition, apzDefinition);
 				if (feature) {
-					createRecursiveFeatures(feature.dependentFeatures, featureArray);
+					createRecursiveFeatures(apzDefinition, feature.dependentFeatures, featureArray);
 					addFeature(featureArray, feature);
 				}
 			}
 		}
 
-		function createFeature(definition) {
+		function createFeature(definition, apzDefinition) {
 			var factory = apzResolver.resolveFactory(definition);
 			var feature = (factory) ?
-				factory.create(definition) :
+				factory.create(definition, apzDefinition) :
 				apzResolver.resolveJson(definition);
 
 			if (feature) {

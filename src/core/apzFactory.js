@@ -30,7 +30,7 @@ define(['src/system/logger', 'src/core/apzContext', 'src/core/apzDefinitionFacto
 
 		function createApzFeatures(apzDefinition, featureDefinitions) {
 			var featureArray = [];
-			apzFeatureFactory.createRecursiveFeatures(featureDefinitions, featureArray);
+			apzFeatureFactory.createRecursiveFeatures(apzDefinition, featureDefinitions, featureArray);
 			apzDefinition.features = featureArray;
 		}
 

@@ -12,16 +12,16 @@ define(['src/core/apzContext', 'src/core/apzFileFactory'],
 			var apzFileTemplate = apzContext.seedPath + '/' + filePath;
 
 			function create(definition) {
-				var feature = createFeature(definition);
-				return initAngularjs(feature);
+				var featureDefinition = initDefinition(definition);
+				return initAngularjs(featureDefinition);
 			}
 
-			function createFeature(definition) {
-				var feature = { featureName: serviceName };
-				feature.getApzFiles = getApzFiles;
-				feature.libs = serviceConfig.libs;
-				feature.aspects = serviceConfig.aspects;
-				return feature;
+			function initDefinition(definition) {
+				var featureDefinition = { featureName: serviceName };
+				featureDefinition.getApzFiles = getApzFiles;
+				featureDefinition.libs = serviceConfig.libs;
+				featureDefinition.aspects = serviceConfig.aspects;
+				return featureDefinition;
 			}
 
 			function getApzFiles() {

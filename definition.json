@@ -1,0 +1,33 @@
+{
+	"title": "generated apz",
+	"engines": [
+		"seed",
+		"angularjs"
+	],
+	"model": "definition-model.json",
+	"features": [
+		{
+			"seed": {
+				"lib": "lib/*.*"
+			}
+		},
+		"services/dataservice",
+		"services/logger",
+		"menu",
+		{
+			"iud": {
+				"user": {
+					"controls": [
+						{
+							"fieldName": "tenantId",
+							"controlType": "dropdownList",
+							"dropdownListOptionLabel": "name",
+							"hideOnList": true
+						}
+					]
+				},
+				"tenant": true
+			}
+		}
+	]
+}
