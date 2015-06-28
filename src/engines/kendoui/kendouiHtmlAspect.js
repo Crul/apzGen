@@ -1,4 +1,4 @@
-define(['src/code/htmlTransform'],
+define(['src/code/html/htmlTransform'],
 	function (htmlTransform) {
 		var numericInputAttribute = 'kendo-numeric-text-box';
 		var bootstrapCssClassToRemoveInNumeric = 'form-control';
@@ -30,7 +30,7 @@ define(['src/code/htmlTransform'],
 			if (node.length < 2)
 				node.push({});
 
-			switch (node[1]._meta.fieldType) {
+			switch (node[1].type) {
 				case 'numeric':
 					node[1][numericInputAttribute] = '';
 					if (node[1].class)

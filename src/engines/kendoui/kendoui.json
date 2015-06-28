@@ -1,0 +1,13 @@
+{
+	"libs": [
+		"kendoui"
+	],
+	"aspects": [
+		"kendoui/kendouiHtmlAspect"
+	],
+	"angularjs": {
+		"dependencies": [
+			"kendo.directives"
+		]
+	}
+}

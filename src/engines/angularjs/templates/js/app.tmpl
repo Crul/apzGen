@@ -1,0 +1,22 @@
+angular.module('app', [{{{angularjs.dependencies}}}])
+ {{#angularjs.config}}
+	.config({{{.}}})
+ {{/angularjs.config}}
+ {{#angularjs.routes.length}}
+	.config(function ($routeProvider) {
+		$routeProvider
+ 		{{#angularjs.routes}}
+			.when('{{{path}}}', {
+				templateUrl: '{{{template}}}.html',
+				controller: '{{{controller}}}'
+			})
+ 		{{/angularjs.routes}}
+			.otherwise('{{{angularjs.routes.0.path}}}');
+	})
+{{/angularjs.routes.length}}
+{{#angularjs.factories}}
+	.factory('{{{.}}}', {{.}})
+{{/angularjs.factories}}
+{{#angularjs.controllers}}
+	.controller('{{{.}}}', {{.}})
+{{/angularjs.controllers}};

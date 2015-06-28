@@ -1,19 +1,13 @@
-define(['definition', 'src/core/apzFactory', 'src/core/apzRenderer', 'src/core/apzWritter', 'src/system/logger'],
-	function (definition, apzFactory, apzRenderer, apzWritter, logger) {
+define(['definition', 'src/core/apzFactory', 'src/core/apzDefinitionFactory', 'src/core/apzRenderer', 'src/core/apzWritter'],
+	function (definition, apzFactory, apzDefinitionFactory, apzRenderer, apzWritter) {
 		var dis = {};
 		dis.generate = generate;
 
-		var defaultOutputPath = 'bin';
-
+		var outputPath = definition.outputPath || 'bin';
 		function generate() {
-			var apz = apzFactory.create(definition);
+			var apzDefinition = apzDefinitionFactory.create(definition);
+			var apz = apzFactory.create(apzDefinition);
 			var apzFiles = apzRenderer.render(apz);
-			write(apzFiles);
-			logger.log('\n\t apz generated!');
-		}
-
-		function write(apzFiles) {
-			var outputPath = definition.outputPath || defaultOutputPath;
 			apzWritter.write(apzFiles, outputPath);
 		}
 

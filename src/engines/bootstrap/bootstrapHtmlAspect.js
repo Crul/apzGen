@@ -1,4 +1,4 @@
-define(['src/code/htmlElements', 'src/code/htmlTransform'],
+define(['src/code/html/htmlElements', 'src/code/html/htmlTransform'],
 	function (htmlElements, htmlTransform) {
 		var bodyCssClass = 'container';
 		var tableCssClass = 'table table-striped table-bordered table-hover';

@@ -10,7 +10,7 @@ define(['src/system/logger'], function (logger) {
 	dis.getNameNoExtension = getNameNoExtension;
 	dis.getFileExtension = getFileExtension;
 	dis.exists = fs.existsSync;
-	dis.readFile = fs.readFileSync;
+	dis.readFile = readFile;
 	dis.readAllFiles = fs.readdirSync;
 	dis.writeFiles = writeFiles;
 	dis.clearFolder = clearFolder;
@@ -34,28 +34,34 @@ define(['src/system/logger'], function (logger) {
 		return getFirstOrEmpty(fileName, fileInfoPatterns.extension).substr(1);
 	}
 
+	function readFile(filePath) {
+		return fs.readFileSync(filePath, { encoding: 'utf8' });
+	}
+
 	function writeFiles(apzFiles, outputFolder) {
 		apzFiles.forEach(writeFile);
 
 		function writeFile(apzFile) {
 			var filePath = apzFile.filePath;
-			var content = apzFile.content;
+			createFullPath(outputFolder, filePath);
+			var fullFilePath = path.join(outputFolder, filePath);
+			logger.debug('writting: ' + fullFilePath);
+			fs.writeFileSync(fullFilePath, apzFile.content);
+		}
+	}
 
-			var indexOfFolderSeparator = Math.max(filePath.lastIndexOf('/'), filePath.lastIndexOf('\\'));
-			if (indexOfFolderSeparator > 0) {
-				var folderPath = concatPath(outputFolder, filePath.substring(0, indexOfFolderSeparator));
-				getAllDeeps(folderPath).forEach(createPath);
-			}
-			filePath = path.join(outputFolder, filePath);
-			fs.writeFileSync(filePath, content);
-			logger.debug('written: ' + filePath);
+	function createFullPath(outputFolder, filePath) {
+		var indexOfFolderSeparator = Math.max(filePath.lastIndexOf('/'), filePath.lastIndexOf('\\'));
+		if (indexOfFolderSeparator > 0) {
+			var folderPath = concatPath(outputFolder, filePath.substring(0, indexOfFolderSeparator));
+			getAllDeeps(folderPath).forEach(createPath);
 		}
 	}
 
 	function createPath(_path) {
 		if (fs.existsSync(_path)) return;
+		logger.trace('creating: ' + _path);
 		fs.mkdirSync(_path);
-		logger.debug('created: ' + _path);
 	}
 
 	function clearFolder(folder) {
@@ -64,10 +70,10 @@ define(['src/system/logger'], function (logger) {
 	}
 
 	function removeFolder(folder) {
+		logger.debug('removing: ' + folder);
 		// thanks! https://gist.github.com/tkihira/2367067		
 		dis.readAllFiles(folder).forEach(removeFolderContent);
 		fs.rmdirSync(folder);
-		logger.debug('removed: ' + folder);
 
 		function removeFolderContent(element) {
 			var nextPath = path.join(folder, element);

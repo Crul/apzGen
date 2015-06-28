@@ -1,4 +1,4 @@
-define(['src/code/htmlTransform'],
+define(['src/code/html/htmlTransform'],
 	function (htmlTransform) {
 		var dis = {			
 			aspectName: 'angularjsHtml',

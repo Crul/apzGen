@@ -3,8 +3,13 @@ define([], function () {
 	dis.getArray = getArray;
 	dis.getPropertyValue = getPropertyValue;
 	dis.extendWithHelpers = extendWithHelpers;
+	dis.objects = {
+		toArray: objectToArray
+	};
 	dis.arrays = {
-		distinct: distinct
+		concat: concatArrays,
+		distinct: distinct,
+		getRegexFilter: getRegexFilter
 	};
 
 	function getArray(param) {
@@ -13,6 +18,17 @@ define([], function () {
 			param = [param];
 		return param;
 	}
+
+	function objectToArray(obj) { // multiple returns
+		if (!obj) return [];
+		if (Array.isArray(obj)) return obj;
+		return [obj];
+	}
+
+	function concatArrays(array1, array2) {
+		return (array1 || []).concat(array2 || []);
+	}
+
 
 	function extendWithHelpers(dis, helpers) {
 		helpers.forEach(setHelper);
@@ -47,9 +63,19 @@ define([], function () {
 			if (existingElems === 0)
 				newArray.push(elemToAdd);
 		}
+	}
 
-		function compareValueFn(a, b) {
-			return a == b;
+	function compareValueFn(a, b) {
+		return a == b;
+	}
+
+	function getRegexFilter(pattern) {
+		if (typeof (pattern) === 'string')
+			pattern = new RegExp(pattern);
+		return filterByExtesion;
+
+		function filterByExtesion(file) {
+			return (file.filePath || file).match(pattern);
 		}
 	}
 

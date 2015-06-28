@@ -1,32 +1,20 @@
-define(
-	[
-		'src/engines/angularjs/aspects/angularjsHtmlAspect',
-		'src/engines/angularjs/factories/appBootstrap',
-		'src/engines/angularjs/fileFactories/appJs',
-		'src/engines/angularjs/fileFactories/indexHtml'
-	],
-	function (angularjsHtmlAspect, appBootstrap, appJs, indexHtml) {
+define(['src/engines/angularjs/aspects/angularjsHtmlAspect', 'src/engines/angularjs/factories/app/appHelper'],
+	function (angularjsHtmlAspect, appHelper) {
 		var dis = {};
 		dis.create = create;
 		dis.dependentFeatures = [
-			{ featureName: 'bootstrap' },
+			{ featureName: 'bootstrap' }, // TODO move to ditwuit feature
 			{ featureName: 'kendoui' }
 		];
 
 		var requiredLibs = ['jquery', 'angularjs', 'angularjs.route'];
+		var angularjsDependencies = ['ngRoute'];
 		function create(definition) {
 			var app = require('util')._extend({}, definition);
-			app.libs = requiredLibs;
 			app.aspects = [angularjsHtmlAspect];
-			initAngularjs(app);
-			appBootstrap.initFeature(app, [appJs, indexHtml]);
+			appHelper.initFeature(app, requiredLibs);
+			app.angularjs = appHelper.getAngularjs(app, angularjsDependencies);
 			return app;
-		}
-
-		var angularjsDependencies = ['ngRoute'];
-		function initAngularjs(app) {
-			app.angularjs = { dependencies: angularjsDependencies };
-			appBootstrap.initAngularjs(app, requiredLibs); // before initFeature because angularjs is needed for apzFiles
 		}
 
 		return dis;

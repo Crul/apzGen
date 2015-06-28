@@ -1,4 +1,4 @@
-define(['src/system/logger', 'src/code/jsTransform', 'src/code/jsElements'],
+define(['src/system/logger', 'src/code/js/jsTransform', 'src/code/js/jsElements'],
 	function (logger, jsTransform, jsElements) {
 		var $log = '$log';
 		var dis = {
@@ -15,19 +15,18 @@ define(['src/system/logger', 'src/code/jsTransform', 'src/code/jsElements'],
 			return jsTransform.nodeVisitor(node, addLogToFunctions);
 		}
 
+		var functionNodeTypePattern = /^Function(Declaration|Expression)$/;
 		function addLogToFunctions(node) {
-			// TODO difference between 'FunctionDeclaration' || 'FunctionExpression' ??
-			if (node.type == 'FunctionDeclaration' || node.type == 'FunctionExpression') {
-				switch (node._parent.type) {
-					case 'Program':
-						jsTransform.addParamToFunction(node, $log);
-					//  no break;
-					case 'FunctionDeclaration':
-						if (is$logInScope(node))
-							addLogToFunction(node);
-						break;
-				}
+			var isFunction = node.type.match(functionNodeTypePattern);
+			if (isFunction) {
+				var parentType = node._parent.type;
+				var isParentProgram = (parentType == 'Program');
+				if (isParentProgram)
+					jsTransform.addParamToFunction(node, $log);
 
+				var isParentFunction = parentType.match(functionNodeTypePattern);
+				if ((isParentProgram || isParentFunction) && is$logInScope(node))
+					addLogToFunction(node);
 			}
 			return node;
 		}
@@ -35,10 +34,10 @@ define(['src/system/logger', 'src/code/jsTransform', 'src/code/jsElements'],
 		function addLogToFunction(node) {
 			var body = node.body.body;
 			var functionName = node.id ? node.id.name : 'undefined function';
-			logger.debug('loggerJsAspect adding logging to ' + functionName);
-			var logMessage = jsElements.literal('executing ' + functionName);
-			var logExecution = jsElements.callFunction($log, 'log', logMessage);
-			node.body.body = [jsElements.expressionStatement(logExecution)].concat(body);
+			logger.trace('loggerJsAspect adding logging to ' + functionName);
+			var logMessage = jsElements.createLiteral('executing ' + functionName);
+			var logExecution = jsElements.createCallFunction($log, 'log', logMessage);
+			node.body.body = [jsElements.createExpressionStatement(logExecution)].concat(body);
 		}
 
 		function is$logInScope(node) { // multiple returns

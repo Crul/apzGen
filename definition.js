@@ -1,20 +1,18 @@
-define(['src/core/apzDefinitionHelper', 'src/system/fsService'],
-	function (apzDefinitionHelper, fsService) {
+define(['src/system/fsService'],
+	function (fsService) {
+		var definition = {
+			title: 'generated apz',
+			engines: ['seed', 'angularjs']
+		};
 
-		var libSeed = 'lib/*.*';
-		var model = JSON.parse(fsService.readFile('definition-model.json'));
-		var iudFeatures = { featureType: 'iud', features: model };
+		var model = JSON.parse(fsService.readFile('definition-model.json'))
+		definition.features = [
+			{ seed: { lib: 'lib/*.*' } },
+			'services/dataservice',
+			'services/logger',
+			'menu',
+			{ iud: model }
+		];
 
-		var apzDefinition = apzDefinitionHelper.create()
-			.setTitle('generated apz')
-		// TODO .app('angularjs') and remove from engines?
-			.addLibs(['jquery'])
-			.addEngines(['seed', 'angularjs'])
-			.addSeeds('lib', libSeed) // TODO remove apzDefinitionHelper.addSeeds
-			.addFeatures('services/dataservice')
-			.addFeatures('services/logger')
-			.addFeatures('menu')
-			.addFeatures(iudFeatures);
-
-		return apzDefinition.definition;
+		return definition;
 	});

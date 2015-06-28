@@ -1,23 +1,19 @@
-define(['src/engines/angularjs/factories/angularjsFactoryProvider', 'src/engines/angularjs/aspects/loggerJsAspect', 'src/code/jsElements'],
-	function (angularjsFactoryProvider, loggerJsAspect, jsElements) {
-		var logger = 'logger';
-		var factoryConfig = {
-			factoryName: logger,
+define(
+	[
+		'src/system/fsService',
+		'src/engines/angularjs/templates/templateService',
+		'src/engines/angularjs/factories/services/serviceFactoryProvider'
+	],
+	function (fsService, templateService, serviceFactoryProvider) {
+		var loggerConfigTmpl = templateService.js.getPartial('loggerConfig');
+		var serviceConfig = {
+			serviceName: 'logger',
 			path: 'seedwork/services',
-			aspects: [loggerJsAspect],
-			angularjs: { notFactory: true, config: [getAngularjsConfig()] }
+			aspects: ['aspects/loggerJsAspect'],
+			angularjs: {
+				config: [fsService.readFile(loggerConfigTmpl)]
+			}
 		};
 
-		return angularjsFactoryProvider.createFactory(factoryConfig);
-
-		function getAngularjsConfig() {
-			// TODO try to move to seed code file, if success then move angularjs seed files (seed/seedwork) to .json
-			var $provide = '$provide';
-			var $log = '$log';
-			var decoratorParams = [jsElements.literal($log), jsElements.identifier(logger)];
-			var decoratorExecution = jsElements.callFunction($provide, 'decorator', decoratorParams);
-			var returnExecution = jsElements.return(decoratorExecution);
-			var configFn = jsElements.functionDeclaration('', [returnExecution], $provide);
-			return configFn;
-		}
+		return serviceFactoryProvider.createFactory(serviceConfig);
 	});

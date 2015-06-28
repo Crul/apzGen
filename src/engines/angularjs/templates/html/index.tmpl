@@ -1,0 +1,15 @@
+<html ng-app="{{appName}}">
+	<head>
+		<title>{{title}}</title>
+		{{#cssLinks}}
+		<link rel="stylesheet" href="{{{filePath}}}" />
+		{{/cssLinks}}
+	</head>
+	<body class="container">
+		<h1>generated apz</h1>
+		<div ng-view="foo"></div>
+		{{#jsScripts}}
+		<script src="{{{filePath}}}"></script>
+		{{/jsScripts}}
+	</body>
+</html>

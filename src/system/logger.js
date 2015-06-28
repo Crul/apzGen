@@ -1,18 +1,19 @@
 define([], function () {
 	var dis = {};
-	dis.log = log;
 	dis.error = error;
+	dis.log = log;
 	dis.debug = debug;
-	dis.levels = {
-		error: true,
-		log: true,
-		debug: false
-	};
+	dis.trace = trace;
+	dis.levels = {};
+	dis.levels.error = true;
+	dis.levels.log = true;
+	dis.levels.debug = dis.levels.log && true;
+	dis.levels.trace = dis.levels.debug && false;
 
 	function log(message) {
 		if (dis.levels.debug)
 			message = '\n' + message;
-			
+
 		logToConsole('log', message);
 	}
 
@@ -24,8 +25,13 @@ define([], function () {
 		logWithPrefix('debug', message, '  ');
 	}
 
-	function logWithPrefix(logLevel, messageOrConfig, linePrefix) {
-		var config = getConfigFromString(messageOrConfig);
+	function trace(message) {
+		logWithPrefix('trace', message, '    ');
+	}
+
+	function logWithPrefix(logLevel, message, linePrefix) {
+		message = stringifyIfProceed(message);
+		var config = getConfigFromString(message);
 		config.linePrefix = linePrefix;
 		logToConsole(logLevel, config);
 	}
@@ -35,9 +41,7 @@ define([], function () {
 			return;
 
 		var config = getConfigFromString(messageOrConfig);
-		var message = config.message;
-		if (typeof (message) !== 'string')
-			message = JSON.stringify(message);
+		var message = stringifyIfProceed(config.message);
 
 		var linePrefix = config.linePrefix || '';
 		message = linePrefix + message.replace(/\n/g, '\n' + linePrefix);
@@ -49,6 +53,12 @@ define([], function () {
 			return { message: messageOrConfig };
 		else
 			return messageOrConfig || { message: '' };
+	}
+
+	function stringifyIfProceed(message) {
+		if (typeof (message) !== 'string')
+			message = JSON.stringify(message);
+		return message;
 	}
 
 	return dis;

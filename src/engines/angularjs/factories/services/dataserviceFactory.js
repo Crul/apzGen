@@ -1,12 +1,12 @@
-define(['src/engines/angularjs/factories/angularjsFactoryProvider'],
-	function (angularjsFactoryProvider) {
-		var factoryConfig = {
-			factoryName: 'dataservice',
+define(['src/engines/angularjs/factories/services/serviceFactoryProvider'],
+	function (serviceFactoryProvider) {
+		var serviceConfig = {
+			serviceName: 'dataservice',
 			path: 'seedwork/services',
-			libs: 'lib/angular-local-storage.min.js',
+			libs: ['lib/angular-local-storage.min.js'],
 			angularjs: {
 				dependencies: ['LocalStorageModule']
 			}
 		};
-		return angularjsFactoryProvider.createFactory(factoryConfig);
+		return serviceFactoryProvider.createFactory(serviceConfig);
 	});

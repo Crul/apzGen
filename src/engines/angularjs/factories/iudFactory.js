@@ -1,96 +1,41 @@
 define(
 	[
-		'src/engines/angularjs/fileFactories/listCtrlJs',
-		'src/engines/angularjs/fileFactories/listCtrlHtml',
-		'src/engines/angularjs/fileFactories/iudCtrlJs',
-		'src/engines/angularjs/fileFactories/iudCtrlHtml'
+		'src/engines/angularjs/factories/helpers/modelHelper',
+		'src/engines/angularjs/factories/helpers/angularjsFeatureHelper',
+		'src/engines/angularjs/factories/iud/iudApzFilesFactory'
 	],
-	function (listCtrlJs, listCtrlHtml, iudCtrlJs, iudCtrlHtml) {
+	function (modelHelper, angularjsFeatureHelper, iudApzFilesFactory) {
 		var dis = {};
 		dis.create = create;
 
-		var ctrlInitializers = ['base', 'list', 'iud'];
-		var _Ctrl = 'Ctrl';
-		var _CtrlInitializer = _Ctrl + 'Initializer';
-		var dependentFeatures = getDependentFeatures(ctrlInitializers);
+		var angularjsComponents = [
+			{ route: '/list', template: '-list', controller: 'List', menuOption: ' list' },
+			{ route: '/edit/:id' }
+		];
 
 		function create(definition) {
 			var iud = require('util')._extend({}, definition);
-			iud.dependentFeatures = dependentFeatures;
-			iud.apzFiles = getApzFiles(iud);
-			initAngularjs(iud);
-
+			initDependentFeatures(iud);
+			initIud(iud);
+			angularjsFeatureHelper.initFeature(iud, angularjsComponents);
+			iud.getApzFiles = iudApzFilesFactory.createApzFiles;
 			return iud;
 		}
 
-		function initAngularjs(iud) {
-			iud.angularjs = iud.angularjs || {};
-
-			var fields = iud.model || iud.fields;
-			iud.angularjs.model = { fields: fields.map(initModelField) };
-
-			iud.angularjs.routes = getRoutes(iud);
-			iud.angularjs.controllers = getControllers(iud);
-			iud.angularjs.menuOptions = getMenuOptions(iud);
+		function initIud(iud) {
+			iud.entityName = iud.featureName;
+			iud.controls = (iud.model || iud.fields).map(modelHelper.initModelField);
 		}
 
-		function getDependentFeatures(ctrlInitializer) {
-			var dependentFeatures = {};
-			ctrlInitializer.forEach(setDependentFeature);
-			return dependentFeatures;
+		function initDependentFeatures(iud) {
+			iud.dependentFeatures = iud.dependentFeatures || {};
+			['base', 'list', 'iud'].forEach(setDependentFeature);
 
 			function setDependentFeature(ctrlInitializer) {
-				dependentFeatures[ctrlInitializer + _Ctrl] = {
-					featureType: 'ctrlInitializers/' + ctrlInitializer + _Ctrl,
-					featureName: ctrlInitializer + _CtrlInitializer
+				iud.dependentFeatures[ctrlInitializer] = {
+					featureType: 'services/' + ctrlInitializer + 'Ctrl',
+					featureName: ctrlInitializer + 'CtrlInitializer'
 				};
-			}
-		}
-
-		function initModelField(field) {
-			if (typeof (field) === 'string')
-				field = { fieldName: field };
-			field.fieldType = field.fieldType || 'text';
-			return field;
-		}
-
-		// TODO unify routes/controllers/menuOptions/apzFiles definition
-		function getRoutes(iud) {
-			var featureName = iud.featureName;
-			// TODO: angularjsRouteFactory
-			return [
-				{
-					path: featureName + '/list',
-					template: featureName + '/' + featureName + '-list',
-					controller: featureName + 'List'
-				}, {
-					path: featureName + '/edit/:id',
-					template: featureName + '/' + featureName,
-					controller: featureName
-				}
-			];
-		}
-
-		function getControllers(iud) {
-			var featureName = iud.featureName;
-			return [
-				featureName + '/' + featureName + '.js',
-				featureName + '/' + featureName + 'List' + '.js'
-			];
-		}
-
-		function getMenuOptions(iud) {
-			var featureName = iud.featureName;
-			return [
-				{ path: featureName + '/list', optionName: featureName + ' list' }
-			];
-		}
-
-		function getApzFiles(iud) {
-			return [listCtrlJs, listCtrlHtml, iudCtrlJs, iudCtrlHtml].map(createApzFile);
-
-			function createApzFile(fileFactory) {
-				return fileFactory.create(iud);
 			}
 		}
 

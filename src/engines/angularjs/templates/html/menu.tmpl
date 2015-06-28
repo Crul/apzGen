@@ -1,0 +1,7 @@
+<div ng-repeat="area in model.areas">
+  <ul>
+    <li ng-repeat="option in area.options" style="margin-top: 12px;">
+      <a href=" #/{{option.path}}" style="display: block">{{option.optionName}}</a>
+    </li>
+  </ul>
+</div>

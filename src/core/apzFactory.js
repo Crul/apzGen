@@ -1,5 +1,5 @@
-define(['src/system/logger', 'src/apzContext', 'src/core/apzDefinitionHelper', 'src/core/apzFeatureFactory'],
-	function (logger, apzContext, apzDefinitionHelper, apzFeatureFactory) {
+define(['src/system/logger', 'src/core/apzContext', 'src/core/apzDefinitionFactory', 'src/core/apzFeatureFactory'],
+	function (logger, apzContext, apzDefinitionFactory, apzFeatureFactory) {
 		var util = require('util');
 		var dis = {};
 		dis.create = create;
@@ -7,17 +7,15 @@ define(['src/system/logger', 'src/apzContext', 'src/core/apzDefinitionHelper', '
 		function create(apzDefinition) {
 			logger.log('creating apz ...');
 			apzContext.engines = apzDefinition.engines;
-			apzDefinition = apzDefinitionHelper.initDefinition(apzDefinition, 'app');
-			return createApz(apzDefinition);
-		}
-
-		function createApz(apzDefinition) {
+			apzDefinition = apzDefinitionFactory.initDefinition(apzDefinition, 'app');
+			
 			var featureFactory = apzFeatureFactory.getFeatureFactory(apzDefinition);
 			var dependentFeatures = featureFactory.dependentFeatures;
 			var featureDefinitions = util._extend(dependentFeatures || {}, apzDefinition.features);
 
 			initFeatureDefinitions(featureDefinitions);
 			createApzFeatures(apzDefinition, featureDefinitions);
+			logger.debug('creating apz ...');
 			return apzFeatureFactory.createFeature(apzDefinition);
 		}
 
@@ -25,7 +23,7 @@ define(['src/system/logger', 'src/apzContext', 'src/core/apzDefinitionHelper', '
 			for (var featureName in featureDefinitions) { // not [].forEach() because iterating {}
 				var featureDefinition = featureDefinitions[featureName];
 				var clonedFeatureDefinition = util._extend({}, featureDefinition);
-				featureDefinitions[featureName] = apzDefinitionHelper.initDefinition(featureDefinition, featureName);
+				featureDefinitions[featureName] = apzDefinitionFactory.initDefinition(featureDefinition, featureName);
 				featureDefinitions[featureName].definition = clonedFeatureDefinition;
 			}
 		}

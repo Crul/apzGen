@@ -1,44 +1,43 @@
-define(['src/system/logger', 'src/core/apzFactoryResolver', 'src/core/apzAspects'],
-	function (logger, apzFactoryResolver, apzAspects) {
+define(['src/system/logger', 'src/core/apzResolver', 'src/core/apzAspectPipeline'],
+	function (logger, apzResolver, apzAspectPipeline) {
 		var dis = {};
-		dis.createRecursiveFeatures = createRecursiveFeatures;
 		dis.createFeature = createFeature;
-		dis.getFeatureFactory = getFeatureFactory;
+		dis.createRecursiveFeatures = createRecursiveFeatures;
+		dis.getFeatureFactory = apzResolver.resolveFactory;
 
 		function createRecursiveFeatures(featureDefinitions, featureArray) {
 			featureDefinitions = featureDefinitions || [];
 			for (var featureName in featureDefinitions) { // not [].forEach() because iterating {}
 				var featureDefinition = featureDefinitions[featureName];
+				logger.debug('creating: ' + featureDefinition.featureName);
 				var feature = createFeature(featureDefinition);
-				createRecursiveFeatures(feature.dependentFeatures, featureArray);
-				addFeature(featureArray, feature);
+				if (feature) {
+					createRecursiveFeatures(feature.dependentFeatures, featureArray);
+					addFeature(featureArray, feature);
+				}
 			}
 		}
 
-		function createFeature(definition) { // multiple returns
-			var factory = getFeatureFactory(definition);
-			if (!factory) // defensive (error logged in factoryResolver)
-				return {};
+		function createFeature(definition) {
+			var factory = apzResolver.resolveFactory(definition);
+			var feature = (factory) ?
+				factory.create(definition) :
+				apzResolver.resolveJson(definition);
 
-			var feature = factory.create(definition);
-			if (!feature)
-				logger.error('FEATURE FACTORY RETURNED UNDEFINED:\ndefinition: ' + JSON.stringify(definition));
-
-			apzAspects.addAspects(feature.aspects);
+			if (feature) {
+				apzAspectPipeline.add(feature.aspects);
+			} else {
+				logger.error('apzFeatureFactory UNDEFINED FEATURE:');
+				logger.error('definition: ' + JSON.stringify(definition));
+			}
 			return feature;
-		}
-
-		function getFeatureFactory(definition) {
-			return apzFactoryResolver.resolve(definition);
 		}
 
 		function addFeature(featureArray, featureToAdd) { // multiple returns
 			if (featureArray.filter(getByFeatureName).length > 0) {
-				logger.debug('skipped duplicated feature: ' + featureToAdd.featureName);
+				logger.trace('duplicated feature skipped: ' + featureToAdd.featureName);
 				return;
 			}
-
-			logger.debug('created: ' + featureToAdd.featureName);
 			featureArray.push(featureToAdd);
 
 			function getByFeatureName(feature) {

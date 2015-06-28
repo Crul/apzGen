@@ -1,0 +1,25 @@
+<div>
+  <a href="#/">back</a>
+  <a href="#/{{entityName}}/edit/new">new</a>
+  <h1>{{entityName}}</h1>
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>
+        {{#controls}}
+        <th>{{label}}</th>
+        {{/controls}}
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="entity in model[entityName].list">
+        <td><button click="edit(entity)">edit</button></td>
+        <td><button click="remove(entity)">remove</button></td>
+        {{#controls}}
+        <td ng-bind="entity.{{fieldName}}"></td>
+        {{/controls}}
+      </tr>
+    </tbody>
+  </table>
+</div>

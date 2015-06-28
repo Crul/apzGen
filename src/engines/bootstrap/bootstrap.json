@@ -1,0 +1,8 @@
+{
+	"libs": [
+		"bootstrap"
+	],
+	"aspects": [
+		"bootstrap/bootstrapHtmlAspect"
+	]
+}
