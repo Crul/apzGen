@@ -22,17 +22,20 @@ define(['src/engines/angularjs/templates/templateService'],
 
 		function setControlTemplate(control) {
 			switch (control.controlType) {
+				case 'boolean':
+					control.controlTemplate = templateService.getTemplateLambda('checkboxControl');
+					break;
 				case 'dropdownList':
 					control.controlTemplate = templateService.getTemplateLambda('dropdownListControl');
 					var _meta = control._meta || {};
 					if (typeof (_meta) === 'string')
 						_meta = JSON.parse(_meta);
-						
+
 					_meta.dropdownList = {
-						entityName: control.foreingKey.entity,
+						dataSource: 'data.' + control.foreingKey.entity + '.list',
 						valueField: control.foreingKey.fieldName,
 						labelField: control.dropdownListOptionLabel
-					}; 
+					};
 					control._meta = JSON.stringify(_meta);
 					break;
 			}

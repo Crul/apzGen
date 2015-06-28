@@ -1,5 +1,5 @@
-define(['src/system/utils', 'src/system/logger', 'src/system/fsService'],
-	function (utils, logger, fsService) {
+define(['src/system/utils', 'src/system/logger', 'src/system/fsSvc'],
+	function (utils, logger, fsSvc) {
 		var util = require('util');
 		var dis = {};
 		dis.init = initModel;
@@ -7,7 +7,7 @@ define(['src/system/utils', 'src/system/logger', 'src/system/fsService'],
 		function initModel(apzDefinition) {
 			if (typeof (apzDefinition.model) === 'string') {
 				logger.trace('string model definition: reading ' + apzDefinition.model);
-				apzDefinition.model = JSON.parse(fsService.readFile(apzDefinition.model));
+				apzDefinition.model = JSON.parse(fsSvc.readFile(apzDefinition.model));
 			}
 			apzDefinition.model = apzDefinition.model || {};
 			apzDefinition.model.config = apzDefinition.model.config || {};

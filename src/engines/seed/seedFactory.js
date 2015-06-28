@@ -1,5 +1,5 @@
-define(['src/system/fsService', 'src/core/apzContext'],
-	function (fsService, apzContext) {
+define(['src/system/fsSvc', 'src/core/apzContext'],
+	function (fsSvc, apzContext) {
 		var dis = {};
 		dis.create = create;
 
@@ -16,13 +16,13 @@ define(['src/system/fsService', 'src/core/apzContext'],
 			var definitionPath;
 			if (definition.featureName.match(allFilesWildcardPattern)) {
 				definitionPath = definition.featureName.replace(allFilesWildcardPattern, '');
-				var featurePath = fsService.concatPath(seedPath, definitionPath);
-				return fsService.readAllFiles(featurePath).map(createApzFileFromPath);
+				var featurePath = fsSvc.concatPath(seedPath, definitionPath);
+				return fsSvc.readAllFiles(featurePath).map(createApzFileFromPath);
 			}
 			return [createApzFile(definition.featureName)];
 
 			function createApzFileFromPath(filePath) {
-				var fullFilePath = fsService.concatPath(definitionPath, filePath);
+				var fullFilePath = fsSvc.concatPath(definitionPath, filePath);
 				return createApzFile(fullFilePath);
 			}
 		}

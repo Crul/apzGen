@@ -1,4 +1,4 @@
-define(['src/system/fsService'], function (fsService) {
+define(['src/system/fsSvc'], function (fsSvc) {
 	var libxmljs = require('libxmljs');
 	var dis = {};
 	dis.parseFile = parseFile;
@@ -10,7 +10,7 @@ define(['src/system/fsService'], function (fsService) {
 	}
 
 	function parseFile(filePath, data, partials) {
-		var code = fsService.readFile(filePath);
+		var code = fsSvc.readFile(filePath);
 		return parse(code);
 	}
 

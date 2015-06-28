@@ -49,7 +49,8 @@ define([], function () {
 				saveButton: getHtmlPartial('save-button'),
 				control: getHtmlPartial('control'),
 				textControl: getHtmlPartial('controls/text'),
-				dropdownListControl: getHtmlPartial('controls/dropdown-list')
+				dropdownListControl: getHtmlPartial('controls/dropdown-list'),
+				checkboxControl: getHtmlPartial('controls/checkbox')
 			},
 			index: getHtml('index'),
 			iud: getHtml('iud'),

@@ -1,5 +1,5 @@
-define(['src/system/logger', 'src/system/fsService', 'src/core/apzContext'],
-	function (logger, fsService, apzContext) {
+define(['src/system/logger', 'src/system/fsSvc', 'src/core/apzContext'],
+	function (logger, fsSvc, apzContext) {
 		var util = require('util');
 		var dis = {};
 		dis.resolveFactory = resolveFactory;
@@ -47,8 +47,8 @@ define(['src/system/logger', 'src/system/fsService', 'src/core/apzContext'],
 			return enginePaths;
 
 			function concatEnginePaths(engine) {
-				var fullEnginePath = fsService.concatPath(enginesPath, engine, factoriesPath);
-				enginePaths = enginePaths.concat(fsService.getAllDeeps(fullEnginePath));
+				var fullEnginePath = fsSvc.concatPath(enginesPath, engine, factoriesPath);
+				enginePaths = enginePaths.concat(fsSvc.getAllDeeps(fullEnginePath));
 			}
 		}
 
@@ -78,8 +78,8 @@ define(['src/system/logger', 'src/system/fsService', 'src/core/apzContext'],
 		}
 
 		function requireFile(relativePath, fileName, filePattern) {
-			var fullPath = fsService.concatPath(rootPath, relativePath, fileName + filePattern);
-			if (fsService.exists(fullPath)) {
+			var fullPath = fsSvc.concatPath(rootPath, relativePath, fileName + filePattern);
+			if (fsSvc.exists(fullPath)) {
 				return {
 					file: requireFileByType(fullPath, filePattern),
 					filePath: fullPath
@@ -88,7 +88,7 @@ define(['src/system/logger', 'src/system/fsService', 'src/core/apzContext'],
 		}
 
 		function requireFileByType(fullPath, filePattern) {
-			return (filePattern == jsonPattern) ? JSON.parse(fsService.readFile(fullPath)) : require(fullPath);
+			return (filePattern == jsonPattern) ? JSON.parse(fsSvc.readFile(fullPath)) : require(fullPath);
 		}
 
 		function log(resolvedInfo, paths, fileNames, definition, filePattern) {

@@ -1,4 +1,4 @@
-define(['src/system/fsService'], function (fsService) {
+define(['src/system/fsSvc'], function (fsSvc) {
 	var dis = {};
 	dis.getModel = getJsModel;
 
@@ -16,7 +16,7 @@ define(['src/system/fsService'], function (fsService) {
 	}
 
 	function getFileNameNoExtension(angularjsElement) {
-		return fsService.getNameNoExtension(angularjsElement.filePath || angularjsElement);
+		return fsSvc.getNameNoExtension(angularjsElement.filePath || angularjsElement);
 	}
 	
 	return dis;

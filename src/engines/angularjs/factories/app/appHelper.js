@@ -1,5 +1,5 @@
-define(['src/system/utils', 'src/system/fsService', 'src/engines/angularjs/factories/app/appApzFilesFactory'],
-	function (utils, fsService, appApzFilesFactory) {
+define(['src/system/utils', 'src/system/fsSvc', 'src/engines/angularjs/factories/app/appApzFilesFactory'],
+	function (utils, fsSvc, appApzFilesFactory) {
 		var dis = {};
 		dis.initFeature = initFeature;
 		dis.getAngularjs = getAngularjs;
@@ -28,7 +28,7 @@ define(['src/system/utils', 'src/system/fsService', 'src/engines/angularjs/facto
 			}
 
 			function getRoutes() {
-				return angularjs.routes.map(fsService.addStartSlash).sort(compareIsDefault);
+				return angularjs.routes.map(fsSvc.addStartSlash).sort(compareIsDefault);
 			}
 
 			function compareIsDefault(r1, r2) {

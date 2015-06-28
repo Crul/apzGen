@@ -40,6 +40,11 @@
 						"entity": "tenant",
 						"fieldName": "id"
 					}
+				},
+				{
+					"fieldName": "isLocked",
+					"fieldType": "boolean",
+					"label": "locked"
 				}
 			]
 		}

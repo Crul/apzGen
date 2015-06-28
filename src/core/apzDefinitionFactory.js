@@ -1,5 +1,5 @@
-define(['src/system/utils', 'src/system/logger', 'src/system/fsService', 'src/core/apzModel'],
-	function (utils, logger, fsService, apzModel) {
+define(['src/system/utils', 'src/system/logger', 'src/system/fsSvc', 'src/core/apzModel'],
+	function (utils, logger, fsSvc, apzModel) {
 		var util = require('util');
 		var dis = {};
 		dis.create = create;
@@ -22,7 +22,7 @@ define(['src/system/utils', 'src/system/logger', 'src/system/fsService', 'src/co
 				return definition;
 
 			logger.trace('not definition provided: reading definition.json');
-			return JSON.parse(fsService.readFile('definition.json'));
+			return JSON.parse(fsSvc.readFile('definition.json'));
 		}
 
 		function createApzDefinition(definition) {

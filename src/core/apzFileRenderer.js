@@ -1,5 +1,5 @@
-define(['src/system/logger', 'src/system/fsService', 'src/core/apzContext'],
-	function (logger, fsService, apzContext) {
+define(['src/system/logger', 'src/system/fsSvc', 'src/core/apzContext'],
+	function (logger, fsSvc, apzContext) {
 		var dis = {};
 		dis.render = renderApzFile;
 
@@ -23,14 +23,14 @@ define(['src/system/logger', 'src/system/fsService', 'src/core/apzContext'],
 
 		function renderContent(apzFile, apz, aspects) {
 			if (apzFile.feature.featureType === 'seed') {
-				apzFile.content = fsService.readFile(apzContext.seedPath + '/' + apzFile.filePath);
+				apzFile.content = fsSvc.readFile(apzContext.seedPath + '/' + apzFile.filePath);
 			} else {
 				apzFile.content = renderByType(apzFile, apz, aspects);
 			}
 		}
 
 		function renderByType(apzFile, apz, aspects) { // multiple returns
-			var fileExtension = fsService.getFileExtension(apzFile.filePath);
+			var fileExtension = fsSvc.getFileExtension(apzFile.filePath);
 			var fileContent = getFileContent(apzFile, fileExtension);
 
 			var codeParser = getCodeElement('Parser', apzFile, fileExtension);
@@ -66,7 +66,7 @@ define(['src/system/logger', 'src/system/fsService', 'src/core/apzContext'],
 				if (codeTemplate)
 					fileContent = codeTemplate.render(template, apzFile.model, apzFile.partials);
 			} else {
-				fileContent = fsService.readFile(template);
+				fileContent = fsSvc.readFile(template);
 			}
 			return fileContent;
 		}
